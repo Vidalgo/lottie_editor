@@ -1,1 +1,1 @@
-# lottie_analyze
+# lottie_editor
