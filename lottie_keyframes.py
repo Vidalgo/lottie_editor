@@ -1,132 +1,238 @@
 # This class holds a keyframe and member functions to crud its elements
-class Text_keyframe:
-    def __init__(self, keyframe_obj):
-        if 't' in keyframe_obj:
-            self.keyframe_obj = keyframe_obj
-            self.transform_type = "text"
-        else:
+import copy
+
+
+class Time_Keyframe:
+    def __init__(self, key_frames_list):
+        if not list(key_frames_list):
             raise Exception(f"Bad keyframe")
 
-    def set_start_time(self, start_time):
-        self.keyframe_obj['t'] = start_time
+        self.key_frames_list = key_frames_list
 
-    def get_start_time(self):
-        return self.keyframe_obj['t']
+    def get_keyframes(self, start_time=0, end_time=-1):
+        key_frames_by_time = []
+        if end_time == -1:
+            end_time = self.key_frames_list[len(self.key_frames_list) - 1]['t'] + 1
+        for index in range(len(self.key_frames_list)):
+            keyframe_start_time = self.key_frames_list[index]['t']
+            if index == len(self.key_frames_list) - 1:
+                keyframe_end_time = end_time
+            else:
+                keyframe_end_time = self.key_frames_list[index + 1]['t']
+            if keyframe_start_time <= start_time < keyframe_end_time or \
+                    start_time <= keyframe_start_time < end_time:
+                key_frames_by_time.append(self.key_frames_list[index])
+        return key_frames_by_time
 
-    def set_start_time(self, start_time):
-        self.keyframe_obj['t'] = start_time
-
-    def get_start_time(self):
-        return self.keyframe_obj['t']
-
-
-
-class Base_keyframe:
-    def __init__(self, transform_type, keyframe_obj):
-        if 't' in keyframe_obj and 'i' in keyframe_obj and 'o' in keyframe_obj:
-            self.keyframe_obj = keyframe_obj
-            self.transform_type = transform_type
-        else:
+    def add_keyframes(self, new_key_frames_list):
+        if not list(new_key_frames_list):
             raise Exception(f"Bad keyframe")
+        for new_key_frame_obj in new_key_frames_list:
+            new_keyframe_start_time = new_key_frame_obj['t']
+            for index in range(len(self.key_frames_list)):
+                keyframe_start_time = self.key_frames_list[index]['t']
+                if new_keyframe_start_time < keyframe_start_time:
+                    self.key_frames_list.insert(index, new_key_frame_obj)
+                    break
+                elif new_keyframe_start_time == keyframe_start_time:
+                    self.key_frames_list.insert(index, new_key_frame_obj)
+                    self.key_frames_list.pop(index + 1)
+                    break
+                elif index == len(self.key_frames_list) - 1:
+                    self.key_frames_list.append(new_key_frame_obj)
+        return self.key_frames_list
 
-    def set_start_time(self, start_time):
-        self.keyframe_obj['t'] = start_time
+    def del_keyframes(self, start_time=0, end_time=-1):
+        if end_time == -1:
+            end_time = self.key_frames_list[len(self.key_frames_list) - 1]['t'] + 1
+        index = 0
+        while True:
+            keyframe_start_time = self.key_frames_list[index]['t']
+            if start_time <= keyframe_start_time < end_time:
+                self.key_frames_list.pop(index)
+            else:
+                index += 1
+            if index > len(self.key_frames_list) - 1:
+                break
+        return self.key_frames_list
 
-    def get_start_time(self):
-        return self.keyframe_obj['t']
+    def scale_time(self, scale=1, start_time=0, end_time=-1):
+        if end_time == -1:
+            end_time = self.key_frames_list[len(self.key_frames_list) - 1]['t'] + 1
+        new_keyframes = []
+        for index in range(len(self.key_frames_list)):
+            keyframe_start_time = self.key_frames_list[index]['t']
+            if start_time < keyframe_start_time <= end_time:
+                time_diff = keyframe_start_time - start_time
+                if index != 0 and scale != 1 and not self.key_frames_list[index - 1]['t'] >= start_time:
+                    new_keyframes.append(copy.deepcopy(self.key_frames_list[index - 1]))
+                    new_keyframes[-1]['t'] = start_time
+                self.key_frames_list[index]['t'] += time_diff * (scale - 1)
+            elif keyframe_start_time > end_time:
+                time_diff = end_time - start_time
+                if scale != 1 and not self.key_frames_list[index - 1]['t'] >= start_time + time_diff * scale:
+                    new_keyframes.append(copy.deepcopy(self.key_frames_list[index - 1]))
+                    new_keyframes[-1]['t'] = start_time + time_diff * scale
+                self.key_frames_list[index]['t'] += time_diff * (scale - 1)
+        if new_keyframes:
+            self.add_keyframes(new_keyframes)
+        return self.key_frames_list
 
-    def set_in_value(self, in_value):
-        self.keyframe_obj['i'] = in_value
+    @staticmethod
+    def update_keyframe(start_time, keyframe_obj):
+        keyframe_obj['t'] = start_time
 
-    def get_in_value(self):
-        return self.keyframe_obj['i']
 
-    def set_out_value(self, out_value):
-        self.keyframe_obj['o'] = out_value
+class Text_keyframe(Time_Keyframe):
+    def __init__(self, key_frames_list):
+        Time_Keyframe.__init__(self, key_frames_list)
+        self.transform_type = "text"
 
-    def get_out_value(self):
-        return self.keyframe_obj['o']
+    @staticmethod
+    def set_document(keyframe_obj, text_document):
+        keyframe_obj['s'] = text_document
 
-    def set_jump_to_end(self, jump_to_end):
+    @staticmethod
+    def get_start_time(keyframe_obj):
+        if 's' in keyframe_obj:
+            return keyframe_obj['s']
+        else:
+            return None
+
+
+class Base_keyframe(Time_Keyframe):
+    def __init__(self, transform_type, key_frames_list):
+        Time_Keyframe.__init__(self, key_frames_list)
+        self.transform_type = transform_type
+
+    @staticmethod
+    def set_in_value(keyframe_obj, in_value):
+        keyframe_obj['i'] = in_value
+
+    @staticmethod
+    def get_in_value(keyframe_obj):
+        if 'i' in keyframe_obj:
+            return keyframe_obj['i']
+        else:
+            return None
+
+    @staticmethod
+    def set_out_value(keyframe_obj, out_value):
+        keyframe_obj['o'] = out_value
+
+    @staticmethod
+    def get_out_value(keyframe_obj):
+        if 'o' in keyframe_obj:
+            return keyframe_obj['o']
+        else:
+            return None
+
+    @staticmethod
+    def set_jump_to_end(keyframe_obj, jump_to_end):
         if jump_to_end == 0 or jump_to_end == 1:
-            self.keyframe_obj['h'] = jump_to_end
+            keyframe_obj['h'] = jump_to_end
         else:
             raise Exception(f"Bad keyframe jump to end value : {jump_to_end}")
 
-    def get_jump_to_end(self):
-        if 'h' in self.keyframe_obj:
-            return self.keyframe_obj['h']
+    @staticmethod
+    def get_jump_to_end(keyframe_obj):
+        if 'h' in keyframe_obj:
+            return keyframe_obj['h']
 
 
 class Position_keyframe(Base_keyframe):
-    def __init__(self, transform_type, keyframe_obj):
-        if 's' in keyframe_obj and 'e' in keyframe_obj and 'ti' in keyframe_obj and 'to' in keyframe_obj:
-            Base_keyframe.__init__(transform_type, keyframe_obj)
+    def __init__(self, transform_type, key_frames_list):
+        Base_keyframe.__init__(self, key_frames_list)
+        self.transform_type = transform_type
+
+    @staticmethod
+    def set_start_segment(keyframe_obj, start_segment):
+        keyframe_obj['s'] = start_segment
+
+    @staticmethod
+    def get_start_segment(keyframe_obj):
+        if 's' in keyframe_obj:
+            return keyframe_obj['s']
         else:
-            raise Exception(f"Bad position keyframe")
+            return None
 
-    def set_start_segment(self, start_segment):
-        self.keyframe_obj['s'] = start_segment
+    @staticmethod
+    def set_end_segment(keyframe_obj, end_segment):
+        keyframe_obj['e'] = end_segment
 
-    def get_start_segment(self):
-        return self.keyframe_obj['s']
+    @staticmethod
+    def get_end_segment(keyframe_obj):
+        if 'e' in keyframe_obj:
+            return keyframe_obj['e']
+        else:
+            return None
 
-    def set_end_segment(self, end_segment):
-        self.keyframe_obj['e'] = end_segment
+    @staticmethod
+    def set_in_tangent(keyframe_obj, in_tangent):
+        keyframe_obj['ti'] = in_tangent
 
-    def get_end_segment(self):
-        return self.keyframe_obj['e']
+    @staticmethod
+    def get_in_tangent(keyframe_obj):
+        return keyframe_obj['ti']
 
-    def set_in_tangent(self, in_tangent):
-        self.keyframe_obj['ti'] = in_tangent
+    @staticmethod
+    def set_out_tangent(keyframe_obj, set_out_tangent):
+        keyframe_obj['to'] = set_out_tangent
 
-    def get_in_tangent(self):
-        return self.keyframe_obj['ti']
-
-    def set_out_tangent(self, set_out_tangent):
-        self.keyframe_obj['to'] = set_out_tangent
-
-    def get_set_out_tangent(self):
-        return self.keyframe_obj['to']
+    @staticmethod
+    def get_set_out_tangent(keyframe_obj):
+        return keyframe_obj['to']
 
 
 class Shape_keyframe(Base_keyframe):
     def __init__(self, transform_type, keyframe_obj):
-        if 's' in keyframe_obj and 'e' in keyframe_obj:
-            Base_keyframe.__init__(transform_type, keyframe_obj)
+        Base_keyframe.__init__(self, transform_type, keyframe_obj)
+
+    @staticmethod
+    def set_start_segment(keyframe_obj, start_segment):
+        keyframe_obj['s'] = start_segment
+
+    @staticmethod
+    def get_start_segment(keyframe_obj):
+        if 's' in keyframe_obj:
+            return keyframe_obj['s']
         else:
-            raise Exception(f"Bad position keyframe")
+            return None
 
-    def set_start_segment(self, start_segment):
-        self.keyframe_obj['s'] = start_segment
+    @staticmethod
+    def set_end_segment(keyframe_obj, end_segment):
+        keyframe_obj['e'] = end_segment
 
-    def get_start_segment(self):
-        return self.keyframe_obj['s']
-
-    def set_end_segment(self, end_segment):
-        self.keyframe_obj['e'] = end_segment
-
-    def get_end_segment(self):
-        return self.keyframe_obj['e']
+    @staticmethod
+    def get_end_segment(keyframe_obj):
+        if 's' in keyframe_obj:
+            return keyframe_obj['e']
+        else:
+            return None
 
 
-# This class holds a list of keyframes for 1 transform (position / rotation / etc...) and member functions to CRUD key_frames
-# This class recieves and
-class keyframes_of_transform:
-    def __init__(self, transform_type, keyframe_obj):
-        if 'a' in keyframe_obj and keyframe_obj['a'] == 1:
-            if transform_type == 'anchor' \
-                    or transform_type == 'position' \
-                    or transform_type == 'scale' \
-                    or transform_type == 'orientation' \
-                    or transform_type == 'rotation' \
-                    or transform_type == 'skew' \
-                    or transform_type == 'skew_axis' \
-                    or transform_type == 'opacity':
-                keyframe = Position_keyframe(transform_type, keyframe_obj)
-            elif transform_type == 'rotation' or transform_type == 'skew' or transform_type == 'skew_axis'\
-                    or transform_type == 'opacity':
-                keyframe = Shape_keyframe(transform_type, keyframe_obj)
-            else:
-                self.transform_type = 'unknown'
-            keyframe = Base_keyframe(transform_type, keyframe_obj)
+'''key_frames_list = [{'t': 18, 'o': 0}, {'t': 20, 'o': 1}, {'t': 35, 'o': 2}, {'t': 47, 'o': 3}, {'t': 50, 'o': 4}]
+
+time_keyframe = Time_Keyframe(key_frames_list)
+print(time_keyframe.get_keyframes())
+print(time_keyframe.get_keyframes(0))
+print(time_keyframe.get_keyframes(22))
+print(time_keyframe.get_keyframes(28, 36))
+print(time_keyframe.get_keyframes(0, 20))
+print(time_keyframe.get_keyframes(13, 13))
+print(time_keyframe.get_keyframes(13, 100))
+print(time_keyframe.get_keyframes(35, 50))
+
+print()
+print(time_keyframe.get_keyframes())
+new_key_frames_list = [{'t': 0, 'i': 0}, {'t': 15, 'i': 1}, {'t': 25, 'i': 2}, {'t': 35, 'i': 3}, {'t': 36, 'i': 4},
+                       {'t': 46, 'i': 5},
+                       {'t': 48, 'i': 6}, {'t': 54, 'i': 7}, {'t': 54, 'i': 8}, {'t': 60, 'i': 9}]
+time_keyframe.add_keyframes(new_key_frames_list)
+print(time_keyframe.get_keyframes())
+
+print()
+time_keyframe.del_keyframes(20, 50)
+print(time_keyframe.get_keyframes())
+print(time_keyframe.scale_time(2))
+print(time_keyframe.scale_time(2, 15, 54))'''
