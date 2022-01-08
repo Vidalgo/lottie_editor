@@ -2,6 +2,7 @@ import lottie_search_and_replace as lsr
 import datetime
 import random
 
+
 class Lottie_parser:
     def __init__(self, lottie_filename):
         try:
@@ -238,11 +239,21 @@ class Lottie_parser:
 
     @staticmethod
     def parse_layer_id(layer):
-        return layer['ind']
+        if 'ind' in layer:
+            return layer['ind']
+        elif 'cix' in layer:
+            return layer['cix']
+        elif 'ix' in layer:
+            return layer['ix']
+        else:
+            return None
 
     @staticmethod
     def parse_layer_name(layer):
-        return layer['nm']
+        if 'nm' in layer:
+            return layer['nm']
+        else:
+            return None
 
     @staticmethod
     def parse_layer_parent(layer):
@@ -335,14 +346,19 @@ class Lottie_parser:
             return None
 
     @staticmethod
-    def asset_name(asset_obj):
+    def parse_asset_name(asset_obj):
         if 'id' in asset_obj:
             return asset_obj['id']
 
     @staticmethod
-    def asset_id(asset_obj):
+    def parse_asset_id(asset_obj):
         if 'id' in asset_obj:
             return asset_obj['id']
+
+    @staticmethod
+    def parse_layer_transform(layer):
+        if 'ks' in layer:
+            return layer['ks']
 
 
 

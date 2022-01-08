@@ -73,8 +73,8 @@ class Lottie_analyzer(Lottie_parser):
         assets = lsr.find_assets(self.json_obj)
         if assets:
             for asset_id in assets:
-                asset_node = Lottie_node(id=self.asset_id(assets[asset_id]),
-                                         name=self.asset_name(assets[asset_id]),
+                asset_node = Lottie_node(id=self.parse_asset_id(assets[asset_id]),
+                                         name=self.parse_asset_name(assets[asset_id]),
                                          layer_type="image",
                                          lottie_obj=self.parse_pre_comp_layers(assets[asset_id]))
                 self.nodes.append(asset_node)
