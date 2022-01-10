@@ -214,7 +214,7 @@ def find_pre_comp_layers(lottie_obj):
                 try:
                     layers[str(pre_comp['id']) + ':' + str(layer['ind'])] = layer
                 except:
-                    raise Exception(f"Error:could not parse JSON file pre composition assets {layer}")
+                    raise Exception(f'Error:could not parse JSON file pre composition assets {layer}')
 
     return layers
 
