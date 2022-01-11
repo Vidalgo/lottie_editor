@@ -93,6 +93,14 @@ class Lottie_keyframe_editor(Lottie_parser):
             if 'g' in layer_obj and 'k' in layer_obj['g']:
                 colors_key = self.expend_key(shape_key, 'colors', layer_obj['g']['k'], True)
                 self.set_keyframe_from_value(colors_key, layer_obj['g']['k'])
+        elif layer_obj['ty'] == 'gr':
+            group_key = self.expend_key(layer_key, 'group', layer_obj, True)
+            if 'it' in layer_obj:
+                for shape in layer_obj['it']:
+                    self.set_keyframes_from_shape(group_key, shape)
+        elif layer_obj['ty'] == 'mm':
+            pass
+
         elif layer_obj['ty'] == 'rp':
             shape_key = self.expend_key(layer_key, 'repeater', layer_obj, True)
             if 'c' in layer_obj:
@@ -119,6 +127,14 @@ class Lottie_keyframe_editor(Lottie_parser):
             if 'o' in layer_obj:
                 offset_angle_key = self.expend_key(shape_key, 'offset_angle', layer_obj['o'], True)
                 self.set_keyframe_from_value(offset_angle_key, layer_obj['o'])
+        elif layer_obj['ty'] == 'op':
+            shape_key = self.expend_key(layer_key, 'offset_path', layer_obj, True)
+            if 'a' in layer_obj:
+                shape_key = self.expend_key(shape_key, 'amount', layer_obj['a'], True)
+                self.set_keyframe_from_value(shape_key, layer_obj['a'])
+            if 'ml' in layer_obj:
+                shape_key = self.expend_key(shape_key, 'miter_limit', layer_obj['ml'], True)
+                self.set_keyframe_from_value(shape_key, layer_obj['ml'])
         elif layer_obj['ty'] == 'pb':
             shape_key = self.expend_key(layer_key, 'pucker_bloat', layer_obj, True)
             if 'a' in layer_obj:
@@ -209,11 +225,7 @@ class Lottie_keyframe_editor(Lottie_parser):
             if 'pt' in layer_obj:
                 ridges_number_key = self.expend_key(zigzag_key, 'ridges_number', layer_obj['pt'], True)
                 self.set_keyframe_from_value(ridges_number_key, layer_obj['pt'])
-        elif layer_obj['ty'] == 'gr':
-            group_key = self.expend_key(layer_key, 'group', layer_obj, True)
-            if 'it' in layer_obj:
-                for shape in layer_obj['it']:
-                    self.set_keyframes_from_shape(group_key, shape)
+
 
     def set_keyframes_from_text_animator_data(self, layer_key, layer_obj):
         if 'a' in layer_obj:

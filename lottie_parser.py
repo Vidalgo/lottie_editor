@@ -308,6 +308,46 @@ class Lottie_parser:
             return 'unknown'
 
     @staticmethod
+    def parse_shape_type(shape_layer):
+        layer_type = shape_layer["ty"]
+        if layer_type == 'fl':
+            return 'fill'
+        elif layer_type == 'gf':
+            return 'gradient_fill'
+        elif layer_type == 'gs':
+            return 'gradient_stroke'
+        elif layer_type == 'gr':
+            return 'group'
+        elif layer_type == 'mm':
+            return 'merge'
+        elif layer_type == 'rp':
+            return 'repeater'
+        elif layer_type == 'rd':
+            return 'rounded_corners'
+        elif layer_type == 'tm':
+            return 'trim'
+        elif layer_type == 'op':
+            return 'offset_path'
+        elif layer_type == 'pb':
+            return 'pucker_bloat'
+        elif layer_type == 'el':
+            return 'ellipse'
+        elif layer_type == 'sh':
+            return 'path'
+        elif layer_type == 'rc':
+            return 'rectangle'
+        elif layer_type == 'sr':
+            return 'star'
+        elif layer_type == 'st':
+            return 'stroke'
+        elif layer_type == 'tr':
+            return 'transform'
+        elif layer_type == 'tw':
+            return 'twist'
+        elif layer_type == 'zz':
+            return 'zigzag'
+
+    @staticmethod
     def parse_lottie_name(lottie_obj):
         if 'nm' in lottie_obj:
             return lottie_obj['nm']
