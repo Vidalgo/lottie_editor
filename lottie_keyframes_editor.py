@@ -452,8 +452,8 @@ lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\nyan-cat
 lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\Wacky-text-style1.json')
 lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42839-2021.json')
 lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33092-informatics-text-animation-with-icons-particles.json')
-lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33496-imron-textile-group.json')
-lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42824-rock-sul-serio.json')
+#lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33496-imron-textile-group.json')
+#lp = Lottie_keyframe_editor('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42824-rock-sul-serio.json')
 
 lp.parse()
 for key_frame in lp.key_frames:

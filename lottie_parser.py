@@ -363,13 +363,22 @@ class Lottie_parser:
 
     @staticmethod
     def is_layer_animated_or_non_static(layer):
+        animated = False
         transform = layer['ks']
-        if 'a' in transform and 'p' in transform and 'r' in transform and 's' in transform:
-            animated = transform['a']['a'] + transform['p']['a'] + transform['r']['a'] + transform['s']['a']
-            if animated:
-                return True
-        else:
-            return False
+        if 'a' in transform:
+            if 'a' in transform['a'] and transform['a']['a']:
+                animated = True
+        if 'r' in transform:
+            if 'a' in transform['r'] and transform['r']['a']:
+                animated = True
+        if 'p' in transform:
+            if 'a' in transform['p'] and transform['p']['a']:
+                animated = True
+        if 's' in transform:
+            if 'a' in transform['s'] and transform['s']['a']:
+                animated = True
+        return  animated
+
 
     @staticmethod
     def parse_pre_comp_name(pre_composition_obj):
