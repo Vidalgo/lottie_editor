@@ -120,9 +120,9 @@ class Lottie_analyzer(Lottie_parser):
                     lottie_node.lottie_obj
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_1'] = \
                     layer_name_deconstruct
-                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_1'] = \
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_2'] = \
                     reference_node.lottie_obj
-                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_1'] = \
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_2'] = \
                     layer_reference_deconstruct
                 paragraphs_counter += 1
 
@@ -274,7 +274,7 @@ class Lottie_analyzer(Lottie_parser):
             for pre_composition_id in pre_compositions:
                 pre_composition_node = Lottie_node(id=pre_composition_id,
                                                    name=self.parse_pre_comp_name(pre_compositions[pre_composition_id]),
-                                                   layer_type="pre_composition",
+                                                   layer_type="asset:precomp",
                                                    composition_name='root',
                                                    lottie_obj=self.parse_pre_comp_layers(pre_compositions
                                                                                          [pre_composition_id]),
@@ -297,7 +297,7 @@ class Lottie_analyzer(Lottie_parser):
             for asset_id in assets:
                 asset_node = Lottie_node(id=self.parse_asset_id(assets[asset_id]),
                                          name=self.parse_asset_name(assets[asset_id]),
-                                         layer_type="image",
+                                         layer_type="asset:image",
                                          lottie_obj=self.parse_pre_comp_layers(assets[asset_id]),
                                          point_to_lottie_obj=self.point_to_lottie_obj)
                 self.nodes.append(asset_node)
@@ -325,7 +325,7 @@ class Lottie_analyzer(Lottie_parser):
             if reference_id and reference_id != "shape_layer":
                 for node_item_2 in self.nodes[1:len(self.nodes)]:
                     if node_item_2.id == reference_id:
-                        if node_item_2.layer_type == 'image':
+                        if node_item_2.layer_type == 'asset:image':
                             node_item_2.parent = node_item_1
                             node_item_2.parent_id = node_item_1.id
                         elif not flatten_pre_compositions and node_item_2.composition_name == 'root':
