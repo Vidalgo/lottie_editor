@@ -199,7 +199,7 @@ def find_main_layers(lottie_obj):
     return layers
 
 
-# version 2.0
+# version 3.0
 def find_pre_comp_layers(lottie_obj):
     layers = {}
     try:
@@ -212,7 +212,11 @@ def find_pre_comp_layers(lottie_obj):
         if "e" not in pre_comp and 'layers' in pre_comp:
             for layer in pre_comp['layers']:
                 try:
-                    layers[str(pre_comp['id']) + ':' + str(layer['ind'])] = layer
+                    if 'ind' in layer:
+                        layer_id = layer['ind']
+                    else:
+                        layer_id = 'no_id'
+                    layers[str(pre_comp['id']) + ':' + str(layer_id)] = layer
                 except:
                     raise Exception(f'Error:could not parse JSON file pre composition assets {layer}')
 
@@ -350,6 +354,15 @@ def add_asset(lottie_obj, asset_obj, asset_key='images', order='last', layer_id=
         return False
     except:
         raise Exception("Faulty Lottie object")
+
+
+# version 3.0
+def flatten_tuple(data):
+    if isinstance(data, tuple):
+        for x in data:
+            yield from flatten_tuple(x)
+    else:
+        yield data
 
 
 '''lottie = load_json('Merry Christmas from Vidalgo doggie.json')

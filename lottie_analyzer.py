@@ -1,9 +1,12 @@
+from os.path import basename
 from lottie_main import Lottie_main
 from precomp import Precomp
 from image import Image
 from layer import Layer
 
-from anytree import NodeMixin, Node, RenderTree
+from anytree import NodeMixin, PreOrderIter, RenderTree
+from anytree.search import findall
+from anytree.walker import Walker
 from anytree.exporter import DotExporter
 from anytree.exporter import JsonExporter
 
@@ -14,6 +17,7 @@ from os import stat
 from lottie_nlp import Lottie_nlp
 
 RESTRICTED_NAMES_IN_LOTTIE = ["layer", "shape", "image", "comp", "group", "path", "fill"]
+
 
 class Lottie_node(NodeMixin):
     def __init__(self, id, layer_type, name=None, composition_name=None, is_animated=False, parent_id=None,
@@ -45,11 +49,90 @@ class Lottie_analyzer(Lottie_parser):
             self.number_of_pre_comp = 0
             self.number_of_main_layers = 0
             self.errors_counter = {"errors": 0, "warnings": 0, "notices": 0}
-            self.lottie_nlp_obj = Lottie_nlp()
             self.errors_and_warnings = {}
             self.point_to_lottie_obj = None
+            self.lottie_nlp_obj = Lottie_nlp()
+            self.lottie_document = {}
         except:
             raise Exception(f"Error:could not open JSON file {lottie_filename}")
+
+    def parse_lottie_heading_1(self):
+        self.lottie_document["title"] = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(basename(
+            self.lottie_filename).split('.')[0]))
+        lottie_name = self.nodes[0].name
+        lottie_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_name))
+        lottie_name_obj = {"obj": self.nodes[0].lottie_obj, "words_": lottie_name_deconstruct}
+        self.lottie_document["heading_1"] = lottie_name_obj
+
+    def parse_lottie_layers_heading_2(self):
+        paragraphs_counter = 0
+        lines_counter = 0
+        self.lottie_document["heading_2"] = dict()
+        leaf_nodes = findall(self.nodes[0], filter_=lambda node: not node.children)
+        leaf_nodes_walker = Walker()
+        for leaf_node in leaf_nodes:
+            for lottie_node in lsr.flatten_tuple(leaf_nodes_walker.walk(self.nodes[0], leaf_node)):
+                if lottie_node == self.nodes[0]:
+                    self.lottie_document["heading_2"][f'para_{paragraphs_counter}'] = dict()
+                    continue
+                elif lottie_node:
+                    if lottie_node.name is not None:
+                        layer_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_node.
+                                                                                                           name))
+                    elif lottie_node.id is not None:
+                        layer_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_node.
+                                                                                                           id))
+                    self.lottie_document["heading_2"][f'para_{paragraphs_counter}'][f'obj_{lines_counter}'] = \
+                        lottie_node.lottie_obj
+                    self.lottie_document["heading_2"][f'para_{paragraphs_counter}'][f'words_{lines_counter}'] = \
+                        layer_name_deconstruct
+                    lines_counter += 1
+                if not lottie_node.children:
+                    paragraphs_counter += 1
+                    lines_counter = 0
+                    self.lottie_document["heading_2"][f'para_{paragraphs_counter}'] = dict()
+        self.lottie_document["heading_2"].pop(f'para_{paragraphs_counter}')
+
+    def parse_lottie_pre_comp_heading_3(self):
+        paragraphs_counter = 0
+        layer_name_deconstruct = ""
+        layer_reference_deconstruct = ""
+        for lottie_node in PreOrderIter(self.nodes[0]):
+            if lottie_node.reference_id and lottie_node.reference_id != "shape_layer":
+                reference_node = findall(self.nodes[0], filter_=lambda ref_node: ref_node.id == lottie_node.reference_id
+                                         , maxcount=1)[0]
+                if lottie_node.name is not None:
+                    layer_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.
+                                                                          to_lower(lottie_node.name))
+                elif lottie_node.id is not None:
+                    layer_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_node.
+                                                                                                       id))
+                if reference_node.name is not None:
+                    layer_reference_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.
+                                                                          to_lower(reference_node.name))
+                elif reference_node.id is not None:
+                    layer_reference_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(
+                        reference_node.id))
+                if paragraphs_counter == 0:
+                    self.lottie_document["heading_3"] = dict()
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'] = dict()
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_1'] = \
+                    lottie_node.lottie_obj
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_1'] = \
+                    layer_name_deconstruct
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_1'] = \
+                    reference_node.lottie_obj
+                self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_1'] = \
+                    layer_reference_deconstruct
+                paragraphs_counter += 1
+
+    def generate_lottie_document(self, to=''):
+        if self.nodes is not None:
+            self.parse_lottie_heading_1()
+            self.parse_lottie_layers_heading_2()
+            self.parse_lottie_pre_comp_heading_3()
+            if to == 'file':
+                lsr.store_json(self.lottie_filename.split('.')[0] + '_document.json', self.lottie_document)
 
     def set_error_or_warning(self, severity: str, message: str, layer_type: str, composition_name: str):
         message = f'{severity}: {message}' \
@@ -65,7 +148,10 @@ class Lottie_analyzer(Lottie_parser):
             self.errors_counter["notices"] += 1
 
     def eval_name(self, obj, obj_type, composition_name):
-        layer_name = self.lottie_nlp_obj.to_lower(obj.name)
+        if type(obj) is str:
+            layer_name = self.lottie_nlp_obj.to_lower(obj)
+        else:
+            layer_name = self.lottie_nlp_obj.to_lower(obj.name)
         if self.lottie_nlp_obj.all_numbers(layer_name):
             self.set_error_or_warning('Warning', f'name "{layer_name}" is all numbers.',
                                       obj_type, composition_name)
@@ -74,11 +160,13 @@ class Lottie_analyzer(Lottie_parser):
                                       obj_type, composition_name)
         for words in self.lottie_nlp_obj.tokenize(layer_name):
             if not self.lottie_nlp_obj.all_letters(words[0]):
-                self.set_error_or_warning('Warning', f'word "{words[0]}" in name should contain letters.'
-                                                            f'only',
+                self.set_error_or_warning('Warning', f'word "{words[0]}" in "{layer_name}" should contain letters.'
+                                                     f'only', obj_type, composition_name)
+            elif len(words[0]) == 1:
+                self.set_error_or_warning('Warning', f'word "{words[0]}" in "{layer_name}" too short',
                                           obj_type, composition_name)
             elif not self.lottie_nlp_obj.is_in_english(words[0]):
-                self.set_error_or_warning('Warning', f'word "{words[0]}" in name not in English.',
+                self.set_error_or_warning('Warning', f'word "{words[0]}" in "{layer_name}" not in English.',
                                           obj_type, composition_name)
 
         for restricted in RESTRICTED_NAMES_IN_LOTTIE:
@@ -88,7 +176,8 @@ class Lottie_analyzer(Lottie_parser):
 
     def test_layer_for_errors_and_warnings(self, layer: Layer, composition_name):
         if layer.name is None:
-            self.set_error_or_warning('Error', 'No layer name ("nm")', layer.parse_type(), composition_name)
+            self.set_error_or_warning('Error', f'No layer name ("nm") in {layer.id}', layer.parse_type(),
+                                      composition_name)
         if layer.id is None:
             self.set_error_or_warning('Error', f'No layer id ("ind") in {layer.name}', layer.parse_type(),
                                       composition_name)
@@ -97,22 +186,37 @@ class Lottie_analyzer(Lottie_parser):
 
     def test_precomp_for_errors_and_warnings(self, precomp: Precomp):
         if precomp.name is None:
-            self.set_error_or_warning('Warning', 'No precomp name ("nm")', 'pre composition', 'assets')
+            self.set_error_or_warning('Warning', f'No precomp name ("nm") in "{precomp.id}"', 'pre composition',
+                                      'assets')
         if precomp.id is None:
-            self.set_error_or_warning('Error', f'No precomp id ("id") in {precomp.name}', 'pre composition', 'assets')
+            self.set_error_or_warning('Error', f'No precomp id ("id") in "{precomp.name}"', 'pre composition', 'assets')
         if precomp.name is not None:
             self.eval_name(precomp, 'precomp', 'assets')
 
     def test_image_for_errors_and_warnings(self, image: Image):
         if image.name is None:
-            self.set_error_or_warning('Notice', 'No image name ("u")', 'image', 'assets')
+            self.set_error_or_warning('Notice', f'No image name ("u") in image "{image.id}"', 'image', 'assets')
         if image.id is None:
             self.set_error_or_warning('Error', f'No image id ("id") in {image.name}', 'image', 'assets')
         if image.name is not None:
             self.eval_name(image, 'image', 'assets')
+        elif image.id is not None:
+            self.eval_name(image.id, 'image', 'assets')
 
     def analyze_lottie_main(self):
+        self.eval_name(basename(self.lottie_filename).split('.')[0], 'filename', '')
         lottie_main = Lottie_main(self.json_obj)
+        file_size_in_mb = float('{:.2f}'.format(self.lottie_file_size / 1000000))
+        if file_size_in_mb > 10:
+            self.set_error_or_warning('Error', f'File size: {file_size_in_mb}MB is over 10MB', 'file',
+                                      self.lottie_filename)
+        elif file_size_in_mb > 5:
+            self.set_error_or_warning('Warning', f'File size: {file_size_in_mb}MB is over 5MB', 'file',
+                                      self.lottie_filename)
+        elif file_size_in_mb > 1:
+            self.set_error_or_warning('Notice', f'File size: {file_size_in_mb}MB is over 1MB', 'file',
+                                      self.lottie_filename)
+
         if lottie_main.name is None:
             self.set_error_or_warning('Error', 'No lottie name ("nm")', 'lottie main', self.lottie_filename)
         if lottie_main.name is not None:
@@ -179,6 +283,15 @@ class Lottie_analyzer(Lottie_parser):
                 self.test_precomp_for_errors_and_warnings(Precomp(pre_compositions[pre_composition_id]))
 
     def analyze_assets(self):
+        if self.number_of_images > 10:
+            self.set_error_or_warning('Error', f'Number of images: {self.number_of_images} is over 10', 'file',
+                                      self.lottie_filename)
+        elif self.number_of_images > 5:
+            self.set_error_or_warning('Warning', f'Number of images: {self.number_of_images} is over 5', 'file',
+                                      self.lottie_filename)
+        elif self.number_of_images > 1:
+            self.set_error_or_warning('Notice', f'Number of images: {self.number_of_images} is over 1', 'file',
+                                      self.lottie_filename)
         assets = lsr.find_assets(self.json_obj)
         if assets:
             for asset_id in assets:
@@ -242,7 +355,8 @@ class Lottie_analyzer(Lottie_parser):
         self.connect_nodes(flatten_pre_compositions)
         self.parse_warnings_and_errors()
 
-    def generate_analysis_report(self, to="console", layer_id=True, layer_type=True, is_animated=False, reference_id=False):
+    def generate_analysis_report(self, to="console", layer_id=True, layer_type=True, is_animated=False,
+                                 reference_id=False):
         lottie_file_name = self.lottie_filename
         lottie_file_size = str(self.lottie_file_size / 1000)
         lottie_number_of_layers = str(self.number_of_main_layers)
@@ -291,8 +405,12 @@ class Lottie_analyzer(Lottie_parser):
             file.write(f'Number of errors: {self.errors_counter["errors"]}\n')
             file.write(f'Number of warnings: {self.errors_counter["warnings"]}\n')
             file.write(f'Number of notices: {self.errors_counter["notices"]}\n')
-            for error in la.errors_and_warnings:
-                file.write(la.errors_and_warnings[error] + '\n')
+            [file.write(la.errors_and_warnings[errors] + '\n') for errors in la.errors_and_warnings
+             if errors.startswith('Error')]
+            [file.write(la.errors_and_warnings[errors] + '\n') for errors in la.errors_and_warnings
+             if errors.startswith('Warning')]
+            [file.write(la.errors_and_warnings[errors] + '\n') for errors in la.errors_and_warnings
+             if errors.startswith('Notice')]
             file.close()
 
 
@@ -311,13 +429,18 @@ la = Lottie_analyzer(
 # la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42803-loading.json')
 la = Lottie_analyzer('4906-lady-guitar-player.json')
 # la = Lottie_analyzer('38608-fashionable-girl-in-red-dress.json')
+
 la = Lottie_analyzer('Merry Christmas from Vidalgo doggie.json')
 
-la.analyze(flatten_pre_compositions=False, analyze_shapes=False, point_to_lottie_obj=False)
-la.generate_analysis_report(to="file", layer_id=True, layer_type=True, is_animated=False, reference_id=True)
-# la.visualize_to_text(to="file", layer_id=True, layer_type=True, is_animated=False, reference_id=True)
+la = Lottie_analyzer('fashionable-girl-in-red-dress.json')
 
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\2Eye-07112021\\Two eye monster.json')
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Fantasy & General-20122021\\Baby Dragon.json')
+
+la.analyze(flatten_pre_compositions=True, analyze_shapes=False, point_to_lottie_obj=False)
+la.generate_analysis_report(to="file", layer_id=True, layer_type=True, is_animated=False, reference_id=True)
 la.generate_errors_report(to="file")
+la.generate_lottie_document(to="file")
 
 '''udo = Node("Udo")
 marc = Node("Marc", parent=udo)

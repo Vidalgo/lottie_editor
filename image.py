@@ -17,7 +17,7 @@ class Image:
 
     @property
     def name(self):
-        if 'u' in self.image:
+        if 'u' in self.image and self.image['u']:
             return self.image['u']
         else:
             return None
