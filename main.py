@@ -1,8 +1,17 @@
 from lottie.utils import script
+from lottie_animation import Lottie_animation
 
 import lottie_to_frame
 import lottie_transforms as lt
+from lottie_animation import Lottie_animation
 
+def lottie_animation_generate():
+    la = Lottie_animation()
+    la.create("generated_animation_1")
+    la.store()
+
+def lottie_animation_generate_load():
+    pass
 
 
 def to_frame():
@@ -24,9 +33,15 @@ def to_frame():
 
 
 if __name__ == '__main__':
-    lp = lt.Lottie_transforms('test-4.json')
+    '''lp = lt.Lottie_transforms('test-4.json')
     lp.parse()
     lp.transform_layer(4, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.transform_layer(5, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.transform_using_top_parent_null_layer(6, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
-    lp.store_lottie('test-4-transformed.json')
+    lp.store_lottie('test-4-transformed.json')'''
+    lottie_animation_generate()
+
+
+
+
+

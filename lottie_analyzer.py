@@ -1,5 +1,5 @@
 from os.path import basename
-from lottie_main import Lottie_main
+from lottie_animation import Lottie_animation
 from precomp import Precomp
 from image import Image
 from layer import Layer
@@ -205,7 +205,7 @@ class Lottie_analyzer(Lottie_parser):
 
     def analyze_lottie_main(self):
         self.eval_name(basename(self.lottie_filename).split('.')[0], 'filename', '')
-        lottie_main = Lottie_main(self.json_obj)
+        lottie_main = Lottie_animation(self.json_obj)
         file_size_in_mb = float('{:.2f}'.format(self.lottie_file_size / 1000000))
         if file_size_in_mb > 10:
             self.set_error_or_warning('Error', f'File size: {file_size_in_mb}MB is over 10MB', 'file',
@@ -414,28 +414,36 @@ class Lottie_analyzer(Lottie_parser):
             file.close()
 
 
-la = Lottie_analyzer('test-4.json')
-la = Lottie_analyzer('Merry Christmas from Vidalgo doggie.json')
-la = Lottie_analyzer('hanukkah.json')
-la = Lottie_analyzer('new_year.json')
-la = Lottie_analyzer('Birthday-Card.json')
-la = Lottie_analyzer('coin.json')
-la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\nyan-cat.json')
-la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\Wacky-text-style1.json')
+#la = Lottie_analyzer('test-4.json')
+#la = Lottie_analyzer('Merry Christmas from Vidalgo doggie.json')
+#la = Lottie_analyzer('hanukkah.json')
+#la = Lottie_analyzer('new_year.json')
+#la = Lottie_analyzer('Birthday-Card.json')
+#la = Lottie_analyzer('coin.json')
+#la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\nyan-cat.json')
+#la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\Wacky-text-style1.json')
 # la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42839-2021.json')
-la = Lottie_analyzer(
-    'D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33092-informatics-text-animation-with-icons-particles.json')
+#la = Lottie_analyzer(
+#    'D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33092-informatics-text-animation-with-icons-particles.json')
 # la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\33496-imron-textile-group.json')
 # la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\files1\\From Lottie Website\\42803-loading.json')
-la = Lottie_analyzer('4906-lady-guitar-player.json')
+#la = Lottie_analyzer('4906-lady-guitar-player.json')
 # la = Lottie_analyzer('38608-fashionable-girl-in-red-dress.json')
 
-la = Lottie_analyzer('Merry Christmas from Vidalgo doggie.json')
+#la = Lottie_analyzer('Merry Christmas from Vidalgo doggie.json')
 
-la = Lottie_analyzer('fashionable-girl-in-red-dress.json')
+#la = Lottie_analyzer('fashionable-girl-in-red-dress.json')
 
-la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\2Eye-07112021\\Two eye monster.json')
-la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Fantasy & General-20122021\\Baby Dragon.json')
+#la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\2Eye-07112021\\Two eye monster.json')
+#la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Fantasy & General-20122021\\Baby Dragon.json')
+
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Winter Olympics 2022\\Biathlon.json')
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Winter Olympics 2022\\Snow_Boarding.json')
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Super Bowl 2022\\General\\json\\1.json')
+la = Lottie_analyzer('D:\\Dropbox\\Vidalgo\\LottieFiles\\Super Bowl 2022\\General\\json\\3.json')
+
+la = Lottie_analyzer('D:\\Vidalgo\\Beuty Splash.json')
+
 
 la.analyze(flatten_pre_compositions=True, analyze_shapes=False, point_to_lottie_obj=False)
 la.generate_analysis_report(to="file", layer_id=True, layer_type=True, is_animated=False, reference_id=True)
