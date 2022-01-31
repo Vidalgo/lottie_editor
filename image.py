@@ -1,8 +1,41 @@
+import copy
+import base64
+
+
 class Image:
-    def __init__(self, image):
-        self.image = image
-        if type(image) is not dict:
-            raise TypeError("Error: pre-composition is not of type dictionary")
+    def __init__(self, image_id: str, image_name: str, image_path: str, height: float, width: float, embedded: int = 1):
+        self.image = {}
+        try:
+            encoded = base64.b64encode(open(image_path, "rb").read())
+            self.path = 'data:image/png;base64,' + encoded.decode("utf-8")
+        except TypeError:
+            print("Error: can't open image or image is not of the right format")
+        self.id = image_id
+        self.name = image_name
+        self.height = height
+        self.width = width
+        self.embedded = embedded
+        self.analyze()
+
+    def analyze(self):
+        if type(self.image) is not dict:
+            raise TypeError("Error: image is not of type dictionary")
+        if self.id is None:
+            raise TypeError("Error: image doesn't have an id")
+        if self.name is None:
+            raise TypeError("Error: image doesn't have a name")
+        if self.path is None:
+            raise TypeError("Error: image doesn't exist")
+        if self.height is None:
+            raise TypeError("Error: image height doesn't exist")
+        if self.width is None:
+            raise TypeError("Error: image width doesn't exist")
+        if self.embedded is None or self.embedded != 0 and self.embedded != 1:
+            raise TypeError("Error: image isn't embedded nor external")
+
+    def copy(self, layer: dict):
+        self.image = copy.deepcopy(layer)
+        self.analyze()
 
     @property
     def id(self):
@@ -12,8 +45,8 @@ class Image:
             return None
 
     @id.setter
-    def id(self, new_id):
-        self.image['id'] = new_id
+    def id(self, image_id):
+        self.image['id'] = image_id
 
     @property
     def name(self):
@@ -23,8 +56,8 @@ class Image:
             return None
 
     @name.setter
-    def name(self, new_name):
-        self.image['u'] = new_name
+    def name(self, image_name):
+        self.image['u'] = image_name
 
     @property
     def path(self):
@@ -34,38 +67,38 @@ class Image:
             return None
 
     @path.setter
-    def path(self, new_name):
-        self.image['p'] = new_name
+    def path(self, image_path: str):
+        self.image['p'] = image_path
 
     @property
     def height(self):
-        if 'h' in self.height:
-            return self.height['h']
+        if 'h' in self.image:
+            return self.image['h']
         else:
             return None
 
     @height.setter
     def height(self, new_height: float):
-        self.height['h'] = new_height
+        self.image['h'] = new_height
 
     @property
     def width(self):
-        if 'w' in self.width:
-            return self.width['w']
+        if 'w' in self.image:
+            return self.image['w']
         else:
             return None
 
     @width.setter
     def width(self, new_width: float):
-        self.width['w'] = new_width
+        self.image['w'] = new_width
 
     @property
     def embedded(self):
-        if 'e' in self.embedded:
-            return self.embedded['e']
+        if 'e' in self.image:
+            return self.image['e']
         else:
             return None
 
     @embedded.setter
     def embedded(self, is_embedded: bool):
-        self.embedded['e'] = is_embedded
+        self.image['e'] = is_embedded

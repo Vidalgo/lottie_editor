@@ -1,8 +1,52 @@
+import copy
+import enum
+from transform import Transform
+
+
+class Lottie_layer_type(enum.Enum):
+    precomp = 0
+    solid = 1
+    image = 2
+    null = 3
+    shape = 4
+    text = 5
+    audio = 6
+    pholder_video = 7
+    image_seq = 8
+    video = 9
+    pholder_stil = 10
+    guide = 11
+    adjustment = 12
+    camera = 13
+    light = 14
+    data = 15
+
+
 class Layer:
-    def __init__(self, layer):
-        self.layer = layer
-        if not dict(layer):
+    def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
+                 layer_transform: Transform = None, reference_id=None, *args, **kwargs):
+        self.layer = {}
+        self.id = layer_id
+        self.name = layer_name
+        self.ddd_layer = ddd_layer
+        self.parent = layer_parent
+        self.reference_id = reference_id
+        self.transform = layer_transform
+        self.analyze()
+
+    def analyze(self):
+        if type(self.layer) is not dict:
             raise TypeError("Error: layer is not of type dictionary")
+        if self.id is None:
+            raise TypeError("Error: layer doesn't have an id")
+        if self.name is None:
+            raise TypeError("Error: layer doesn't have a name")
+        '''if self.type is None:
+            raise TypeError("Error: layer doesn't have a type")'''
+
+    def copy(self, layer: dict):
+        self.layer = copy.deepcopy(layer)
+        self.analyze()
 
     @property
     def id(self):
@@ -12,8 +56,8 @@ class Layer:
             return None
 
     @id.setter
-    def id(self, new_id):
-        self.layer['ind'] = new_id
+    def id(self, layer_id: int):
+        self.layer['ind'] = layer_id
 
     @property
     def name(self):
@@ -23,8 +67,8 @@ class Layer:
             return None
 
     @name.setter
-    def name(self, new_name):
-        self.layer['nm'] = new_name
+    def name(self, layer_name: str):
+        self.layer['nm'] = layer_name
 
     @property
     def parent(self):
@@ -34,8 +78,8 @@ class Layer:
             return None
 
     @parent.setter
-    def parent(self, new_parent):
-        self.layer['parent'] = new_parent
+    def parent(self, layer_parent: int):
+        self.layer['parent'] = layer_parent
 
     @property
     def transform(self):
@@ -45,8 +89,8 @@ class Layer:
             return None
 
     @transform.setter
-    def transform(self, new_transform):
-        self.layer['ks'] = new_transform
+    def transform(self, layer_transform: Transform):
+        self.layer['ks'] = None if layer_transform is None else layer_transform.transform
 
     @property
     def reference_id(self):
@@ -67,47 +111,27 @@ class Layer:
             return None
 
     @type.setter
-    def type(self, new_type):
-        self.layer['ty'] = new_type
+    def type(self, layer_type: int):
+        self.layer['ty'] = layer_type
+
+    @property
+    def ddd_layer(self):
+        if 'ddd' in self.layer:
+            return self.layer['ddd']
+        else:
+            return None
+
+    @ddd_layer.setter
+    def ddd_layer(self, ddd_layer: int):
+        self.layer['ddd'] = ddd_layer
 
     def parse_type(self):
         if 'ty' in self.layer:
             layer_type = self.layer["ty"]
-            if layer_type == 0:
-                return 'precomp'
-            elif layer_type == 1:
-                return 'solid'
-            elif layer_type == 2:
-                return 'image'
-            elif layer_type == 3:
-                return 'nullLayer'
-            elif layer_type == 4:
-                return 'shape'
-            elif layer_type == 5:
-                return 'text'
-            elif layer_type == 6:
-                return 'audio'
-            elif layer_type == 7:
-                return 'pholderVideo'
-            elif layer_type == 8:
-                return 'imageSeq'
-            elif layer_type == 9:
-                return 'video'
-            elif layer_type == 10:
-                return 'pholderStil'
-            elif layer_type == 11:
-                return 'guide'
-            elif layer_type == 12:
-                return 'adjustment'
-            elif layer_type == 13:
-                return 'camera'
-            elif layer_type == 14:
-                return 'light'
-            elif layer_type == 15:
-                return 'data'
-            else:
-                return 'unknown'
-        return None
+            try:
+                return Lottie_layer_type[layer_type]
+            except ValueError:
+                print("layer type doesn't exist")
 
     def hide(self):
         self.layer['hd'] = 0

@@ -4,15 +4,17 @@ import random
 
 
 class Lottie_parser:
-    def __init__(self, lottie_filename):
-        try:
-            self.lottie_filename = lottie_filename
-            self.json_obj = lsr.load_json(lottie_filename)
-            self.assets = {}
-            self.layers = {}
-            random.seed(datetime.datetime.now().microsecond)
-        except:
-            raise Exception(f"Error:could not open JSON file {lottie_filename}")
+    def __init__(self, lottie_filename_or_obj):
+        if type(lottie_filename_or_obj) is str:
+            self.lottie_filename = lottie_filename_or_obj
+            self.json_obj = lsr.load_json(lottie_filename_or_obj)
+        elif type(lottie_filename_or_obj) is dict:
+            self.json_obj = lottie_filename_or_obj
+        else:
+            raise TypeError("Error: lottie input is not a filename nor a lottie object")
+        self.assets = {}
+        self.layers = {}
+        random.seed(datetime.datetime.now().microsecond)
 
     def parse_images(self):
         self.assets = lsr.find_assets(self.json_obj, "images")
@@ -77,7 +79,8 @@ class Lottie_parser:
             return False
 
         for layer in self.layers:
-            if layer.split(':')[0] == composition and "nm" in self.layers[layer] and self.layers[layer]["nm"] == layer_name:
+            if layer.split(':')[0] == composition and "nm" in self.layers[layer] and self.layers[layer][
+                "nm"] == layer_name:
                 return layer.split(':')[1]
 
     def get_layer_parents_ids(self, layer_id, composition="layers"):
@@ -125,7 +128,6 @@ class Lottie_parser:
             key = composition + ":" + str(layer_obj['ind'])
         else:
             return False
-
         new_lottie = lsr.add_layer(lottie_obj=self.json_obj, layer_obj=layer_obj, composition_id=composition,
                                    order=order, layer_id=layer_id)
         self.layers[key] = layer_obj
@@ -178,7 +180,7 @@ class Lottie_parser:
             return False
 
     def set_parent_id(self, parent_id, layer_id, composition="layers"):
-        layer = self.get_layer(layer_id, composition,)
+        layer = self.get_layer(layer_id, composition, )
         layer["parent"] = parent_id
 
     def count_number_of_images(self):
@@ -212,28 +214,28 @@ class Lottie_parser:
         if type(id) is int:
             layer_id = id
         else:
-            layer_id = int(random.random()*100000)
+            layer_id = int(random.random() * 100000)
         if transform_obj:
             transform_obj = transform_obj
         else:
-            transform_obj={"ks":
-                               {"a":
-                                    {"a": 0,
-                                     "k": [0, 0, 0],
-                                     "ix": 1},
-                                "o":
-                                    {"a": 0,
-                                     "k": 0,
-                                     "ix": 11},
-                                "p": {"a": 0,
-                                      "k": [0, 0, 0],
-                                      "ix": 2},
-                                "r": {"a": 0,
-                                      "k": 0,
-                                      "ix": 10},
-                                "s": {"a": 0,
-                                      "k": [100, 100, 100],
-                                      "ix": 6}}}
+            transform_obj = {"ks":
+                                 {"a":
+                                      {"a": 0,
+                                       "k": [0, 0, 0],
+                                       "ix": 1},
+                                  "o":
+                                      {"a": 0,
+                                       "k": 0,
+                                       "ix": 11},
+                                  "p": {"a": 0,
+                                        "k": [0, 0, 0],
+                                        "ix": 2},
+                                  "r": {"a": 0,
+                                        "k": 0,
+                                        "ix": 10},
+                                  "s": {"a": 0,
+                                        "k": [100, 100, 100],
+                                        "ix": 6}}}
 
         return {"nm": name, "ty": 3, "ind": layer_id, "ks": transform_obj["ks"]}
 
@@ -377,8 +379,7 @@ class Lottie_parser:
         if 's' in transform:
             if 'a' in transform['s'] and transform['s']['a']:
                 animated = True
-        return  animated
-
+        return animated
 
     @staticmethod
     def parse_pre_comp_name(pre_composition_obj):
@@ -408,7 +409,6 @@ class Lottie_parser:
     def parse_layer_transform(layer):
         if 'ks' in layer:
             return layer['ks']
-
 
 
 '''lp = Lottie_parser('Merry Christmas from Vidalgo doggie.json')
