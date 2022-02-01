@@ -1,21 +1,28 @@
+from PIL import Image
+from io import BytesIO
+
 import copy
 import base64
 
 
-class Image:
-    def __init__(self, image_id: str, image_name: str, image_path: str, height: float, width: float, embedded: int = 1):
+class Image_asset:
+    def __init__(self, image_id: str = None, image_path: str = None, image_name: str = None, height: float = None,
+                 width: float = None, embedded: int = 1):
         self.image = {}
-        try:
-            encoded = base64.b64encode(open(image_path, "rb").read())
-            self.path = 'data:image/png;base64,' + encoded.decode("utf-8")
-        except TypeError:
-            print("Error: can't open image or image is not of the right format")
-        self.id = image_id
-        self.name = image_name
-        self.height = height
-        self.width = width
-        self.embedded = embedded
-        self.analyze()
+        if image_id is not None:
+            img = None
+            try:
+                img = Image.open(image_path)
+                encoded = base64.b64encode(open(image_path, "rb").read())
+                self.path = 'data:image/png;base64,' + encoded.decode("utf-8")
+            except TypeError:
+                print("Error: can't open image or image is not of the right format")
+            self.id = image_id
+            self.name = str(image_id) if image_name is None else image_name
+            self.height = img.size[1] if height is None else height
+            self.width = img.size[0] if width is None else width
+            self.embedded = embedded
+            self.analyze()
 
     def analyze(self):
         if type(self.image) is not dict:
@@ -33,8 +40,12 @@ class Image:
         if self.embedded is None or self.embedded != 0 and self.embedded != 1:
             raise TypeError("Error: image isn't embedded nor external")
 
-    def copy(self, layer: dict):
-        self.image = copy.deepcopy(layer)
+    def load(self, image: dict):
+        self.image = image
+        self.analyze()
+
+    def copy(self, image: dict):
+        self.image = copy.deepcopy(image)
         self.analyze()
 
     @property

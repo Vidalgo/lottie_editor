@@ -26,6 +26,7 @@ class Layer:
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
                  layer_transform: Transform = None, reference_id=None, *args, **kwargs):
         self.layer = {}
+        self._transform = Transform()
         self.id = layer_id
         self.name = layer_name
         self.ddd_layer = ddd_layer
@@ -43,6 +44,13 @@ class Layer:
             raise TypeError("Error: layer doesn't have a name")
         '''if self.type is None:
             raise TypeError("Error: layer doesn't have a type")'''
+
+    def load(self, layer: dict):
+        self.layer = layer
+        if 'ks' in layer:
+            self._transform = Transform()
+            self._transform.load(layer['ks'])
+        self.analyze()
 
     def copy(self, layer: dict):
         self.layer = copy.deepcopy(layer)
@@ -83,13 +91,11 @@ class Layer:
 
     @property
     def transform(self):
-        if 'ks' in self.layer:
-            return self.layer['ks']
-        else:
-            return None
+        return self._transform
 
     @transform.setter
     def transform(self, layer_transform: Transform):
+        self._transform = layer_transform
         self.layer['ks'] = None if layer_transform is None else layer_transform.transform
 
     @property

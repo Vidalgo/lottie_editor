@@ -1,6 +1,6 @@
 import copy
 from lottie_search_and_replace import load_json, store_json
-from image import Image
+from image_asset import Image_asset
 from precomp import Precomp
 from layer import Layer
 from os import path, makedirs
@@ -13,7 +13,7 @@ class Lottie_animation:
                  ddd_layers: int = 0, width: float = 500, height: float = 500):
         self.lottie_obj = {}
         self._layers: list[Layer] = []
-        self._images: list[Image] = []
+        self._images: list[Image_asset] = []
         self._precomp: list[Precomp] = []
         self._layer_id_counter = 0
         self._null_layer_id_counter = 1000
@@ -34,9 +34,21 @@ class Lottie_animation:
         self._layers: list[Layer] = []'''
 
     def load(self, animation_file_name):
+        def _load_layer(layer: dict):
+            new_layer = Layer()
+            new_layer.load(layer)
+            return new_layer
+
+        def _load_image(image: dict):
+            new_image = Image_asset()
+            new_image.load(image)
+            return new_image
+
         self.lottie_obj = load_json(animation_file_name)
         self.analyze()
-        self._layers = self.layers
+        self._layers = [_load_layer(layer) for layer in self.lottie_obj['layers']]
+        self._images = None if self.lottie_obj['assets'] is None else [_load_image(asset) for asset in
+                                                                       self.lottie_obj['assets'] if 'e' in asset]
         #self._assets = self.assets
         '''self._fonts = self.fonts
         self._chars = self.chars
@@ -186,12 +198,12 @@ class Lottie_animation:
         return self._images
 
     @images.setter
-    def images(self, images: list[Image]):
+    def images(self, images: list[Image_asset]):
         self._images = images
         pre_comps_temp = [pre_comp for pre_comp in self.lottie_obj['assets'] if type(pre_comp) == Precomp]
         self.lottie_obj['assets'] = [image.image for image in images] + pre_comps_temp
 
-    def add_image(self, image: Image):
+    def add_image(self, image: Image_asset):
         self.images.insert(0, image)
         self.lottie_obj['assets'].insert(0, image.image)
 
@@ -207,11 +219,11 @@ class Lottie_animation:
             self.images.remove(image)
             self.lottie_obj['assets'].remove(image.image)
 
-    def replace_image(self, image: Image, replaced_image_id):
+    def replace_image(self, new_image: Image_asset, replaced_image_id):
         for index, image in enumerate(self.images):
             if image.id == replaced_image_id:
-                self.images[index] = image
-                self.lottie_obj['assets'][index] = image.image
+                self.images[index] = new_image
+                self.lottie_obj['assets'][index] = new_image.image
                 break
 
     def add_main_layer(self, new_layer: Layer, update_layer_id=True, order='last', layer_id: int = None):
@@ -239,11 +251,11 @@ class Lottie_animation:
     def find_main_layer(self, layer_id: int):
         for index, layer in enumerate(self.layers):
             if layer.id == layer_id:
-                return [index, layer]
-        return [None, None]
+                return layer
+        return None
 
     def delete_main_layer(self, layer_id: int):
-        [index, main_layer] = self.find_main_layer(layer_id)
+        main_layer = self.find_main_layer(layer_id)
         if main_layer is not None:
             self.layers.remove(main_layer)
             self.lottie_obj['layers'].remove(main_layer.layer)

@@ -22,6 +22,9 @@ class Transform:
     def analyze(self):
         pass
 
+    def load(self, transform: dict):
+        self.transform = transform
+
     @property
     def anchor(self):
         if 'a' in self.transform:

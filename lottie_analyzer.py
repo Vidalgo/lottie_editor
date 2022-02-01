@@ -1,7 +1,7 @@
 from os.path import basename
 from lottie_animation import Lottie_animation
 from precomp import Precomp
-from image import Image
+from image_asset import Image_asset
 from layer import Layer
 
 from anytree import NodeMixin, PreOrderIter, RenderTree
@@ -193,7 +193,7 @@ class Lottie_analyzer(Lottie_parser):
         if precomp.name is not None:
             self.eval_name(precomp, 'precomp', 'assets')
 
-    def test_image_for_errors_and_warnings(self, image: Image):
+    def test_image_for_errors_and_warnings(self, image: Image_asset):
         if image.name is None:
             self.set_error_or_warning('Notice', f'No image name ("u") in image "{image.id}"', 'image', 'assets')
         if image.id is None:
@@ -301,7 +301,7 @@ class Lottie_analyzer(Lottie_parser):
                                          lottie_obj=self.parse_pre_comp_layers(assets[asset_id]),
                                          point_to_lottie_obj=self.point_to_lottie_obj)
                 self.nodes.append(asset_node)
-                self.test_image_for_errors_and_warnings(Image(assets[asset_id]))
+                self.test_image_for_errors_and_warnings(Image_asset(assets[asset_id]))
 
     def connect_nodes(self, flatten_pre_compositions=True):
         for node_item_1 in self.nodes[1:len(self.nodes)]:

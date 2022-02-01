@@ -1,4 +1,4 @@
-from image import Image
+from image_asset import Image_asset
 from precomp import Precomp
 from layer import Layer
 

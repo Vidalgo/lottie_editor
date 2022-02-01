@@ -1,11 +1,12 @@
 #import lottie_transforms as lt
 from lottie_animation import Lottie_animation
 #from image import Image
-import image
+from image_asset import Image_asset
 from image_layer import Image_layer
 from transform import Transform
 from PIL import Image
 
+LOTTIE_PATH = "\\lottie_files_path\\"
 IMAGES_PATH = "\\lottie_files_path\\images\\"
 
 
@@ -22,15 +23,10 @@ def lottie_animation_load():
 
 
 def lottie_animation_generate_with_3_images():
-    la = Lottie_animation("generated_animation_1")
-    la.width = 800
-    la.height = 1200
-
+    la = Lottie_animation("generated_animation_1", width=800, height=1200)
+    
     image_path = IMAGES_PATH + 'App_Icon.png'
-    img1 = Image.open(image_path)
-    width, height = img1.size
-    img1_asset = image.Image(image_id="vidalgo icon", image_name="vidalgo icon", image_path=image_path, width=width,
-                             height=height)
+    img1_asset = Image_asset(image_id="vidalgo icon", image_path=image_path)
     img1_transform = Transform()
     img1_layer = Image_layer(layer_id=1, layer_name="Vidalgo icon layer", reference_id="vidalgo icon", in_point=1,
                              out_point=20, layer_transform=img1_transform)
@@ -39,10 +35,7 @@ def lottie_animation_generate_with_3_images():
     la.add_main_layer(img1_layer)
 
     image_path = IMAGES_PATH + 'Vidalgo_Logo_BIG.jpg'
-    img2 = Image.open(image_path)
-    width, height = img2.size
-    img2_asset = image.Image(image_id="vidalgo logo", image_name="vidalgo logo", image_path=image_path, width=width,
-                             height=height)
+    img2_asset = Image_asset(image_id="vidalgo logo", image_path=image_path)
     img2_transform = Transform()
     img2_transform.position = [600, 1000, 0]
     img2_transform.scaling = [20, 20, 100]
@@ -52,16 +45,30 @@ def lottie_animation_generate_with_3_images():
     la.add_main_layer(img2_layer)
 
     image_path = IMAGES_PATH + 'women_in_red.png'
-    img3 = Image.open(image_path)
-    width, height = img3.size
-    img3_asset = image.Image(image_id="woman in red", image_name="woman in red", image_path=image_path, width=width,
-                             height=height)
+    img3_asset = Image_asset(image_id="woman in red", image_path=image_path)
     img3_transform = Transform()
     img3_layer = Image_layer(layer_id=25, layer_name="woman in red layer", reference_id="woman in red", in_point=5,
                              out_point=25, layer_transform=img3_transform)
     la.add_image(img3_asset)
     la.add_main_layer(img3_layer)
 
+    la.store()
+
+
+def lottie_animation_load_replace_delete():
+    la = Lottie_animation()
+    la.load(LOTTIE_PATH + 'generated_animation_1.json')
+    image_path = IMAGES_PATH + 'elegant_woman.png'
+    img1_asset = Image_asset(image_id="elegant woman", image_path=image_path)
+    la.replace_image(img1_asset, 'woman in red')
+    la.name = 'generated_animation_2'
+    im1_layer = la.find_main_layer(2)
+    im1_layer.name = "elegant woman layer"
+    im1_layer.reference_id = "elegant woman"
+    im1_layer.transform.scaling = [50, 50, 0]
+
+    la.delete_main_layer(1)
+    la.delete_image('vidalgo logo')
     la.store()
 
 
@@ -75,3 +82,4 @@ if __name__ == '__main__':
     #lottie_animation_generate()
     #lottie_animation_load()
     lottie_animation_generate_with_3_images()
+    lottie_animation_load_replace_delete()
