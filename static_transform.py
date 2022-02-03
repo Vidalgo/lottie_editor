@@ -7,18 +7,28 @@ class Lottie_transform_type(enum.Enum):
     scaling = 6
     rotation = 10
     opacity = 3
-    position_x = 10
-    position_y = 11
-    position_z = 12
-    Skew = 4
-    Skew_axis = 5
+    position_x = 20
+    position_y = 21
+    position_z = 22
+    skew = 4
+    skew_axis = 5
+    orientation = 30,
+    rotate_x = 31,
+    rotate_y = 32,
+    stroke_width = 33,
+    stroke_color = 34,
+    fill_color = 35,
+    hue = 36,
+    saturation = 37,
+    brightness = 38,
+    tracking = 39
 
 
 class Static_transform:
     def __init__(self, transform_type: Lottie_transform_type, property_value=None, *args, **kwargs):
         self.transform_object = {}
         match transform_type.name:
-            case 'anchor' | 'position':
+            case 'anchor' | 'position' | 'orientation':
                 self.property_value = [0, 0, 0] if property_value is True else property_value
             case 'scaling':
                 self.property_value = [100, 100, 100] if property_value is True else property_value
@@ -36,7 +46,7 @@ class Static_transform:
         if self.property_value is None:
             raise TypeError("Error: composition doesn't have a value")
         match Lottie_transform_type(self.property_index).name:
-            case 'anchor' | 'position' | 'scaling':
+            case 'anchor' | 'position' | 'scaling' | 'orientation':
                 if type(self.property_value) is not list or len(self.property_value) < 2 or len(self.property_value) > 3:
                     raise TypeError("Error: not a list or incorrect dimension")
             case _:

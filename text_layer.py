@@ -1,14 +1,17 @@
+import copy
 from layer import Layer, Lottie_layer_type
+from text_data import Text_data
 
 
-class Image_layer(Layer):
+class Text_layer(Layer):
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
-                 layer_transform=None, reference_id=None, in_point: float = 0, out_point: float = 0,
+                 layer_transform=True, reference_id=None, in_point: float = 0, out_point: float = 0,
                  auto_orient: float = None, blend_mode: float = 0, layer_class: str = None, layer_html_id: str = None,
                  start_time: float = 0, has_mask=None, masks_properties: list = None, effects: list = None,
-                 stretch: float = 1):
+                 stretch: float = 1, text_data: Text_data = None):
         Layer.__init__(self, layer_id, layer_name, ddd_layer, layer_parent, layer_transform, reference_id)
-        self.type = Lottie_layer_type.image.value
+        self._text_data = Text_data()
+        self.type = Lottie_layer_type.text.value
         self.auto_orient = auto_orient
         self.blend_mode = blend_mode
         self.layer_class = layer_class
@@ -20,12 +23,21 @@ class Image_layer(Layer):
         self.masks_properties = masks_properties
         self.effects = effects
         self.stretch = stretch
+        self.text_data = text_data
         self.analyze()
 
     def analyze(self):
-        Layer.analyze(self)
-        if self.reference_id is None:
-            raise TypeError("Error: image layer doesn't reference an image")
+        pass
+
+    def load(self, layer: dict):
+        Layer.load(self, layer)
+        if 't' in layer:
+            self._text_data = Text_data()
+            self._text_data.load(layer['t'])
+        self.analyze()
+
+    def copy(self, layer: dict):
+        Layer.copy(self, layer)
 
     @property
     def auto_orient(self):
@@ -147,3 +159,14 @@ class Image_layer(Layer):
     @stretch.setter
     def stretch(self, stretch: list):
         self.layer['sr'] = stretch
+
+    @property
+    def text_data(self):
+        return self._text_data
+
+    @text_data.setter
+    def text_data(self, text_data: Text_data):
+        if text_data is None:
+            text_data = Text_data()
+        self._text_data = text_data
+        self.layer['t'] = text_data.text_data

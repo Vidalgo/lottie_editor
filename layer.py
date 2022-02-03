@@ -24,9 +24,9 @@ class Lottie_layer_type(enum.Enum):
 
 class Layer:
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
-                 layer_transform: Transform = None, reference_id=None, *args, **kwargs):
+                 layer_transform=None, reference_id=None, *args, **kwargs):
         self.layer = {}
-        self._transform = Transform()
+        self._transform = None
         self.id = layer_id
         self.name = layer_name
         self.ddd_layer = ddd_layer
@@ -94,9 +94,14 @@ class Layer:
         return self._transform
 
     @transform.setter
-    def transform(self, layer_transform: Transform):
+    def transform(self, layer_transform):
+        if layer_transform is None or layer_transform is False:
+            self._transform = self.layer['ks'] = None
+            return
+        elif layer_transform is True:
+            layer_transform = Transform()
         self._transform = layer_transform
-        self.layer['ks'] = None if layer_transform is None else layer_transform.transform
+        self.layer['ks'] = layer_transform.transform
 
     @property
     def reference_id(self):

@@ -4,6 +4,9 @@ from lottie_animation import Lottie_animation
 from image_asset import Image_asset
 from image_layer import Image_layer
 from transform import Transform
+from font import Font
+from text_layer import Text_layer
+from text_data import Text_data
 from PIL import Image
 
 LOTTIE_PATH = "\\lottie_files_path\\"
@@ -23,8 +26,8 @@ def lottie_animation_load():
 
 
 def lottie_animation_generate_with_3_images():
-    la = Lottie_animation("generated_animation_1", width=800, height=1200)
-    
+    la = Lottie_animation(lottie_name="generated_animation_1", width=800, height=1200)
+
     image_path = IMAGES_PATH + 'App_Icon.png'
     img1_asset = Image_asset(image_id="vidalgo icon", image_path=image_path)
     img1_transform = Transform()
@@ -72,6 +75,28 @@ def lottie_animation_load_replace_delete():
     la.store()
 
 
+def lottie_animation_text_layer_create():
+    la = Lottie_animation(lottie_name="generated_animation_3", width=500, height=500)
+    font = Font()
+    la.add_font(font)
+    text1_layer = Text_layer(layer_id=1, layer_name="text layer", in_point=0, out_point=30)
+    text1_layer.transform.position = [100, 250, 0]
+    la.add_main_layer(text1_layer)
+    la.store()
+
+def load_animation_and_add_another_one():
+    la1 = Lottie_animation()
+    la1.load(LOTTIE_PATH + "Lower-Third-instagram.json")
+    la1.name = "instagram_and_people"
+    la2 = Lottie_animation()
+    la2.load(LOTTIE_PATH + "48713-media-people.json")
+    la1 += la2
+    la1.store()
+    pass
+
+
+
+
 if __name__ == '__main__':
     '''lp = lt.Lottie_transforms('test-4.json')
     lp.parse()
@@ -81,5 +106,7 @@ if __name__ == '__main__':
     lp.store_lottie('test-4-transformed.json')'''
     #lottie_animation_generate()
     #lottie_animation_load()
-    lottie_animation_generate_with_3_images()
-    lottie_animation_load_replace_delete()
+    #ottie_animation_generate_with_3_images()
+    #lottie_animation_load_replace_delete()
+    #lottie_animation_text_layer_create()
+    load_animation_and_add_another_one()

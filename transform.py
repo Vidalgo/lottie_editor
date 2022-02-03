@@ -51,7 +51,7 @@ class Transform:
 
     @property
     def scaling(self):
-        if 'a' in self.transform:
+        if 's' in self.transform:
             return self.transform['s']
         else:
             return None
@@ -75,8 +75,8 @@ class Transform:
 
     @property
     def opacity(self):
-        if 'r' in self.transform:
-            return self.transform['r']
+        if 'o' in self.transform:
+            return self.transform['o']
         else:
             return None
 
