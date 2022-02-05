@@ -3,12 +3,12 @@ from layer import Layer, Lottie_layer_type
 
 class Image_layer(Layer):
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
-                 layer_transform=None, reference_id=None, in_point: float = 0, out_point: float = 0,
+                 layer_transform=True, reference_id=None, in_point: float = 0, out_point: float = 0,
                  auto_orient: float = None, blend_mode: float = 0, layer_class: str = None, layer_html_id: str = None,
                  start_time: float = 0, has_mask=None, masks_properties: list = None, effects: list = None,
                  stretch: float = 1):
         Layer.__init__(self, layer_id, layer_name, ddd_layer, layer_parent, layer_transform, reference_id)
-        self.type = Lottie_layer_type.image.value
+        self.type = Lottie_layer_type.Image.value
         self.auto_orient = auto_orient
         self.blend_mode = blend_mode
         self.layer_class = layer_class
@@ -20,7 +20,6 @@ class Image_layer(Layer):
         self.masks_properties = masks_properties
         self.effects = effects
         self.stretch = stretch
-        self.analyze()
 
     def analyze(self):
         Layer.analyze(self)

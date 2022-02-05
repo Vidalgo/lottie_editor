@@ -1,3 +1,5 @@
+import copy
+
 from static_transform import Static_transform
 from static_transform import Lottie_transform_type
 
@@ -24,6 +26,13 @@ class Transform:
 
     def load(self, transform: dict):
         self.transform = transform
+
+    def copy(self, transform: dict):
+        if type(transform) == type(self):
+            self.transform = copy.deepcopy(transform.transform)
+        else:
+            self.transform = copy.deepcopy(transform)
+        self.analyze()
 
     @property
     def anchor(self):

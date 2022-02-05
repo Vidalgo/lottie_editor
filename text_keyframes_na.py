@@ -1,4 +1,4 @@
-from text_keyframe import Text_properties
+from textbox import Text_properties
 
 
 class Text_keyframes:

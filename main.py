@@ -6,7 +6,7 @@ from image_layer import Image_layer
 from transform import Transform
 from font import Font
 from text_layer import Text_layer
-from text_data import Text_data
+from textdata import Textdata
 from PIL import Image
 
 LOTTIE_PATH = "\\lottie_files_path\\"
@@ -58,6 +58,18 @@ def lottie_animation_generate_with_3_images():
     la.store()
 
 
+def lottie_animation_generate_with_1_image():
+    la = Lottie_animation(lottie_name="static_image_animation_1", width=400, height=400, in_point=1, out_point=30)
+    image_path = IMAGES_PATH + 'App_Icon.png'
+    img1_asset = Image_asset(image_id="vidalgo icon", image_path=image_path)
+    img1_transform = Transform()
+    img1_layer = Image_layer(layer_id=1, layer_name="Vidalgo icon layer", reference_id="vidalgo icon", in_point=1,
+                             out_point=30, layer_transform=img1_transform)
+    img1_transform.scaling = [100, 100, 100]
+    la.add_image(img1_asset)
+    la.add_main_layer(img1_layer)
+    la.store()
+
 def lottie_animation_load_replace_delete():
     la = Lottie_animation()
     la.load(LOTTIE_PATH + 'generated_animation_1.json')
@@ -75,16 +87,17 @@ def lottie_animation_load_replace_delete():
     la.store()
 
 
-def lottie_animation_text_layer_create():
-    la = Lottie_animation(lottie_name="generated_animation_3", width=500, height=500)
-    font = Font()
-    la.add_font(font)
-    text1_layer = Text_layer(layer_id=1, layer_name="text layer", in_point=0, out_point=30)
+def lottie_animation_generate_with_1_text():
+    la = Lottie_animation(lottie_name="static_text_animation_1", width=500, height=500, in_point=1, out_point=30)
+    default_font = Font()
+    la.add_font(default_font)
+    text1_layer = Text_layer(layer_id=1, layer_name="text layer", in_point=1, out_point=30)
     text1_layer.transform.position = [100, 250, 0]
     la.add_main_layer(text1_layer)
     la.store()
 
-def load_animation_and_add_another_one():
+
+def load_animation_and_add_another_one_1():
     la1 = Lottie_animation()
     la1.load(LOTTIE_PATH + "Lower-Third-instagram.json")
     la1.name = "instagram_and_people"
@@ -92,9 +105,46 @@ def load_animation_and_add_another_one():
     la2.load(LOTTIE_PATH + "48713-media-people.json")
     la1 += la2
     la1.store()
-    pass
+
+def merge_layer_and_image_animations():
+    la1 = Lottie_animation()
+    la1.load(LOTTIE_PATH + "static_image_animation_1.json")
+    la1.name = "static_image_and_text"
+    la2 = Lottie_animation()
+    la2.load(LOTTIE_PATH + "static_text_animation_1.json")
+    la1 += la2
+    la1.find_main_layer(1).transform.position = [100, 700, 0]
+    la1.store()
 
 
+def add_image_to_lower_thirds():
+    la = Lottie_animation()
+    la.load(LOTTIE_PATH + "Lower-Third-instagram.json")
+    la.name = "instagram_with_image"
+    icon_place_holder_layer = la.find_main_layer(4)
+    icon_place_holder_layer.hide()
+    icon_place_holder_transform = Transform()
+    icon_place_holder_transform.copy(icon_place_holder_layer.transform)
+    icon_place_holder_transform.anchor = [50, 50, 0]
+    image_path = IMAGES_PATH + 'Instagram-logo-transparent-PNG.png'
+    img_asset = Image_asset(image_id="instagram icon", image_path=image_path, width=100, height=100)
+    img_layer = Image_layer(layer_id=1000, layer_name="instagram icon layer", reference_id="instagram icon", in_point=5,
+                             out_point=175, layer_transform=icon_place_holder_transform)
+    la.add_image(img_asset)
+    la.add_main_layer(img_layer, update_layer_id=False, order="after", layer_id=4)
+    la.store()
+
+
+def transfer_image_and_text():
+    la = Lottie_animation()
+    la.load(LOTTIE_PATH + "instagram_with_image.json")
+    la.name = "vidalgo_lower_third"
+    image_path = IMAGES_PATH + 'App_Icon.png'
+    img_asset = Image_asset(image_id="App_Icon icon", image_path=image_path, width=100, height=100)
+    la.replace_image(img_asset, "instagram icon")
+    text_layer = la.find_main_layer(2)
+    text_layer.text = "hello world"
+    la.store()
 
 
 if __name__ == '__main__':
@@ -109,4 +159,9 @@ if __name__ == '__main__':
     #ottie_animation_generate_with_3_images()
     #lottie_animation_load_replace_delete()
     #lottie_animation_text_layer_create()
-    load_animation_and_add_another_one()
+    #load_animation_and_add_another_one()
+    #lottie_animation_generate_with_1_image()
+    #lottie_animation_generate_with_1_text()
+    #merge_layer_and_image_animations()
+    #add_image_to_lower_thirds()
+    transfer_image_and_text()

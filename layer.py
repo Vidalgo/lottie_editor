@@ -4,23 +4,22 @@ from transform import Transform
 
 
 class Lottie_layer_type(enum.Enum):
-    precomp = 0
-    solid = 1
-    image = 2
-    null = 3
-    shape = 4
-    text = 5
-    audio = 6
-    pholder_video = 7
-    image_seq = 8
-    video = 9
-    pholder_stil = 10
-    guide = 11
-    adjustment = 12
-    camera = 13
-    light = 14
-    data = 15
-
+    Precomp = 0
+    Solid = 1
+    Image = 2
+    Null = 3
+    Shape = 4
+    Text = 5
+    Audio = 6
+    Pholder_video = 7
+    Image_seq = 8
+    Video = 9
+    Pholder_stil = 10
+    Guide = 11
+    Adjustment = 12
+    Camera = 13
+    Light = 14
+    Data = 15
 
 class Layer:
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
@@ -33,7 +32,6 @@ class Layer:
         self.parent = layer_parent
         self.reference_id = reference_id
         self.transform = layer_transform
-        self.analyze()
 
     def analyze(self):
         if type(self.layer) is not dict:
@@ -136,23 +134,22 @@ class Layer:
     def ddd_layer(self, ddd_layer: int):
         self.layer['ddd'] = ddd_layer
 
-    def parse_type(self):
-        if 'ty' in self.layer:
-            layer_type = self.layer["ty"]
-            try:
-                return Lottie_layer_type[layer_type]
-            except ValueError:
-                print("layer type doesn't exist")
-
     def hide(self):
-        self.layer['hd'] = 0
+        self.layer['hd'] = 1
 
     def reveal(self):
-        self.layer['hd'] = 1
+        self.layer['hd'] = 0
 
     def hidden(self):
         if 'hd' in self.layer and self.layer['hd']:
             return True
         else:
             return False
+
+    @staticmethod
+    def get_type(layer: dict):
+        if 'ty' in layer:
+            return layer['ty']
+        else:
+            return None
 
