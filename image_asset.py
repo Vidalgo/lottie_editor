@@ -3,6 +3,7 @@ from io import BytesIO
 
 import copy
 import base64
+from helpers import generate_random_id, VIDALGO_ID
 
 
 class Image_asset:
@@ -29,8 +30,6 @@ class Image_asset:
             raise TypeError("Error: image is not of type dictionary")
         if self.id is None:
             raise TypeError("Error: image doesn't have an id")
-        if self.name is None:
-            raise TypeError("Error: image doesn't have a name")
         if self.path is None:
             raise TypeError("Error: image doesn't exist")
         if self.height is None:
@@ -68,7 +67,8 @@ class Image_asset:
 
     @name.setter
     def name(self, image_name):
-        self.image['u'] = image_name
+        if 'u' in self.image:
+            self.image['u'] = image_name
 
     @property
     def path(self):

@@ -6,7 +6,7 @@ from image_layer import Image_layer
 from transform import Transform
 from font import Font
 from text_layer import Text_layer
-from textdata import Textdata
+from text_animator_data import Text_animator_data
 from PIL import Image
 
 LOTTIE_PATH = "\\lottie_files_path\\"
@@ -19,9 +19,19 @@ def lottie_animation_generate():
     la.store()
 
 
-def lottie_animation_load():
+def lottie_animation_1_load():
     la = Lottie_animation()
-    la.load("D:\\lottie_files_path\\coin.json")
+    la.load("D:\\lottie_files_path\\Happy Purim decorations.json")
+    pass
+
+def lottie_animation_2_load():
+    la = Lottie_animation()
+    la.load("D:\\lottie_files_path\\48713-media-people.json")
+    pass
+
+def lottie_animation_3_load():
+    la = Lottie_animation()
+    la.load("D:\\lottie_files_path\\Snow_Boarding.json")
     pass
 
 
@@ -69,6 +79,7 @@ def lottie_animation_generate_with_1_image():
     la.add_image(img1_asset)
     la.add_main_layer(img1_layer)
     la.store()
+
 
 def lottie_animation_load_replace_delete():
     la = Lottie_animation()
@@ -154,8 +165,10 @@ if __name__ == '__main__':
     lp.transform_layer(5, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.transform_using_top_parent_null_layer(6, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.store_lottie('test-4-transformed.json')'''
+    #lottie_animation_1_load()
+    #lottie_animation_2_load()
+    lottie_animation_3_load()
     #lottie_animation_generate()
-    #lottie_animation_load()
     #ottie_animation_generate_with_3_images()
     #lottie_animation_load_replace_delete()
     #lottie_animation_text_layer_create()
@@ -164,4 +177,4 @@ if __name__ == '__main__':
     #lottie_animation_generate_with_1_text()
     #merge_layer_and_image_animations()
     #add_image_to_lower_thirds()
-    transfer_image_and_text()
+    #transfer_image_and_text()

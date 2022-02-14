@@ -1,6 +1,6 @@
 from os.path import basename
 from lottie_animation import Lottie_animation
-from precomp import Precomp
+from precomposition import Precomposition
 from image_asset import Image_asset
 from layer import Layer
 
@@ -61,7 +61,7 @@ class Lottie_analyzer(Lottie_parser):
             self.lottie_filename).split('.')[0]))
         lottie_name = self.nodes[0].name
         lottie_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_name))
-        lottie_name_obj = {"obj": self.nodes[0].lottie_obj, "words_": lottie_name_deconstruct}
+        lottie_name_obj = {"obj": self.nodes[0]._lottie_obj, "words_": lottie_name_deconstruct}
         self.lottie_document["heading_1"] = lottie_name_obj
 
     def parse_lottie_layers_heading_2(self):
@@ -83,7 +83,7 @@ class Lottie_analyzer(Lottie_parser):
                         layer_name_deconstruct = self.lottie_nlp_obj.tokenize(self.lottie_nlp_obj.to_lower(lottie_node.
                                                                                                            id))
                     self.lottie_document["heading_2"][f'para_{paragraphs_counter}'][f'obj_{lines_counter}'] = \
-                        lottie_node.lottie_obj
+                        lottie_node._lottie_obj
                     self.lottie_document["heading_2"][f'para_{paragraphs_counter}'][f'words_{lines_counter}'] = \
                         layer_name_deconstruct
                     lines_counter += 1
@@ -117,11 +117,11 @@ class Lottie_analyzer(Lottie_parser):
                     self.lottie_document["heading_3"] = dict()
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'] = dict()
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_1'] = \
-                    lottie_node.lottie_obj
+                    lottie_node._lottie_obj
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_1'] = \
                     layer_name_deconstruct
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'obj_2'] = \
-                    reference_node.lottie_obj
+                    reference_node._lottie_obj
                 self.lottie_document["heading_3"][f'para_{paragraphs_counter}'][f'words_2'] = \
                     layer_reference_deconstruct
                 paragraphs_counter += 1
@@ -184,7 +184,7 @@ class Lottie_analyzer(Lottie_parser):
         if layer.name is not None:
             self.eval_name(layer, layer.parse_type(), composition_name)
 
-    def test_precomp_for_errors_and_warnings(self, precomp: Precomp):
+    def test_precomp_for_errors_and_warnings(self, precomp: Precomposition):
         if precomp.name is None:
             self.set_error_or_warning('Warning', f'No precomp name ("nm") in "{precomp.id}"', 'pre composition',
                                       'assets')
@@ -280,7 +280,7 @@ class Lottie_analyzer(Lottie_parser):
                                                                                          [pre_composition_id]),
                                                    point_to_lottie_obj=self.point_to_lottie_obj)
                 self.nodes.append(pre_composition_node)
-                self.test_precomp_for_errors_and_warnings(Precomp(pre_compositions[pre_composition_id]))
+                self.test_precomp_for_errors_and_warnings(Precomposition(pre_compositions[pre_composition_id]))
 
     def analyze_assets(self):
         if self.number_of_images > 10:

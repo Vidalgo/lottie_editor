@@ -1,5 +1,5 @@
 from image_asset import Image_asset
-from precomp import Precomp
+from precomposition import Precomposition
 from layer import Layer
 
 
