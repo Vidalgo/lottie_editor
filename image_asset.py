@@ -3,13 +3,14 @@ from io import BytesIO
 
 import copy
 import base64
-from helpers import generate_random_id, VIDALGO_ID
+
+from vidalgo_lottie_base import Vidalgo_lottie_base
 
 
-class Image_asset:
+class Image_asset(Vidalgo_lottie_base):
     def __init__(self, image_id: str = None, image_path: str = None, image_name: str = None, height: float = None,
                  width: float = None, embedded: int = 1):
-        self.image = {}
+        super(Image_asset, self).__init__()
         if image_id is not None:
             img = None
             try:
@@ -26,8 +27,7 @@ class Image_asset:
             self.analyze()
 
     def analyze(self):
-        if type(self.image) is not dict:
-            raise TypeError("Error: image is not of type dictionary")
+        super(Image_asset, self).analyze()
         if self.id is None:
             raise TypeError("Error: image doesn't have an id")
         if self.path is None:
@@ -40,76 +40,85 @@ class Image_asset:
             raise TypeError("Error: image isn't embedded nor external")
 
     def load(self, image: dict):
-        self.image = image
+        self.lottie_base = image
         self.analyze()
 
     def copy(self, image: dict):
-        self.image = copy.deepcopy(image)
+        super(Image_asset, self).copy()
+        self.analyze()
+
+    @property
+    def image(self):
+        return self.lottie_base
+
+    @image.setter
+    def image(self, image):
+        self.lottie_base = image
         self.analyze()
 
     @property
     def id(self):
-        if 'id' in self.image:
-            return self.image['id']
+        if 'id' in self.lottie_base:
+            return self.lottie_base['id']
         else:
             return None
 
     @id.setter
     def id(self, image_id):
-        self.image['id'] = image_id
+        self.lottie_base['id'] = image_id
 
     @property
     def name(self):
-        if 'u' in self.image and self.image['u']:
-            return self.image['u']
+        if 'u' in self.lottie_base and self.lottie_base['u']:
+            return self.lottie_base['u']
         else:
             return None
 
     @name.setter
     def name(self, image_name):
-        if 'u' in self.image:
-            self.image['u'] = image_name
+        if 'u' in self.lottie_base:
+            self.lottie_base['u'] = image_name
 
     @property
     def path(self):
-        if 'p' in self.image:
-            return self.image['p']
+        if 'p' in self.lottie_base:
+            return self.lottie_base['p']
         else:
             return None
 
     @path.setter
     def path(self, image_path: str):
-        self.image['p'] = image_path
+        self.lottie_base['p'] = image_path
 
     @property
     def height(self):
-        if 'h' in self.image:
-            return self.image['h']
+        if 'h' in self.lottie_base:
+            return self.lottie_base['h']
         else:
             return None
 
     @height.setter
     def height(self, new_height: float):
-        self.image['h'] = new_height
+        self.lottie_base['h'] = new_height
 
     @property
     def width(self):
-        if 'w' in self.image:
-            return self.image['w']
+        if 'w' in self.lottie_base:
+            return self.lottie_base['w']
         else:
             return None
 
     @width.setter
     def width(self, new_width: float):
-        self.image['w'] = new_width
+        self.lottie_base['w'] = new_width
 
     @property
     def embedded(self):
-        if 'e' in self.image:
-            return self.image['e']
+        if 'e' in self.lottie_base:
+            return self.lottie_base['e']
         else:
             return None
 
     @embedded.setter
     def embedded(self, is_embedded: bool):
-        self.image['e'] = is_embedded
+        self.lottie_base['e'] = is_embedded

@@ -73,7 +73,7 @@ def func_on_parent_object_in_lottie(lottie_obj, key_obj, func):
 
 
 def find_and_replace_object_in_lottie(lottie_obj, key_obj, find_parent=False, replace_obj=False, func=False,
-                                      parent_obj={}):
+                                      parent_obj=None):
     if not is_obj_dic_or_list(lottie_obj):
         return False
     first_dic_object_key = list(key_obj[0].keys())[0]

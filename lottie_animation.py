@@ -1,6 +1,10 @@
 from __future__ import annotations
-import random
 
+import random
+from os import makedirs, path
+
+from vidalgo_lottie_base import Vidalgo_lottie_base, ID_SUFFIX, PATH
+from helpers import update_intersected_ids, store_json
 
 from font import Font
 from char import Char
@@ -11,26 +15,23 @@ from precomp_layer import Precomp_layer
 from text_layer import update_font_name
 
 
-
-
-
-'''self._chars = []
-    self._markers = []
-    self._layers: list[Layer] = []'''
-
-
-class Lottie_animation:
+class Lottie_animation(Vidalgo_lottie_base):
     def __init__(self, lottie_name: str = 'unknown', in_point: int = 0, out_point: int = 30, frame_rate: int = 30,
                  ddd_layers: int = 0, width: float = 500, height: float = 500, version: str = "5.5.2"):
-        self._lottie_obj = {}
-        self._fonts: list[Font] = []
+        super(Lottie_animation, self).__init__()
+        '''self._fonts: list[Font] = []
         self._chars: list[Char] = []
         self._layers: list[Layer] = []
         self._images: list[Image_asset] = []
-        self._precomp: list[Precomposition] = []
+        self._precomp: list[Precomposition] = []'''
         self._id_counter = 0
         self._null_layer_id_counter = 1000
         self._pre_comb_id_counter = 10
+        self._fonts = []
+        self._chars = []
+        self._layers = []
+        self._images = []
+        self._precomp = []
         self.version = version
         self.name = lottie_name
         self.width = width
@@ -40,7 +41,7 @@ class Lottie_animation:
         self.out_point = out_point
         self.ddd_layers = ddd_layers
         self.assets = []
-        generate_random_id(self._lottie_obj)
+        self.generate_random_id()
 
     def _refactor_ids(self):
         self._id_counter = 0
@@ -75,20 +76,32 @@ class Lottie_animation:
 
     def _adjust_precompositions_intersection(self, animation: Lottie_animation):
         precomp_id_intersections = update_intersected_ids(animation.precomp, self.precomp)
-        for precomp_id in precomp_id_intersections:
-            self._update_ref_id(Lottie_layer_type.Precomp, precomp_id, '{0}{1}'.format(precomp_id, ID_SUFFIX))
+        if precomp_id_intersections is not None:
+            for precomp_id in precomp_id_intersections:
+                self._update_ref_id(Lottie_layer_type.Precomp, precomp_id, '{0}{1}'.format(precomp_id, ID_SUFFIX))
 
     def _adjust_images_intersection(self, animation: Lottie_animation):
         image_id_intersections = update_intersected_ids(animation.images, self.images)
-        for image_id in image_id_intersections:
-            self._update_ref_id(Lottie_layer_type.Image, image_id, '{0}{1}'.format(image_id, ID_SUFFIX))
+        if image_id_intersections is not None:
+            for image_id in image_id_intersections:
+                self._update_ref_id(Lottie_layer_type.Image, image_id, '{0}{1}'.format(image_id, ID_SUFFIX))
 
     def _adjust_fonts_intersection(self, animation: Lottie_animation):
         font_id_intersections = update_intersected_ids(animation.fonts, self.images)
-        for font_id in font_id_intersections:
-            self._update_ref_id(Lottie_layer_type.Text, font_id, '{0}{1}'.format(font_id, ID_SUFFIX))
+        if font_id_intersections is not None:
+            for font_id in font_id_intersections:
+                self._update_ref_id(Lottie_layer_type.Text, font_id, '{0}{1}'.format(font_id, ID_SUFFIX))
 
     def __add__(self, animation: Lottie_animation):
+        # In the loading process test if animation is new (not vidalgo animation type) - if new: analyze the animation
+        # - analyze the animation for warnings and errors
+        # - adjust all asset ids (images / precomp / char / font / ...) and add a UUID
+        # - copy main layers to vidalgo precomp with the name of the animation + UUID
+        # - create a main layer with the animation name pointing to the precomp created in the previous step
+        # - create a public / private key for the animation to id that the animation is of vidalgo type
+        # - store the public key in meta and private in server
+
+        # The following three tests are no longer required
         self._adjust_precompositions_intersection(animation)
         self._adjust_images_intersection(animation)
         self._adjust_fonts_intersection(animation)
@@ -99,25 +112,37 @@ class Lottie_animation:
         self.out_point = max(self.out_point, animation.out_point)
         self.width += animation.width
         self.height += animation.height
+        #self.width = max(self.width, animation.width)
+        #self.height = max(self.height, animation.height)
         self.ddd_layers = max(self.ddd_layers, animation.ddd_layers)
         self.assets += animation.assets
         self.fonts += animation.fonts
         # self.chars += animation.chars
         # self.markers += animation.markers
         # update metadata (consult Github)
-        this_precomp = Precomposition(precomp_id=self.name, framerate=self.frame_rate)
+        this_precomp_unique_id = '{0}_{1}'.format(self.name, self.uuid(4))
+        this_precomp = Precomposition(precomp_id=this_precomp_unique_id, framerate=self.frame_rate)
         this_precomp.layers = self.layers
-        animation_precomp = Precomposition(precomp_id=animation.name, framerate=animation.frame_rate)
+        animation_unique_id = '{0}_{1}'.format(animation.name, self.uuid(4))
+        animation_precomp = Precomposition(precomp_id=animation_unique_id, framerate=animation.frame_rate)
         animation_precomp.layers = animation.layers
         self.add_precomp(this_precomp)
         self.add_precomp(animation_precomp)
-        this_main_layer = Precomp_layer(layer_name=self.name, layer_id=0, reference_id=self.name, width=self.width,
-                                        height=self.height, layer_transform=True)
-        animation_main_layer = Precomp_layer(layer_name=animation.name, layer_id=1, reference_id=animation.name,
+
+        pos_1 = [random.random() *self.width * .1, random.random()*self.height * .1]
+        pos_2 = [random.random() * self.width * .1, random.random() * self.height * .1]
+
+        this_main_layer = Precomp_layer(layer_name=self.name + '_0', layer_id=0, reference_id=this_precomp_unique_id,
+                                        width=self.width, height=self.height, layer_transform=True)
+        this_main_layer.transform.position = pos_1
+        animation_main_layer = Precomp_layer(layer_name=animation.name + '_1', layer_id=1, reference_id=animation_unique_id,
                                              width=animation.width, height=animation.height, layer_transform=True)
-        animation_main_layer.transform.position = [self.width, self.height, 0]
+        #animation_main_layer.transform.position = [self.width-animation.width, self.height-animation.height, 0]
+        animation_main_layer.transform.position = pos_2
+        this_main_layer.out_point = self.out_point
+        animation_main_layer.out_point = self.out_point
         self.layers = [this_main_layer, animation_main_layer]
-        #self._refactor_ids()
+        # self._refactor_ids()
         return self
 
     def load(self, animation_file_name):
@@ -131,15 +156,15 @@ class Lottie_animation:
             new_char.load(char)
             return new_char
 
-        def _load_layer(layer: dict):
+        def _load_layer(layer: dict, lottie_base: doct):
             layer_type = '{0}_layer'.format(Lottie_layer_type(Layer.get_type(layer)).name)
             new_layer = globals()[layer_type]() if layer_type in globals() else Layer()
             new_layer.load(layer)
             return new_layer
 
         def _load_asset():
-            if 'assets' in self._lottie_obj and self._lottie_obj['assets'] is not None:
-                for asset in self._lottie_obj['assets']:
+            if 'assets' in self.lottie_base and self.lottie_base['assets'] is not None:
+                for asset in self.lottie_base['assets']:
                     if 'e' in asset:
                         new_asset = Image_asset()
                         new_asset.load(asset)
@@ -148,14 +173,13 @@ class Lottie_animation:
                         new_asset = Precomposition()
                         new_asset.load(asset)
                         self._precomp.append(new_asset)
-
-        self._lottie_obj = load_json(animation_file_name)
+        super(Lottie_animation, self).load(animation_file_name)
         self.analyze()
-        self._fonts = [] if 'fonts' not in self._lottie_obj or 'list' not in self._lottie_obj['fonts'] else\
-            [_load_font(font) for font in self._lottie_obj['fonts']['list']]
-        self._chars = [] if 'chars' not in self._lottie_obj else \
-            [_load_char(char) for char in self._lottie_obj['chars']]
-        self._layers = [_load_layer(layer) for layer in self._lottie_obj['layers']]
+        self._fonts = [] if 'fonts' not in self.lottie_base or 'list' not in self.lottie_base['fonts'] else\
+            [_load_font(font) for font in self.lottie_base['fonts']['list']]
+        self._chars = [] if 'chars' not in self.lottie_base else \
+            [_load_char(char) for char in self.lottie_base['chars']]
+        self._layers = [_load_layer(layer, self.lottie_base) for layer in self.lottie_base['layers']]
         _load_asset()
         # self._assets = self.assets
         '''self._fonts = self.fonts
@@ -167,17 +191,14 @@ class Lottie_animation:
             if not path.isdir(PATH):
                 makedirs(PATH)
             file_name = "{0}{1}.json".format(PATH, self.name)
-        store_json(file_name, self._lottie_obj)
+        store_json(file_name, self.lottie_base)
 
     def copy(self, animation: dict):
-        self._lottie_obj = copy.deepcopy(animation)
+        super(Lottie_animation, self).copy(animation)
         self.analyze()
 
     def analyze(self):
-        if type(self._lottie_obj) is not dict:
-            raise TypeError("Error: composition is not of type dictionary")
-        if self.version is None:
-            raise TypeError("Error: lottie version is missing")
+        super(Lottie_animation, self).analyze()
         if self.name is None:
             raise TypeError("Error: composition doesn't have a name")
         if self.in_point is None:
@@ -197,122 +218,122 @@ class Lottie_animation:
 
     @property
     def lottie(self):
-        return self._lottie_obj
+        return self.lottie_base
 
     @lottie.setter
     def lottie(self, lottie: dict):
-        self._lottie_obj = lottie
+        self.lottie_base = lottie
         self.analyze()
 
     @property
     def name(self):
-        if 'nm' in self._lottie_obj:
-            return self._lottie_obj['nm']
+        if 'nm' in self.lottie_base:
+            return self.lottie_base['nm']
         else:
             return None
 
     @name.setter
     def name(self, name: str):
-        self._lottie_obj['nm'] = name
+        self.lottie_base['nm'] = name
 
     @property
     def version(self):
-        if 'v' in self._lottie_obj:
-            return self._lottie_obj['v']
+        if 'v' in self.lottie_base:
+            return self.lottie_base['v']
         else:
             return None
 
     @version.setter
     def version(self, version: str):
-        self._lottie_obj['v'] = version
+        self.lottie_base['v'] = version
 
     @property
     def match_name(self):
-        if 'mn' in self._lottie_obj:
-            return self._lottie_obj['mn']
+        if 'mn' in self.lottie_base:
+            return self.lottie_base['mn']
         else:
             return None
 
     @match_name.setter
     def match_name(self, match_name: str):
-        self._lottie_obj['mn'] = match_name
+        self.lottie_base['mn'] = match_name
 
     @property
     def in_point(self):
-        if 'ip' in self._lottie_obj:
-            return self._lottie_obj['ip']
+        if 'ip' in self.lottie_base:
+            return self.lottie_base['ip']
         else:
             return None
 
     @in_point.setter
     def in_point(self, in_point: int):
-        self._lottie_obj['ip'] = in_point
+        self.lottie_base['ip'] = in_point
 
     @property
     def out_point(self):
-        if 'op' in self._lottie_obj:
-            return self._lottie_obj['op']
+        if 'op' in self.lottie_base:
+            return self.lottie_base['op']
         else:
             return None
 
     @out_point.setter
     def out_point(self, out_point: int):
-        self._lottie_obj['op'] = out_point
+        self.lottie_base['op'] = out_point
 
     @property
     def frame_rate(self):
-        if 'fr' in self._lottie_obj:
-            return self._lottie_obj['fr']
+        if 'fr' in self.lottie_base:
+            return self.lottie_base['fr']
         else:
             return None
 
     @frame_rate.setter
     def frame_rate(self, frame_rate: int):
-        self._lottie_obj['fr'] = frame_rate
+        self.lottie_base['fr'] = frame_rate
 
     @property
     def ddd_layers(self):
-        if 'ddd' in self._lottie_obj:
-            return self._lottie_obj['ddd']
+        if 'ddd' in self.lottie_base:
+            return self.lottie_base['ddd']
         else:
             return None
 
     @ddd_layers.setter
     def ddd_layers(self, ddd_layers: int):
-        self._lottie_obj['ddd'] = ddd_layers
+        self.lottie_base['ddd'] = ddd_layers
 
     @property
     def width(self):
-        if 'w' in self._lottie_obj:
-            return self._lottie_obj['w']
+        if 'w' in self.lottie_base:
+            return self.lottie_base['w']
         else:
             return None
 
     @width.setter
     def width(self, width: float):
-        self._lottie_obj['w'] = width
+        self.lottie_base['w'] = width
 
     @property
     def height(self):
-        if 'h' in self._lottie_obj:
-            return self._lottie_obj['h']
+        if 'h' in self.lottie_base:
+            return self.lottie_base['h']
         else:
             return None
 
     @height.setter
     def height(self, height: float):
-        self._lottie_obj['h'] = height
+        self.lottie_base['h'] = height
 
     @property
     def bodymovin_version(self):
-        if 'v' in self._lottie_obj:
-            return self._lottie_obj['v']
+        if 'v' in self.lottie_base:
+            return self.lottie_base['v']
         else:
             return None
 
     @bodymovin_version.setter
     def bodymovin_version(self, bodymovin_version: str):
-        self._lottie_obj['v'] = bodymovin_version
+        self.lottie_base['v'] = bodymovin_version
 
     @property
     def fonts(self):
@@ -321,19 +342,19 @@ class Lottie_animation:
     @fonts.setter
     def fonts(self, fonts: list[Font]):
         self._fonts = fonts
-        if 'font' not in self._lottie_obj:
-            self._lottie_obj['fonts'] = {}
-        self._lottie_obj['fonts']['list'] = [font.font for font in fonts]
+        if 'font' not in self.lottie_base:
+            self.lottie_base['fonts'] = {}
+        self.lottie_base['fonts']['list'] = [font.font for font in fonts]
 
     def add_font(self, font: Font):
-        if 'fonts' not in self._lottie_obj:
-            self._lottie_obj['fonts'] = {'list': []}
+        if 'fonts' not in self.lottie_base:
+            self.lottie_base['fonts'] = {'list': []}
         else:
             for fonts in self.fonts:
                 if fonts.font_name == font.font_name:
                     return
         self.fonts.insert(0, font)
-        self._lottie_obj['fonts']['list'].insert(0, font.font)
+        self.lottie_base['fonts']['list'].insert(0, font.font)
 
     def find_font(self, font_name: str):
         for font in self.fonts:
@@ -345,16 +366,16 @@ class Lottie_animation:
         font = self.find_font(font_name)
         if font is not None:
             self.fonts.remove(font)
-            self._lottie_obj['fonts']['list'].remove(font.font)
+            self.lottie_base['fonts']['list'].remove(font.font)
 
     def replace_font(self, new_font: Font, replaced_font_name):
         for index, font in enumerate(self.fonts):
             if font.font_name == replaced_font_name:
                 self.fonts[index] = new_font
-                self._lottie_obj['fonts']['list'][index] = new_font.font
-                update_font_name(self.layers, Lottie_layer_type.Text, replaced_font_name, new_font.font_name)
+                self.lottie_base['fonts']['list'][index] = new_font.font
+                update_font_name(self.layers, replaced_font_name, new_font.font_name)
                 for precomp_ref in self.precomp:
-                    update_font_name(precomp_ref.layers, Lottie_layer_type.Text, replaced_font_name, new_font.font_name)
+                    update_font_name(precomp_ref.layers, replaced_font_name, new_font.font_name)
                 break
 
     @property
@@ -364,19 +385,19 @@ class Lottie_animation:
     @chars.setter
     def chars(self, chars: list[Char]):
         self._chars = chars
-        if 'chars' not in self._lottie_obj:
-            self._lottie_obj['chars'] = {}
-        self._lottie_obj['chars'] = [char.char for char in chars]
+        if 'chars' not in self.lottie_base:
+            self.lottie_base['chars'] = {}
+        self.lottie_base['chars'] = [char.char for char in chars]
 
     def add_char(self, char: Char):
-        if 'chars' not in self._lottie_obj:
-            self._lottie_obj['chars'] = None
+        if 'chars' not in self.lottie_base:
+            self.lottie_base['chars'] = None
         else:
             for chars in self.chars:
                 if chars.character == char.character:
                     return
         self.chars.insert(0, char)
-        self._lottie_obj['chars'].insert(0, char.char)
+        self.lottie_base['chars'].insert(0, char.char)
 
     def find_char(self, char_name: str):
         for char in self.chars:
@@ -388,13 +409,13 @@ class Lottie_animation:
         char = self.find_char(char_name)
         if char is not None:
             self.chars.remove(char)
-            self._lottie_obj['chars'].remove(char.character)
+            self.lottie_base['chars'].remove(char.character)
 
     def replace_char(self, new_char: Char, replaced_char_name):
         for index, char in enumerate(self.chars):
             if char.character == replaced_char_name:
                 self.chars[index] = new_char
-                self._lottie_obj['chars'][index] = new_char.character
+                self.lottie_base['chars'][index] = new_char.character
                 for font in self.fonts:
                     if font.font_family == char.font_family:
                         font.font_family = new_char.font_family
@@ -407,18 +428,18 @@ class Lottie_animation:
     @layers.setter
     def layers(self, lottie_layers: list[Layer]):
         self._layers = lottie_layers
-        self._lottie_obj['layers'] = [lottie_layer.layer for lottie_layer in lottie_layers]
+        self.lottie_base['layers'] = [lottie_layer.layer for lottie_layer in lottie_layers]
 
     @property
     def assets(self):
-        if 'assets' in self._lottie_obj:
-            return self._lottie_obj['assets']
+        if 'assets' in self.lottie_base:
+            return self.lottie_base['assets']
         else:
             return None
 
     @assets.setter
     def assets(self, assets: list):
-        self._lottie_obj['assets'] = assets
+        self.lottie_base['assets'] = assets
 
     @property
     def images(self):
@@ -427,12 +448,12 @@ class Lottie_animation:
     @images.setter
     def images(self, images: list[Image_asset]):
         self._images = images
-        pre_comps_temp = [pre_comp for pre_comp in self._lottie_obj['assets'] if type(pre_comp) == Precomposition]
-        self._lottie_obj['assets'] = [image.image for image in images] + pre_comps_temp
+        pre_comps_temp = [pre_comp for pre_comp in self.lottie_base['assets'] if type(pre_comp) == Precomposition]
+        self.lottie_base['assets'] = [image._lottie_obj for image in images] + pre_comps_temp
 
     def add_image(self, image: Image_asset):
         self.images.insert(0, image)
-        self._lottie_obj['assets'].insert(0, image.image)
+        self.lottie_base['assets'].insert(0, image._lottie_obj)
 
     def find_image(self, image_id):
         for image in self.images:
@@ -444,14 +465,14 @@ class Lottie_animation:
         image = self.find_image(image_id)
         if image is not None:
             self.images.remove(image)
-            self._lottie_obj['assets'].remove(image.image)
+            self.lottie_base['assets'].remove(image.image)
 
     def replace_image(self, new_image: Image_asset, replaced_image_id):
         for index, image in enumerate(self.images):
             if image.id == replaced_image_id:
                 self.images[index] = new_image
-                self._lottie_obj['assets'][index] = new_image.image
-                update_ref_id(self.layers, Lottie_layer_type.Precomp, replaced_image_id, new_image.id)
+                self.lottie_base['assets'][index] = new_image._lottie_obj
+                update_ref_id(self.layers, Lottie_layer_type.Image, replaced_image_id, new_image.id)
                 for precomp_ref in self.precomp:
                     update_ref_id(precomp_ref.layers, Lottie_layer_type.Image, replaced_image_id, new_image.id)
                 break
@@ -463,12 +484,12 @@ class Lottie_animation:
     @precomp.setter
     def precomp(self, precomps: list[Precomposition]):
         self._precomp = precomps
-        images_temp = [image for image in self._lottie_obj['assets'] if type(image) == Image_asset]
-        self._lottie_obj['assets'] = images_temp + [precomp.precomp for precomp in precomps]
+        images_temp = [image for image in self.lottie_base['assets'] if type(image) == Image_asset]
+        self.lottie_base['assets'] = images_temp + [precomp.precomp for precomp in precomps]
 
     def add_precomp(self, precomp: Precomposition):
         self.precomp.insert(0, precomp)
-        self._lottie_obj['assets'].append(precomp.precomp)
+        self.lottie_base['assets'].append(precomp.precomp)
 
     def find_precomb(self, precomb_id):
         for precomb in self.precomp:
@@ -480,13 +501,13 @@ class Lottie_animation:
         precomp = self.find_precomb(precomb_id)
         if precomp is not None:
             self.precomp.remove(precomp)
-            self._lottie_obj['assets'].remove(precomp.precomp)
+            self.lottie_base['assets'].remove(precomp.precomp)
 
     def replace_precomp(self, new_precomp: Precomposition, replaced_precomp_id):
         for index, precomp in enumerate(self.precomp):
             if precomp.id == replaced_precomp_id:
                 self.precomp[index] = new_precomp
-                self._lottie_obj['assets'][index] = new_precomp.precomp
+                self.lottie_base['assets'][index] = new_precomp.precomp
                 update_ref_id(self.layers, Lottie_layer_type.Precomp, replaced_precomp_id, new_precomp.id)
                 for precomp_ref in self.precomp:
                     update_ref_id(precomp_ref.layers, Lottie_layer_type.Precomp, replaced_precomp_id, new_precomp.id)
@@ -498,7 +519,7 @@ class Lottie_animation:
             self._id_counter += 1
         layer_index = add_layer(self.layers, new_layer, order, layer_id)
         if layer_index is not None:
-            self._lottie_obj['layers'].insert(layer_index, new_layer.layer)
+            self.lottie_base['layers'].insert(layer_index, new_layer.layer)
 
     def find_main_layer(self, layer_id: int = None, layer_name: str = None):
         find_layer(self._layers, layer_id, layer_name)
@@ -506,12 +527,12 @@ class Lottie_animation:
     def delete_main_layer(self, layer_id: int, layer_name: str = None):
         layer_index = delete_layer(self.layers, layer_id, layer_name)
         if layer_index is not None:
-            self._lottie_obj['layers'].remove(self.layers[layer_index].layer)
+            self.lottie_base['layers'].remove(self.layers[layer_index].layer)
 
     def replace_main_layer(self, new_layer: Layer, layer_id=None, layer_name: str = None):
         layer_index = replace_layer(self.layers, new_layer, layer_id, layer_name)
         if layer_index is not None:
-            self._lottie_obj['layers'][layer_index] = new_layer.layer
+            self.lottie_base['layers'][layer_index] = new_layer.layer
 
     '''@property
     def fonts(self):
@@ -548,11 +569,11 @@ class Lottie_animation:
 
     @property
     def metadata(self):
-        if 'meta' in self._lottie_obj:
-            return self._lottie_obj['meta']
+        if 'meta' in self.lottie_base:
+            return self.lottie_base['meta']
         else:
             return None
 
     @metadata.setter
     def metadata(self, metadata):
-        self._lottie_obj['meta'] = metadata
+        self.lottie_base['meta'] = metadata

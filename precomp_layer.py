@@ -27,29 +27,29 @@ class Precomp_layer(Layer):
             self._time_remapping.load(layer['tm'])
 
     def copy(self, layer: dict):
-        self._layer = copy.deepcopy(layer)
+        Layer.copy(self, layer)
 
     @property
     def width(self):
-        if 'w' in self._layer:
-            return self._layer['w']
+        if 'w' in self.lottie_base:
+            return self.lottie_base['w']
         else:
             return None
 
     @width.setter
     def width(self, width: float):
-        self._layer['w'] = width
+        self.lottie_base['w'] = width
 
     @property
     def height(self):
-        if 'h' in self._layer:
-            return self._layer['h']
+        if 'h' in self.lottie_base:
+            return self.lottie_base['h']
         else:
             return None
 
     @height.setter
     def height(self, height: float):
-        self._layer['h'] = height
+        self.lottie_base['h'] = height
 
     @property
     def time_remapping(self):
@@ -59,4 +59,4 @@ class Precomp_layer(Layer):
     def time_remapping(self, time_remapping: Animated_property):
         self._time_remapping = time_remapping
         if time_remapping is not None:
-            self._layer['tm'] = time_remapping.animated_property
+            self.lottie_base['tm'] = time_remapping.animated_property

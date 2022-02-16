@@ -1,11 +1,10 @@
-import copy
-from helpers import generate_random_id, VIDALGO_ID
+from vidalgo_lottie_base import Vidalgo_lottie_base
 
 
-class Char:
+class Char(Vidalgo_lottie_base):
     def __init__(self, character: str = None, font_family: str = None, font_size: float = 0,
                  font_style: str = "normal", width: float = 0, data=None):
-        self._char = {}
+        super(Char, self).__init__()
         self._data = {}
         self.character = character
         self.font_family = font_family
@@ -13,11 +12,9 @@ class Char:
         self.font_style = font_style
         self.width = width
         self.data = data
-        generate_random_id(self._char)
 
     def analyze(self):
-        if type(self._char) is not dict:
-            raise TypeError("Error: layer is not of type dictionary")
+        super(Char, self).analyze()
         if self.data is None:
             raise TypeError("Error: char doesn't have data")
         if self.character is None:
@@ -30,102 +27,88 @@ class Char:
             raise TypeError("Error: char doesn't have a font style")
         if self.width is None:
             raise TypeError("Error: char doesn't have a font width")
-        if self.vidalgo_id is None:
-            raise TypeError("Error: char doesn't have a vidalgo id")
 
     def load(self, char: dict):
-        self._char = char
+        self.lottie_base = char
         # self.data.load(char['data'])
-        generate_random_id(self._char)
         self.analyze()
 
     def copy(self, font: dict):
-        self.char = copy.deepcopy(font)
+        super(Char, self).copy()
         self.analyze()
 
     @property
-    def vidalgo_id(self):
-        if VIDALGO_ID in self._char:
-            return self._char[VIDALGO_ID]
-        else:
-            return None
-
-    @vidalgo_id.setter
-    def vidalgo_id(self, vidalgo_id: str):
-        self._char[VIDALGO_ID] = vidalgo_id
-
-    @property
     def char(self):
-        return self._char
+        return self.lottie_base
 
     @char.setter
     def char(self, char):
-        self._char = char
+        self.lottie_base = char
         self.analyze()
 
     @property
     def character(self):
-        if 'ch' in self._char:
-            return self._char['ch']
+        if 'ch' in self.lottie_base:
+            return self.lottie_base['ch']
         else:
             return None
 
     @character.setter
     def character(self, ascent: character):
-        self._char['ch'] = ascent
+        self.lottie_base['ch'] = ascent
 
     @property
     def font_family(self):
-        if 'fFamily' in self._char:
-            return self._char['fFamily']
+        if 'fFamily' in self.lottie_base:
+            return self.lottie_base['fFamily']
         else:
             return None
 
     @font_family.setter
     def font_family(self, font_family: str):
-        self._char['fFamily'] = font_family
+        self.lottie_base['fFamily'] = font_family
 
     @property
     def font_size(self):
-        if 'size' in self._char:
-            return self._char['size']
+        if 'size' in self.lottie_base:
+            return self.lottie_base['size']
         else:
             return None
 
     @font_size.setter
     def font_size(self, font_size: float):
-        self._char['size'] = font_size
+        self.lottie_base['size'] = font_size
 
     @property
     def font_style(self):
-        if 'style' in self._char:
-            return self._char['style']
+        if 'style' in self.lottie_base:
+            return self.lottie_base['style']
         else:
             return None
 
     @font_style.setter
     def font_style(self, font_style: str):
-        self._char['style'] = font_style
+        self.lottie_base['style'] = font_style
 
     @property
     def width(self):
-        if 'w' in self._char:
-            return self._char['w']
+        if 'w' in self.lottie_base:
+            return self.lottie_base['w']
         else:
             return None
 
     @width.setter
     def width(self, width: float):
-        self._char['w'] = width
+        self.lottie_base['w'] = width
 
     @property
     def data(self):
-        if 'data' in self._char:
-            return self._char['data']
+        if 'data' in self.lottie_base:
+            return self.lottie_base['data']
         else:
             return None
 
     @data.setter
     def data(self, data):
         self._data['data'] = data
-        self._char['data'] = data
+        self.lottie_base['data'] = data
