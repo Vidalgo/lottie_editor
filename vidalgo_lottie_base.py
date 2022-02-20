@@ -7,8 +7,9 @@ from lottie_search_and_replace import load_json, store_json
 
 VIDALGO_ID = 'ln'
 ID_SUFFIX = '_'
-SYMBOLS = string.ascii_letters + string.digits + string.punctuation
+SYMBOLS = (string.ascii_letters + string.digits + string.punctuation).replace('_', '')
 PATH = "/lottie_files_path/"
+
 
 class Vidalgo_lottie_base:
     _RANDOM_SEED_CALLED = False
@@ -18,6 +19,12 @@ class Vidalgo_lottie_base:
         if not Vidalgo_lottie_base._RANDOM_SEED_CALLED:
             random.seed()
             Vidalgo_lottie_base._RANDOM_SEED_CALLED = True
+        self.generate_random_id()
+
+    def refactor_id(self):
+        self.lottie_element_id = self.lottie_element_id if type(self.lottie_element_id) is str \
+            else self.lottie_element_id
+        return self.lottie_element_id
 
     @staticmethod
     def uuid(length: int = 12):
@@ -28,7 +35,8 @@ class Vidalgo_lottie_base:
 
     def load(self, animation_file_name):
         self._lottie_obj = load_json(animation_file_name)
-        self.generate_random_id()
+        if self._lottie_obj is not None and VIDALGO_ID not in self._lottie_obj:
+            self.generate_random_id()
 
     def copy(self, animation: dict):
         self._lottie_obj = copy.deepcopy(animation)
@@ -77,11 +85,17 @@ class Vidalgo_lottie_base:
 
     @lottie_element_id.setter
     def lottie_element_id(self, lottie_element_id):
+        lottie_element_uuid = '{0}_{1}'.format(lottie_element_id, self.uuid(4))
         if 'ind' in self.lottie_base and type(lottie_element_id) is int:
             self.lottie_base['ind'] = lottie_element_id
         elif 'id' in self.lottie_base:
-            self.lottie_base['id'] = lottie_element_id
+            self.lottie_base['id'] = lottie_element_uuid
         elif 'fName' in self.lottie_base:
-            self.lottie_base['fName'] = lottie_element_id
+            self.lottie_base['fName'] = lottie_element_uuid
         elif 'fFamily' in self.lottie_base:
-            self.lottie_base['fFamily'] = lottie_element_id
+            self.lottie_base['fFamily'] = lottie_element_uuid
+
+    @staticmethod
+    def remove_uuid(lottie_element_uuid: str):
+        return lottie_element_uuid.rsplit('_', 1)[0] if lottie_element_uuid is not None else None
+

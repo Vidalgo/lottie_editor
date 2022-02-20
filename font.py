@@ -31,6 +31,7 @@ class Font(Vidalgo_lottie_base):
 
     def copy(self, font: dict):
         super(Font, self).copy()
+        self.refactor_id()
         self.analyze()
 
     @property
@@ -73,7 +74,8 @@ class Font(Vidalgo_lottie_base):
 
     @font_name.setter
     def font_name(self, font_name: str):
-        self.lottie_base['fName'] = font_name
+        self.lottie_base['fName'] = ''
+        self.lottie_element_id = font_name
 
     @property
     def font_style(self):

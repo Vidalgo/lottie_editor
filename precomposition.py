@@ -5,7 +5,7 @@ from layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer,
 class Precomposition(Vidalgo_lottie_base):
     def __init__(self, precomp_id: str = None, precomp_name: str = None, framerate: float = 30):
         super(Precomposition, self).__init__()
-        self._layers = []
+        self._layers: list[Layer] = []
         self.id = precomp_id
         self.name = precomp_name
         self.framerate = framerate
@@ -57,7 +57,8 @@ class Precomposition(Vidalgo_lottie_base):
 
     @id.setter
     def id(self, precomp_id: str):
-        self.lottie_base['id'] = precomp_id
+        self.lottie_base['id'] = ''
+        self.lottie_element_id = precomp_id
 
     @property
     def name(self):

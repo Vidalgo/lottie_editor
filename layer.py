@@ -67,7 +67,6 @@ class Layer(Vidalgo_lottie_base):
         self.in_point = 0
         self.reference_id = reference_id
         self.transform = layer_transform
-        self.generate_random_id()
 
     def analyze(self):
         super(Layer, self).analyze()

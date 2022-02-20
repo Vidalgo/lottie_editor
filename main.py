@@ -9,20 +9,29 @@ from text_layer import Text_layer
 from text_animator_data import Text_animator_data
 from PIL import Image
 
+import base64
+
 LOTTIE_PATH = "\\lottie_files_path\\"
 IMAGES_PATH = "\\lottie_files_path\\images\\"
 
 
 def lottie_animation_generate():
-    la = Lottie_animation()
-    la.create("generated_animation_1")
+    la = Lottie_animation("animation_stub")
     la.store()
+    pass
+
+def lottie_animation_load_and_regenerate():
+    la = Lottie_animation()
+    la.load("D:\\lottie_files_path\\animation_stub.json")
+    la.name = "animation_stub_1"
+    la.store()
+    pass
 
 
 def lottie_animation_1_load():
     la = Lottie_animation()
     la.load("D:\\lottie_files_path\\48713-media-people.json")
-    la.name = "test_1"
+    la.name = "48713-media-people-vidalgo"
     la.store()
     pass
 
@@ -256,29 +265,22 @@ class Child_2(Parent):
 
 
 if __name__ == '__main__':
-    '''p = Parent()
-    p.parent = {'pa': 1, 'pb': 2}
-    c1 = Child_1()
-    c1.child_1 = {'c1a': 1, 'c1b': 2}
-    c2 = Child_2()
-    c2.child_2 = {'c2a': 1, 'c2b': 2}
-    print(p.parent)
-    print(c1.child_1)
-    print(c2.child_2)'''
-
     '''lp = lt.Lottie_transforms('test-4.json')
     lp.parse()
     lp.transform_layer(4, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.transform_layer(5, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.transform_using_top_parent_null_layer(6, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.store_lottie('test-4-transformed.json')'''
-    # lottie_animation_1_load()
+
+    #lottie_animation_generate()
+    #lottie_animation_load_and_regenerate()
+    lottie_animation_1_load()
     # lottie_animation_2_load()
     # lottie_animation_3_load()
     #combine_animations_1()
     #combine_animations_2()
     #combine_animations_3()
-    combine_animations_4()
+    #combine_animations_4()
     # lottie_animation_generate()
     # ottie_animation_generate_with_3_images()
     # lottie_animation_load_replace_delete()

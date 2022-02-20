@@ -31,6 +31,7 @@ class Char(Vidalgo_lottie_base):
     def load(self, char: dict):
         self.lottie_base = char
         # self.data.load(char['data'])
+        self.refactor_id()
         self.analyze()
 
     def copy(self, font: dict):
@@ -54,8 +55,8 @@ class Char(Vidalgo_lottie_base):
             return None
 
     @character.setter
-    def character(self, ascent: character):
-        self.lottie_base['ch'] = ascent
+    def character(self, char: character):
+        self.lottie_base['ch'] = char
 
     @property
     def font_family(self):

@@ -65,7 +65,8 @@ class Image_asset(Vidalgo_lottie_base):
 
     @id.setter
     def id(self, image_id):
-        self.lottie_base['id'] = image_id
+        self.lottie_base['id'] = ''
+        self.lottie_element_id = image_id
 
     @property
     def name(self):

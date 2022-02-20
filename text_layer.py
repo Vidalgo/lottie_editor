@@ -7,7 +7,7 @@ class Text_layer(Layer):
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
                  layer_transform=None, reference_id=None, text_data: Text_animator_data = None):
         Layer.__init__(self, layer_id, layer_name, ddd_layer, layer_parent, layer_transform, reference_id)
-        self._textdata:Text_animator_data = None
+        self._textdata: Text_animator_data = None
         self.type = Lottie_layer_type.Text.value
         self.textdata = text_data
 
@@ -45,11 +45,9 @@ class Text_layer(Layer):
         self._layer['t'] = textdata.text_animator_data
 
 
-def update_font_name(layers: list, font_name: str, updated_font_name: str):
-    for layer in layers:
-        if layer.type == Lottie_layer_type.Text:
-            for textdata in layer.textdata.text_boxes:
-                if textdata.font_family == font_name:
-                    textdata.font_family = updated_font_name
-
-
+def refactor_font_name(layer, font_names_with_uuid: list[str]):
+    for font_name_with_uuid in font_names_with_uuid:
+        font_name = font_name_with_uuid.rsplit('_', 1)[0]
+        for textdata in layer.textdata.text_boxes:
+            if textdata.font_family == font_name:
+                textdata.font_family = font_name_with_uuid
