@@ -21,6 +21,7 @@ class Lottie_animation(Vidalgo_lottie_base):
                  ddd_layers: int = 0, width: float = 500, height: float = 500, version: str = "5.5.2"):
         super(Lottie_animation, self).__init__()
         self._main_layers_index = 0
+        self._refactor_animation_ids: bool = False
         # self._null_layer_id_counter = 1000
         # self._pre_comb_id_counter = 10
         self._metadata = None
@@ -46,20 +47,21 @@ class Lottie_animation(Vidalgo_lottie_base):
         self.out_point = out_point
         self.ddd_layers = ddd_layers
         self.assets = []
-        self._create_vidalgo_lottie_main_precomposition(self, '{0}_main_precomposition'.format(lottie_name), frame_rate)
-        self._create_vidalgo_lottie_main_layer(self, '{0}_main_layer'.format(lottie_name), width, height)
+        self._create_vidalgo_lottie_main_precomposition('{0}_main_precomposition'.format(lottie_name), frame_rate)
+        self._create_vidalgo_lottie_main_layer('{0}_main_layer'.format(lottie_name), width, height)
 
-    def _create_vidalgo_lottie_main_layer(self, composition: Lottie_animation, name: str, width: float, height: float):
+    def _create_vidalgo_lottie_main_layer(self, name: str, width: float, height: float):
         main_precomposition_ref_id = self.main_precomposition.id if self.main_precomposition.id is not None else ''
         main_layer_name = '{0}_{1}'.format(name, self.uuid(4))
         self._main_layer = Precomp_layer(self.main_layers_index, main_layer_name, layer_transform=True,
                                          reference_id=main_precomposition_ref_id, width=width, height=height)
         self._main_layer.out_point = self.out_point
-        composition.add_main_layer(self.main_layer, update_layer_id=False)
+        self.layers.append(self._main_layer)
+        self.lottie_base['layers'] = [self._main_layer.layer]
 
-    def _create_vidalgo_lottie_main_precomposition(self, composition: Lottie_animation, name: str, frame_rate: int):
+    def _create_vidalgo_lottie_main_precomposition(self, name: str, frame_rate: int):
         self._main_precomposition = Precomposition(name, name, frame_rate)
-        composition.add_precomposition(self.main_precomposition, add_uuid_and_refactor=False)
+        self.add_precomposition(self.main_precomposition, add_uuid_and_refactor=False)
 
     def _refactor_ids(self):
         self._main_layers_index = 0
@@ -111,23 +113,29 @@ class Lottie_animation(Vidalgo_lottie_base):
 
     def _refactor_font_ref_id(self):
         element_ids_with_uuid = [font.refactor_id() for font in self.fonts]
-        [self._refactor_ref_id(layer, element_ids_with_uuid) for precomp in self.precomposition for layer in precomp.layers
+        [refactor_font_name(layer, element_ids_with_uuid) for precomp in self.precomposition for layer in precomp.layers
          if layer.type == Lottie_layer_type.Text.value]
         [refactor_font_name(layer, element_ids_with_uuid) for layer in self.layers
          if layer.type == Lottie_layer_type.Text.value]
 
-    def _refactor_font_family(self):
-        def _refactor_font_family_id(font: Font):
-            for element_id_with_uuid in element_ids_with_uuid:
-                element_id = element_id_with_uuid.rsplit('_', 1)[0]
-                if font.font_family == element_id:
-                    font.font_family = element_id_with_uuid
+    def _refactor_char_ref_id(self):
+        def _refactor_font_family(font: Font):
+            font.font_family = char.font_family
+        chars_uuids = {}
+        for char in self.chars:
+            font_family = char.font_family
+            if font_family in chars_uuids:
+                uuid = chars_uuids[char.font_family]
+            else:
+                uuid = self.uuid(4)
+                chars_uuids[char.font_family] = uuid
+            char.font_family = '{0}_{1}'.format(font_family, uuid)
+            [_refactor_font_family(font) for font in self.fonts if font.font_family == font_family]
 
-        element_ids_with_uuid = [char.vidalgo_id for char in self.chars]
-        [_refactor_font_family_id(font) for font in self.fonts]
-
-    def _refactor_references(self):
-        self._refactor_font_ref_id()
+    def _refactor_references(self, refactor_fonts_and_chars=False):
+        if refactor_fonts_and_chars:
+            self._refactor_char_ref_id()
+            self._refactor_font_ref_id()
         self._refactor_image_ref_id()
         self._refactor_layers_ref_id()
 
@@ -155,33 +163,31 @@ class Lottie_animation(Vidalgo_lottie_base):
                 self._update_ref_id(Lottie_layer_type.Text, font_id, '{0}{1}'.format(font_id, ID_SUFFIX))'''
 
     def __add__(self, animation: Lottie_animation):
-        def _add_index(layer : Layer):
-            layer.id += self.main_layers_index
-
         def _adjust_animation_main_layers():
-            transform_pos = [random.random() * self.width * .1, random.random() * self.height * .1]
-            for layer in animation.layers:
-                layer.id += self.main_layers_index
+            for layer_id, layer in enumerate(animation.layers):
+                transform_pos = [(random.random() - .5) * self.width, (random.random() - .5) * self.height]
+                layer.id = layer_id + self.main_layers_index
                 layer.transform.position = transform_pos
             self.layers += animation.layers
         # markers : no check needed
         # motion blur : use destination but issue a warning if source motion blur exists
         self.in_point = min(self.in_point, animation.in_point)
         self.out_point = max(self.out_point, animation.out_point)
-        self.width += animation.width
-        self.height += animation.height
-        #self.width = max(self.width, animation.width)
-        #self.height = max(self.height, animation.height)
+        # self.width += animation.width
+        # self.height += animation.height
+        self.width = max(self.width, animation.width)
+        self.height = max(self.height, animation.height)
         self.ddd_layers = max(self.ddd_layers, animation.ddd_layers)
         self.assets += animation.assets
         self.fonts += animation.fonts
         self.chars += animation.chars
         self.precomposition += animation.precomposition
+        self.images += animation.images
         _adjust_animation_main_layers()
         # self.markers += animation.markers
         return self
 
-    def load(self, animation_file_name):
+    def load(self, animation_file_name, refactor_fonts_and_chars=False):
         def _load_metadata(metadata: dict):
             new_metadata = Metadata()
             new_metadata.load(metadata)
@@ -220,6 +226,7 @@ class Lottie_animation(Vidalgo_lottie_base):
         self._precomposition = []
         self._layers = []
         self._main_layers_index = 0
+        refactor_animation = False if self.vidalgo_lottie else True
         self._fonts = [] if 'fonts' not in self.lottie_base or 'list' not in self.lottie_base['fonts'] else\
             [_load_font(font) for font in self.lottie_base['fonts']['list']]
         self._chars = [] if 'chars' not in self.lottie_base else \
@@ -228,12 +235,12 @@ class Lottie_animation(Vidalgo_lottie_base):
         _load_asset()
         # self._markers = self.main
         self._metadata = _load_metadata(self.lottie_base['meta']) if 'meta' in self.lottie_base else None
-        if not self.vidalgo_lottie:
-            self._refactor_references()
-            self._create_vidalgo_lottie_main_precomposition(self, '{0}_main_precomp'.format(self.name), self.frame_rate)
+        if refactor_animation:
+            self._refactor_references(refactor_fonts_and_chars)
+            self._create_vidalgo_lottie_main_precomposition('{0}_main_precomp'.format(self.name), self.frame_rate)
             self.main_precomposition.layers = self.layers
             self.layers = []
-            self._create_vidalgo_lottie_main_layer(self, '{0}_main_layer'.format(self.name), self.width, self.height)
+            self._create_vidalgo_lottie_main_layer('{0}_main_layer'.format(self.name), self.width, self.height)
 
     def store(self, file_name=None):
         if file_name is None:
@@ -510,15 +517,15 @@ class Lottie_animation(Vidalgo_lottie_base):
         return self._images
 
     @images.setter
-    def images(self, images: list[Image_asset], add_uuid=True):
+    def images(self, images: list[Image_asset], add_uuid=False):
         if add_uuid:
             for image in images:
                 image.lottie_element_id = image.id
         self._images = images
-        pre_comps_temp = [pre_comp for pre_comp in self.lottie_base['assets'] if type(pre_comp) == Precomposition]
+        pre_comps_temp = [pre_comp.precomp for pre_comp in self.precomposition]
         self.lottie_base['assets'] = [image._lottie_obj for image in images] + pre_comps_temp
 
-    def add_image(self, image: Image_asset, add_uuid_and_refactor=True):
+    def add_image(self, image: Image_asset, add_uuid_and_refactor=False):
         if add_uuid_and_refactor:
             image.lottie_element_id = image.id
             self._refactor_image_ref_id([image.lottie_element_id])
@@ -549,12 +556,12 @@ class Lottie_animation(Vidalgo_lottie_base):
         return self._precomposition
 
     @precomposition.setter
-    def precomposition(self, precomps: list[Precomposition], add_uuid=True):
+    def precomposition(self, precomps: list[Precomposition], add_uuid=False):
         if add_uuid:
             for precomp in precomps:
                 precomp.lottie_element_id = precomp.id
         self._precomposition = precomps
-        images_temp = [image for image in self.lottie_base['assets'] if type(image) == Image_asset]
+        images_temp = [image.image for image in self.images]
         self.lottie_base['assets'] = images_temp + [precomp.precomp for precomp in precomps]
 
     def add_precomposition(self, precomp: Precomposition, add_uuid_and_refactor=True):
@@ -584,12 +591,9 @@ class Lottie_animation(Vidalgo_lottie_base):
                 self.lottie_base['assets'][index] = new_precomp.precomp
                 self._refactor_layers_ref_id([precomp.lottie_element_id])
 
-    def add_main_layer(self, new_layer: Layer, update_layer_id=True, order='last', layer_id: int = None):
-        if update_layer_id:
-            new_layer.id = self.main_layers_index
-        layer_index = add_layer(self.layers, new_layer, order, layer_id)
-        if layer_index is not None and 'layers' in self.lottie_base:
-            self.lottie_base['layers'].insert(layer_index, new_layer.layer)
+    def add_layer(self, new_layer: Layer, update_layer_id=True, order='last', layer_id: int = None):
+        self.main_precomposition.add_layer(new_layer, update_layer_id, order, layer_id)
+
 
     def find_main_layer(self, layer_id: int = None, layer_name: str = None):
         find_layer(self._layers, layer_id, layer_name)

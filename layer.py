@@ -54,7 +54,7 @@ class Matte_mode(enum.Enum):
 
 class Layer(Vidalgo_lottie_base):
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
-                 layer_transform=None, reference_id=None, *args, **kwargs):
+                 layer_transform=None, reference_id=None, out_point: int = 30, *args, **kwargs):
         super(Layer, self).__init__()
         self._transform = None
         self._masks = None
@@ -65,6 +65,7 @@ class Layer(Vidalgo_lottie_base):
         self.parent = layer_parent
         self.start_time = 0
         self.in_point = 0
+        self.out_point = out_point
         self.reference_id = reference_id
         self.transform = layer_transform
 

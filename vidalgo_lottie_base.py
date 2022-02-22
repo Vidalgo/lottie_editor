@@ -31,7 +31,7 @@ class Vidalgo_lottie_base:
         return ''.join(random.choice(SYMBOLS) for i in range(length))
 
     def generate_random_id(self, length: int = 12):
-        self._lottie_obj[VIDALGO_ID] = self.uuid()
+        self._lottie_obj[VIDALGO_ID] = self.uuid(length)
 
     def load(self, animation_file_name):
         self._lottie_obj = load_json(animation_file_name)
@@ -80,6 +80,8 @@ class Vidalgo_lottie_base:
             return self.lottie_base['fName']
         elif 'fFamily' in self.lottie_base:
             return self.lottie_base['fFamily']
+        elif 'nm' in self.lottie_base:
+            return self.lottie_base['nm']
         else:
             return None
 

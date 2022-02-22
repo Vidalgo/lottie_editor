@@ -45,7 +45,7 @@ class text_document:
         if self.text is None:
             raise TypeError("Error: textbox doesn't have a text")
         if self.font_color is None or type(self.font_color) is not list or len(self.font_color) != 3 or \
-                all(0 <= color <= 1 for color in self.font_color):
+                all(0 <= color <= 1 for color in self.font_color) is False:
             raise TypeError("Error: textbox doesn't have a color or type or values are incorrect")
 
     def load(self, textbox: dict):

@@ -77,8 +77,7 @@ class Image_asset(Vidalgo_lottie_base):
 
     @name.setter
     def name(self, image_name):
-        if 'u' in self.lottie_base:
-            self.lottie_base['u'] = image_name
+        self.lottie_base['u'] = image_name
 
     @property
     def path(self):

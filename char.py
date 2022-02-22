@@ -31,7 +31,6 @@ class Char(Vidalgo_lottie_base):
     def load(self, char: dict):
         self.lottie_base = char
         # self.data.load(char['data'])
-        self.refactor_id()
         self.analyze()
 
     def copy(self, font: dict):
