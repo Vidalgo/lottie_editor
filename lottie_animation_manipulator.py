@@ -11,7 +11,6 @@ OTHER_OPERATION_TYPES = ['merge']
 class Single_operation(pydantic.BaseModel):
     operation_type: str
     operation_id: int
-    state: dict
     state: Optional[dict]
     operation: Any
 
@@ -49,7 +48,7 @@ class Lottie_animation_manipulator:
             getattr(lottie_element.transform, operation.operation_type).transform = operation.operation
         elif operation.operation_type in OTHER_OPERATION_TYPES:
             lottie_merge = Lottie_animation()
-            lottie_merge.load(operation.operation[0])
+            lottie_merge.load(operation.operation)
             lottie_element += lottie_merge
         else:
             pass
