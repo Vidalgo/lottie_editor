@@ -22,7 +22,7 @@
 				"operation_type" : "merge",
 				"operation_id": 4,
 				"state" : null,
-				"operation" : ["D:\\lottie_files_path\\coin.json"]
+				"operation" : "D:\\lottie_files_path\\coin.json"
 				}
 			] 
 		} 
