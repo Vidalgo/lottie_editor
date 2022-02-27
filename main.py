@@ -22,8 +22,8 @@ def lottie_animation_generate():
 
 def lottie_animation_load_and_regenerate():
     la = Lottie_animation()
-    la.load("D:\\lottie_files_path\\animation_stub.json")
-    la.name = "animation_stub_1"
+    la.load("D:\\lottie_files_path\\vdoggie.json")
+    la.name = "vidalgo_vdoggie.json"
     la.store()
     pass
 
@@ -62,22 +62,13 @@ def combine_animations_1():
     la1.store()
     pass
 
-def combine_animations_2():
+def combine_animations_0():
     la1 = Lottie_animation()
     la1.load("D:\\lottie_files_path\\coin.json")
     la2 = Lottie_animation()
     la2.load("D:\\lottie_files_path\\coin.json")
-    la3 = Lottie_animation()
-    la3.load("D:\\lottie_files_path\\coin.json")
-    la4 = Lottie_animation()
-    la4.load("D:\\lottie_files_path\\coin.json")
-    la5 = Lottie_animation()
-    la5.load("D:\\lottie_files_path\\coin.json")
     la1 += la2
-    la1 += la3
-    la1 += la4
-    la1 += la5
-    la1.name = "coin-plus-coins-vidalgo"
+    la1.name = "coin-plus-coin-vidalgo"
     la1.store()
 
 
@@ -303,6 +294,9 @@ if __name__ == '__main__':
     lp.transform_using_top_parent_null_layer(6, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.store_lottie('test-4-transformed.json')'''
 
+    lottie_animation_generate()
+    #lottie_animation_load_and_regenerate()
+    #combine_animations_0()
     # lottie_animation_generate()
     # lottie_animation_generate()
     # lottie_animation_load_and_regenerate()
@@ -315,7 +309,7 @@ if __name__ == '__main__':
     # combine_vidalgo_animations_2_2()
     # combine_animations_3()
     # combine_animations_4()
-    lottie_animation_generate_with_1_image()
+    # lottie_animation_generate_with_1_image()
 
     # lottie_animation_generate_with_3_images()
     # lottie_animation_load_replace_delete()

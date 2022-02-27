@@ -13,6 +13,7 @@ PATH = "/lottie_files_path/"
 
 class Vidalgo_lottie_base:
     _RANDOM_SEED_CALLED = False
+    vidalgo_lottie_elements: dict = {}
 
     def __init__(self):
         self._lottie_obj = {}
@@ -37,6 +38,7 @@ class Vidalgo_lottie_base:
         self._lottie_obj = load_json(animation_file_name)
         if self._lottie_obj is not None and VIDALGO_ID not in self._lottie_obj:
             self.generate_random_id()
+        Vidalgo_lottie_base.vidalgo_lottie_elements[self.vidalgo_id] = self
 
     def copy(self, animation: dict):
         self._lottie_obj = copy.deepcopy(animation)
@@ -57,6 +59,7 @@ class Vidalgo_lottie_base:
         self._lottie_obj = lottie
         if lottie is not None and VIDALGO_ID not in lottie:
             self.generate_random_id()
+        Vidalgo_lottie_base.vidalgo_lottie_elements[self.vidalgo_id] = self
         self.analyze()
 
     @property

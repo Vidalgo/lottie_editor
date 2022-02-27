@@ -1,0 +1,30 @@
+{
+	"version": "1.0.0",
+	"asset_id": "vdoggie_1234",
+	"operation_index": 1,
+	"operations": [{
+			"element_ids" : ["$6fy{Q{{=Noh"],
+			"operations": [{
+				"operation_type" : "scale",
+				"operation_id": 1,
+				"state" : null,
+				"operation" : [100,100]
+			}, {
+				"operation_type" : "rotate",
+				"operation_id": 2,
+				"state" : null,
+				"operation" : 45
+				} 
+			] 
+		}, {
+			"element_ids" : ["V+ws*'usg{fo"],
+			"operations": [{
+				"operation_type" : "merge",
+				"operation_id": 4,
+				"state" : null,
+				"operation" : ["D:\\lottie_files_path\\coin.json"]
+				}
+			] 
+		} 
+	]		
+}
