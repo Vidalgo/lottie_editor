@@ -5,12 +5,12 @@
 	"operations": [{
 			"element_ids" : ["$6fy{Q{{=Noh"],
 			"operations": [{
-				"operation_type" : "scale",
+				"operation_type" : "scaling",
 				"operation_id": 1,
 				"state" : null,
-				"operation" : [100,100]
+				"operation" : [50,80]
 			}, {
-				"operation_type" : "rotate",
+				"operation_type" : "rotation",
 				"operation_id": 2,
 				"state" : null,
 				"operation" : 45

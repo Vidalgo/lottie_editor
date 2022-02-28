@@ -4,7 +4,7 @@ from lottie_search_and_replace import load_json
 from lottie_animation import Lottie_animation
 
 
-TRANSFORM_OPERATION_TYPES = ['translate', 'scaling', 'rotation', 'skew']
+TRANSFORM_OPERATION_TYPES = ['position', 'scaling', 'rotation', 'skew']
 OTHER_OPERATION_TYPES = ['merge']
 
 
@@ -45,7 +45,7 @@ class Lottie_animation_manipulator:
     def _apply_single_operation(self, element_id: str, operation: Single_operation):
         lottie_element = self._lottie.vidalgo_lottie_elements[element_id]
         if operation.operation_type in TRANSFORM_OPERATION_TYPES:
-            getattr(lottie_element.transform, operation.operation_type).transform = operation.operation
+            setattr(lottie_element.transform, operation.operation_type, operation.operation)
         elif operation.operation_type in OTHER_OPERATION_TYPES:
             lottie_merge = Lottie_animation()
             lottie_merge.load(operation.operation)
