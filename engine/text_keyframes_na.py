@@ -1,4 +1,4 @@
-from text_document import Text_properties
+from engine.text_document import Text_properties
 
 
 class Text_keyframes:

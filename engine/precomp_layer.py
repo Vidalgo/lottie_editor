@@ -1,6 +1,6 @@
 import copy
-from layer import Layer, Lottie_layer_type
-from animated_property import Animated_property
+from engine.layer import Layer, Lottie_layer_type
+from engine.animated_property import Animated_property
 
 
 class Precomp_layer(Layer):

@@ -1,6 +1,6 @@
-from image_asset import Image_asset
-from precomposition import Precomposition
-from layer import Layer
+from engine.image_asset import Image_asset
+from engine.precomposition import Precomposition
+from engine.layer import Layer
 
 
 class Lottie_main:

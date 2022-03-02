@@ -1,6 +1,6 @@
 import copy
 import enum
-from animated_property import Animated_property
+from engine.animated_property import Animated_property
 
 
 class Mask_mode(enum.Enum):

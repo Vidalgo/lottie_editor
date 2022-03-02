@@ -1,4 +1,4 @@
-from layer import Layer, Lottie_layer_type
+from engine.layer import Layer, Lottie_layer_type
 
 
 class Image_layer(Layer):

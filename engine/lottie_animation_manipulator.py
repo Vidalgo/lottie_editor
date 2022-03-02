@@ -1,7 +1,7 @@
 import pydantic
 from typing import Optional, Any
-from lottie_search_and_replace import load_json
-from lottie_animation import Lottie_animation
+from engine.lottie_search_and_replace import load_json
+from engine.lottie_animation import Lottie_animation
 
 
 TRANSFORM_OPERATION_TYPES = ['position', 'scaling', 'rotation', 'skew']

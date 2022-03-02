@@ -1,6 +1,6 @@
-from vidalgo_lottie_base import Vidalgo_lottie_base
-from layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer, replace_layer
-from text_layer import Text_layer
+from engine.vidalgo_lottie_base import Vidalgo_lottie_base
+from engine.layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer, replace_layer
+from engine.text_layer import Text_layer
 
 
 class Precomposition(Vidalgo_lottie_base):

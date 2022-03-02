@@ -1,5 +1,5 @@
-from lottie_parser import Lottie_parser
-import lottie_keyframes as kf
+from engine.lottie_parser import Lottie_parser
+import engine.lottie_keyframes as kf
 
 
 class Lottie_keyframe_editor(Lottie_parser):

@@ -1,5 +1,5 @@
 import numpy as np
-import lottie_parser as lp
+import engine.lottie_parser as lp
 
 
 class Lottie_transforms(lp.Lottie_parser):

@@ -1,6 +1,6 @@
-from static_transform import Static_transform
-from static_transform import Lottie_transform_type
-from transform import Transform
+from engine.static_transform import Static_transform
+from engine.static_transform import Lottie_transform_type
+from engine.transform import Transform
 
 
 class Text_transform(Transform):

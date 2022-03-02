@@ -1,4 +1,4 @@
-from vidalgo_lottie_base import Vidalgo_lottie_base
+from engine.vidalgo_lottie_base import Vidalgo_lottie_base
 
 
 class Char(Vidalgo_lottie_base):

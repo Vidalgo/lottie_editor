@@ -1,9 +1,9 @@
 import enum
 
-from vidalgo_lottie_base import Vidalgo_lottie_base
-from mask import Mask
+from engine.vidalgo_lottie_base import Vidalgo_lottie_base
+from engine.mask import Mask
 
-from transform import Transform
+from engine.transform import Transform
 
 
 class Lottie_layer_type(enum.Enum):

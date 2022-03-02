@@ -2,7 +2,7 @@ import string
 import random
 import copy
 
-from lottie_search_and_replace import load_json, store_json
+from engine.lottie_search_and_replace import load_json, store_json
 
 
 VIDALGO_ID = 'ln'

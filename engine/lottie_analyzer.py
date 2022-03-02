@@ -10,11 +10,11 @@ from anytree.walker import Walker
 from anytree.exporter import DotExporter
 from anytree.exporter import JsonExporter
 
-import lottie_search_and_replace as lsr
-from lottie_parser import Lottie_parser
+import engine.lottie_search_and_replace as lsr
+from engine.lottie_parser import Lottie_parser
 from os import stat
 
-from lottie_nlp import Lottie_nlp
+from engine.lottie_nlp import Lottie_nlp
 
 RESTRICTED_NAMES_IN_LOTTIE = ["layer", "shape", "image", "comp", "group", "path", "fill"]
 

@@ -8,17 +8,17 @@ from typing import List, Optional, Any
 import random
 from os import makedirs, path
 
-from vidalgo_lottie_base import Vidalgo_lottie_base, ID_SUFFIX, PATH
-from helpers import update_intersected_ids, store_json
-
-from metadata import Metadata
-from font import Font
-from char import Char
-from image_asset import Image_asset
-from precomposition import Precomposition
-from layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer, replace_layer, update_ref_id
-from precomp_layer import Precomp_layer
-from text_layer import Text_layer, refactor_font_name
+# from vidalgo_lottie_base import Vidalgo_lottie_base, ID_SUFFIX, PATH
+# from helpers import update_intersected_ids, store_json
+#
+# from metadata import Metadata
+# from font import Font
+# from char import Char
+# from image_asset import Image_asset
+# from precomposition import Precomposition
+# from layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer, replace_layer, update_ref_id
+# from precomp_layer import Precomp_layer
+# from text_layer import Text_layer, refactor_font_name
 
 
 class Lottie_animation(BaseModel):

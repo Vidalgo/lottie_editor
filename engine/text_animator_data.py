@@ -1,5 +1,5 @@
-from text_transform import Text_transform
-from text_document import text_document
+from engine.text_transform import Text_transform
+from engine.text_document import text_document
 import copy
 
 

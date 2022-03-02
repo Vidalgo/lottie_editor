@@ -4,7 +4,7 @@ from io import BytesIO
 import copy
 import base64
 
-from vidalgo_lottie_base import Vidalgo_lottie_base
+from engine.vidalgo_lottie_base import Vidalgo_lottie_base
 
 
 class Image_asset(Vidalgo_lottie_base):

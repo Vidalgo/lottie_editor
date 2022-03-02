@@ -1,7 +1,7 @@
 import copy
 
-from static_transform import Static_transform
-from static_transform import Lottie_transform_type
+from engine.static_transform import Static_transform
+from engine.static_transform import Lottie_transform_type
 
 
 class Transform:

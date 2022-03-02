@@ -1,6 +1,6 @@
 import copy
-from layer import Layer, Lottie_layer_type
-from text_animator_data import Text_animator_data
+from engine.layer import Layer, Lottie_layer_type
+from engine.text_animator_data import Text_animator_data
 
 
 class Text_layer(Layer):
