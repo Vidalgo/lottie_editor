@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field, confloat, conlist
 from enum import Enum
-from typing import Literal, Union, List, Dict
+from typing import Literal, Union, Any
 
 # aliases
-Lottie = Dict
+Lottie = dict
 
 
 # generics
@@ -22,16 +22,17 @@ class OperationBase(BaseModel):
 
 
 # transforms
-class TransformOperationBase(OperationBase):
+class TransformOperation(OperationBase):
     element_id: str = Field(..., description='target element id')
+    value: Any = Field(None, description='operation value')
 
 
-class PositionTransformOperation(TransformOperationBase):
+class PositionTransformOperation(TransformOperation):
     type: Literal[OperationType.Position]
     value: conlist(float, min_items=2, max_items=2) = Field(..., description='new (x,y) values')
 
 
-class RotationTransformOperation(TransformOperationBase):
+class RotationTransformOperation(TransformOperation):
     type: Literal[OperationType.Rotation]
     value: confloat(ge=0, lt=360) = Field(..., description='counter-clockwise rotation degrees')
 
@@ -39,11 +40,11 @@ class RotationTransformOperation(TransformOperationBase):
 # merges
 class MergeOperation(OperationBase):
     type: Literal[OperationType.Merge]
-    animations: List[Lottie] = Field(..., description='list of lotties to merge')
+    animations: list[Lottie] = Field(..., description='list of lotties to merge')
 
 
 # all operations
-EngineOperation = Union[
+LottieOperation = Union[
     RotationTransformOperation,
     PositionTransformOperation,
     MergeOperation
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     encoded = json.dumps(operations)
 
     # decode
-    parsed = parse_raw_as(List[EngineOperation], encoded)
+    parsed = parse_raw_as(list[LottieOperation], encoded)
 
     # assert
     expected = [

@@ -35,7 +35,10 @@ class Vidalgo_lottie_base:
         self._lottie_obj[VIDALGO_ID] = self.uuid(length)
 
     def load(self, animation_file_name):
-        self._lottie_obj = load_json(animation_file_name)
+        if isinstance(animation_file_name, str):
+            self._lottie_obj = load_json(animation_file_name)
+        else:
+            self._lottie_obj = animation_file_name
         if self._lottie_obj is not None and VIDALGO_ID not in self._lottie_obj:
             self.generate_random_id()
         Vidalgo_lottie_base.vidalgo_lottie_elements[self.vidalgo_id] = self

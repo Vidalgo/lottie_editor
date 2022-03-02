@@ -2,54 +2,59 @@ import pydantic
 from typing import Optional, Any
 from engine.lottie_search_and_replace import load_json
 from engine.lottie_animation import Lottie_animation
+from models import *
 
-
-TRANSFORM_OPERATION_TYPES = ['position', 'scaling', 'rotation', 'skew']
-OTHER_OPERATION_TYPES = ['merge']
-
-
-class Single_operation(pydantic.BaseModel):
-    operation_type: str
-    operation_id: int
-    state: Optional[dict]
-    operation: Any
-
-
-class Multiple_operation_on_lottie_elements(pydantic.BaseModel):
-    element_ids: list
-    operations: list[Single_operation]
-
-
-class All_lottie_Operations(pydantic.BaseModel):
-    version: str
-    asset_id: str
-    operation_index: int
-    operations: list[Multiple_operation_on_lottie_elements]
+# TRANSFORM_OPERATION_TYPES = ['position', 'scaling', 'rotation', 'skew']
+# OTHER_OPERATION_TYPES = ['merge']
+#
+#
+# class Single_operation(pydantic.BaseModel):
+#     operation_type: str
+#     operation_id: int
+#     state: Optional[dict]
+#     operation: Any
+#
+#
+# class Multiple_operation_on_lottie_elements(pydantic.BaseModel):
+#     element_ids: list
+#     operations: list[Single_operation]
+#
+#
+# class All_lottie_Operations(pydantic.BaseModel):
+#     version: str
+#     asset_id: str
+#     operation_index: int
+#     operations: list[Multiple_operation_on_lottie_elements]
 
 
 class Lottie_animation_manipulator:
-    def __init__(self, lottie_animation: Lottie_animation, all_lottie_operations: dict):
+    def __init__(self, lottie_animation: Lottie_animation, all_lottie_operations: list[LottieOperation]):
         self._lottie = lottie_animation
-        self._lottie_operations = All_lottie_Operations(**all_lottie_operations)
+        self._lottie_operations = all_lottie_operations
 
     def apply_operations_on_elements(self) -> None:
-        for multiple_operation_on_lottie_elements in self._lottie_operations.operations:
-            for element_id in multiple_operation_on_lottie_elements.element_ids:
-                for single_operation in multiple_operation_on_lottie_elements.operations:
-                    self._apply_single_operation(element_id, single_operation)
+        for operation in self._lottie_operations:
+            self._apply_single_operation(operation)
+        # for multiple_operation_on_lottie_elements in self._lottie_operations.operations:
+        #     for element_id in multiple_operation_on_lottie_elements.element_ids:
+        #         for single_operation in multiple_operation_on_lottie_elements.operations:
+        #             self._apply_single_operation(element_id, single_operation)
 
     @property
     def lottie(self):
         return self._lottie
 
-    def _apply_single_operation(self, element_id: str, operation: Single_operation):
-        lottie_element = self._lottie.vidalgo_lottie_elements[element_id]
-        if operation.operation_type in TRANSFORM_OPERATION_TYPES:
-            setattr(lottie_element.transform, operation.operation_type, operation.operation)
-        elif operation.operation_type in OTHER_OPERATION_TYPES:
-            lottie_merge = Lottie_animation()
-            lottie_merge.load(operation.operation)
-            lottie_element += lottie_merge
+    def _apply_single_operation(self, operation: LottieOperation):
+        if isinstance(operation, TransformOperation):
+            lottie_element = self._lottie.vidalgo_lottie_elements[operation.element_id]
+            setattr(lottie_element.transform, operation.operation_type, operation.value)
+        elif isinstance(operation, MergeOperation):
+            element_id = self._lottie.lottie_element_id
+            lottie_element = self._lottie.vidalgo_lottie_elements[element_id]
+            for animation in operation.animations:
+                lottie_merge = Lottie_animation()
+                lottie_merge.load(animation)
+                lottie_element += lottie_merge
         else:
             pass
 
