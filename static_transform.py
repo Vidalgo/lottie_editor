@@ -27,15 +27,14 @@ class Lottie_transform_type(enum.Enum):
 class Static_transform:
     def __init__(self, transform_type: Lottie_transform_type, property_value=None, *args, **kwargs):
         self.transform_object = {}
-        match transform_type.name:
-            case 'anchor' | 'position' | 'orientation':
-                self.property_value = [0, 0, 0] if property_value is True else property_value
-            case 'scaling':
-                self.property_value = [100, 100, 100] if property_value is True else property_value
-            case 'opacity':
-                self.property_value = 100 if property_value is True else property_value
-            case _:
-                self.property_value = 0 if property_value is True else property_value
+        if transform_type.name in ('anchor', 'position', 'orientation'):
+            self.property_value = [0, 0, 0] if property_value is True else property_value
+        elif transform_type.name == 'scaling':
+            self.property_value = [100, 100, 100] if property_value is True else property_value
+        elif transform_type.name == 'opacity':
+            self.property_value = 100 if property_value is True else property_value
+        else:
+            self.property_value = 0 if property_value is True else property_value
         self.property_index = transform_type.value
         self.animated = 0
         self.analyze()
@@ -45,13 +44,12 @@ class Static_transform:
             raise TypeError("Error: composition is not of type dictionary")
         if self.property_value is None:
             raise TypeError("Error: composition doesn't have a value")
-        match Lottie_transform_type(self.property_index).name:
-            case 'anchor' | 'position' | 'scaling' | 'orientation':
-                if type(self.property_value) is not list or len(self.property_value) < 2 or len(self.property_value) > 3:
-                    raise TypeError("Error: not a list or incorrect dimension")
-            case _:
-                if type(self.property_value) is not float and type(self.property_value) is not int:
-                    raise TypeError("Error: not a number")
+        if Lottie_transform_type(self.property_index).name in ('anchor', 'position', 'scaling', 'orientation'):
+            if type(self.property_value) is not list or len(self.property_value) < 2 or len(self.property_value) > 3:
+                raise TypeError("Error: not a list or incorrect dimension")
+        else:
+            if type(self.property_value) is not float and type(self.property_value) is not int:
+                raise TypeError("Error: not a number")
 
     @property
     def property_value(self):
