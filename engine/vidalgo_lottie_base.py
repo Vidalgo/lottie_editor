@@ -8,7 +8,7 @@ from engine.lottie_search_and_replace import load_json, store_json
 VIDALGO_ID = 'ln'
 ID_SUFFIX = '_'
 SYMBOLS = (string.ascii_letters + string.digits + string.punctuation).replace('_', '')
-PATH = "/lottie_files_path/"
+PATH = r"C:/dev/vidalgo/code/lottie_editor/lottie_files_path/"
 
 
 class Vidalgo_lottie_base:

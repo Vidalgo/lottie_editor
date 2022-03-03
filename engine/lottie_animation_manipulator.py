@@ -35,10 +35,6 @@ class Lottie_animation_manipulator:
     def apply_operations_on_elements(self) -> None:
         for operation in self._lottie_operations:
             self._apply_single_operation(operation)
-        # for multiple_operation_on_lottie_elements in self._lottie_operations.operations:
-        #     for element_id in multiple_operation_on_lottie_elements.element_ids:
-        #         for single_operation in multiple_operation_on_lottie_elements.operations:
-        #             self._apply_single_operation(element_id, single_operation)
 
     @property
     def lottie(self):
@@ -47,9 +43,9 @@ class Lottie_animation_manipulator:
     def _apply_single_operation(self, operation: LottieOperation):
         if isinstance(operation, TransformOperation):
             lottie_element = self._lottie.vidalgo_lottie_elements[operation.element_id]
-            setattr(lottie_element.transform, operation.operation_type, operation.value)
+            setattr(lottie_element.transform, operation.type, operation.value)
         elif isinstance(operation, MergeOperation):
-            element_id = self._lottie.lottie_element_id
+            element_id = self._lottie.lottie['ln']
             lottie_element = self._lottie.vidalgo_lottie_elements[element_id]
             for animation in operation.animations:
                 lottie_merge = Lottie_animation()
@@ -62,7 +58,15 @@ class Lottie_animation_manipulator:
 if __name__ == '__main__':
     la1 = Lottie_animation()
     la1.load("D:\\lottie_files_path\\vidalgo_vdoggie.json")
-    lottie_operations = load_json("D:\\lottie_files_path\\operations_1.json")
+    la2 = Lottie_animation()
+    la2.load("D:\\lottie_files_path\\coin.json")
+
+    lottie_operations = [
+        ScalingTransformOperation(element_id='$6fy{Q{{=Noh', value=[50,80]),
+        RotationTransformOperation(element_id='$6fy{Q{{=Noh', value=45),
+        MergeOperation(animations=[la2.lottie])
+    ]
+
     lottie_manipulator = Lottie_animation_manipulator(la1, lottie_operations)
     lottie_manipulator.apply_operations_on_elements()
     lottie_manipulator.lottie.name = "vdoggie_manipulated"

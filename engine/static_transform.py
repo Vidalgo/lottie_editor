@@ -30,7 +30,7 @@ class Static_transform:
         if transform_type.name in ('anchor', 'position', 'orientation'):
             self.property_value = [0, 0, 0] if property_value is True else property_value
         elif transform_type.name == 'scaling':
-            self.property_value = [100, 100, 100] if property_value is True else property_value
+            self.property_value = [100, 100] if property_value is True else property_value
         elif transform_type.name == 'opacity':
             self.property_value = 100 if property_value is True else property_value
         else:
