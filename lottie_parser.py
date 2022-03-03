@@ -4,6 +4,7 @@ import random
 
 
 class Lottie_parser:
+    index = 0
     def __init__(self, lottie_filename_or_obj):
         if type(lottie_filename_or_obj) is str:
             self.lottie_filename = lottie_filename_or_obj
@@ -15,6 +16,33 @@ class Lottie_parser:
         self.assets = {}
         self.layers = {}
         random.seed(datetime.datetime.now().microsecond)
+
+    def travel(self, data_object):
+        def _expend_key(key_prefix, lottie_obj):
+            lottie_obj_name = Lottie_parser.parse_layer_name(lottie_obj)
+            lottie_obj_id = Lottie_parser.parse_layer_id(lottie_obj)
+            lottie_obj_name = lottie_obj_name if lottie_obj_name is not None else "na_" + str(Lottie_parser.index)
+            lottie_obj_id = str(lottie_obj_id) if lottie_obj_id is not None else "na_" + str(Lottie_parser.index)
+            Lottie_parser.index += 1
+            return key_prefix + '\\' + lottie_obj_name + ':' + str(lottie_obj_id)
+
+        def _travel_shapes(shape_obj, inner_data_object, layer_key_prefix):
+            layer_key_expended = _expend_key(layer_key_prefix, shape_obj)
+            if shape_obj is not None and hasattr(data_object, 'parse_shape'):
+                data_object.parse_shape(shape_obj, layer_key_expended)
+            if shape_obj['ty'] == 'gr':
+                if 'it' in shape_obj:
+                    for inner_shape in shape_obj['it']:
+                        _travel_shapes(inner_shape, inner_data_object, layer_key_expended)
+
+        for layer_key in self.layers:
+            layer_obj = self.layers[layer_key]
+            if data_object is not None and hasattr(data_object, 'parse_layer'):
+                data_object.parse_layer(layer_obj, layer_key)
+            layer_type = self.parse_layer_type(layer_obj)
+            if layer_type == 'shape' and 'shapes' in layer_obj:
+                for shape in layer_obj['shapes']:
+                    _travel_shapes(shape, data_object, layer_key)
 
     def parse_images(self):
         self.assets = lsr.find_assets(self.json_obj, "images")
@@ -411,10 +439,47 @@ class Lottie_parser:
             return layer['ks']
 
 
-'''lp = Lottie_parser('Merry Christmas from Vidalgo doggie.json')
-lp.parse()
+class Data_parser:
+    obj_ref = dict()
+    @staticmethod
+    def _parse_color_from_shape(shape_obj, path):
+        if shape_obj['ty'] == 'fl':
+            if 'o' in shape_obj:
+                opacity_key = '{0}\\opacity'.format(path)
+                value = shape_obj['o']
+                print('Shape type = {0}, Path = {1}, value = {2}'.format(Lottie_parser.parse_shape_type(shape_obj),
+                                                                         opacity_key, value))
+                Data_parser.obj_ref[opacity_key] = shape_obj
+            if 'c' in shape_obj:
+                color_key = '{0}\\color'.format(path)
+                value = shape_obj['c']
+                print('Shape type = {0}, Path = {1}, value = {2}'.format(Lottie_parser.parse_shape_type(shape_obj),
+                                                                         color_key, value))
+                Data_parser.obj_ref[color_key] = shape_obj
 
-print(lp.get_layer(18419)["nm"])
+    @staticmethod
+    def parse_shape(shape_obj, key):
+        #print('Shape type = {0} Path = {1}'.format(Lottie_parser.parse_shape_type(shape_obj), key))
+        Data_parser._parse_color_from_shape(shape_obj, key)
+
+    @staticmethod
+    def parse_layer(layer_obj, key):
+        print('Layer type = {0} Path = {1}'.format(Lottie_parser.parse_layer_type(layer_obj), key))
+        Data_parser.obj_ref[key] = layer_obj
+
+
+if __name__ == '__main__':
+    lp = Lottie_parser("D:\\lottie_files_path\\coin.json")
+    #lp = Lottie_parser("D:\\lottie_files_path\\fairy.json")
+    dp = Data_parser
+    lp.parse()
+    lp.travel(dp)
+    dp.obj_ref['layers:0\\na_0:na_0\\na_2:na_2\\color']['c']['k'] = [5, 6, 7, 0]
+    lp.store_lottie("D:\\lottie_files_path\\coin-1.json")
+    pass
+
+
+'''print(lp.get_layer(18419)["nm"])
 print(lp.get_asset('image_9', 'image')["id"])
 print(lp.get_layer(8, 'comp_0')["nm"])
 
