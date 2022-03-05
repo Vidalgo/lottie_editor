@@ -11,8 +11,8 @@ class DummyLottieObjectWithoutInit(LottieObject):
 
 class DummyLottieObjectWithInit(LottieObject):
     attr1: str = LottieAttribute(tag='a1', description='required string attribute')
-    attr2: Optional[int] = LottieAttribute(tag='a2', description='optional int attribute')
-    attr3: List[str] = LottieAttribute(tag='a3', description='required list attribute')
+    attr2: Optional[int] = LottieAttribute(tag='a2')
+    attr3: List[str] = LottieAttribute(tag='a3')
 
     def __init__(self, *args, **kwargs):
         self.x = kwargs.get('x', 1)
@@ -21,12 +21,21 @@ class DummyLottieObjectWithInit(LottieObject):
 class DerivedDummyLottieObjectWithoutInit(DummyLottieObjectWithoutInit):
     # note that attr3 overrides both type and tag
     attr3: int = LottieAttribute(tag='x3', description='overrides attribute from baseclass')
-    attr4: float = LottieAttribute(tag='a4', description='required string attribute')
+    attr4: float = LottieAttribute(tag='a4')
 
 
 class DerivedTwiceDummyLottieObjectWithoutInit(DerivedDummyLottieObjectWithoutInit):
     # note that attr3 overrides both type and tag
-    attr5: bool = LottieAttribute(tag='a5', description='required boolean attribute')
+    attr5: bool = LottieAttribute(tag='a5')
+
+
+class DummyLottieObject2(LottieObject):
+    attr1: int = LottieAttribute(tag='a1', description='collides with DummyLottieObjectWithoutInit')
+    attr6: bool = LottieAttribute(tag='a6')
+
+
+class DummyLottieObjectMultipleInheritance(DummyLottieObjectWithoutInit, DummyLottieObject2):
+    attr7: str = LottieAttribute(tag='a7')
 
 
 class TestLottieObject(TestCase):
@@ -109,3 +118,29 @@ class TestLottieObject(TestCase):
         self.assertIsNone(uut.attr4)
         self.assertEqual(uut.attr5, True)
         self.assertEqual(uut.attributes, expected_attributes)
+
+    def test_derived_multiple_object_attributes_created(self):
+        # arrange
+        expected_attributes = {
+            'attr1': LottieAttribute(tag='a1', type=int),   # taken from DummyLottieObject2, according to MRO
+            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(tag='a3', type=List[str]),
+            'attr6': LottieAttribute(tag='a6', type=bool),
+            'attr7': LottieAttribute(tag='a7', type=str)
+        }
+        # act
+        uut = DummyLottieObjectMultipleInheritance(attr1='hello', attr2=2, attr3=3, attr6=True, attr7='world')
+        # assert
+        self.assertEqual(uut.attr1, 'hello')
+        self.assertEqual(uut.attr2, 2)
+        self.assertEqual(uut.attr3, 3)
+        self.assertEqual(uut.attr6, True)
+        self.assertEqual(uut.attr7, 'world')
+        self.assertEqual(uut.attributes, expected_attributes)
+
+    def test_duplicate_tags_raise(self):
+        with self.assertRaises(TypeError):
+            class DummyLottieObjectDuplicateTags(DummyLottieObjectWithoutInit):
+                # the tag 'a1' is already paired with DummyLottieObjectWithoutInit.attr1
+                attr100: str = LottieAttribute(tag='a1')
+
