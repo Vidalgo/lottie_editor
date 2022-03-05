@@ -10,7 +10,7 @@ class LottieObjectMeta(type):
         attrs.update({k: None for k in attributes.keys()})
         attrs.setdefault('__init__', LottieObjectMeta._autoinit)
         attrs['_attributes'] = attributes
-        attrs['_tags'] = {attr.tag: name for name, attr in attributes.items()}
+        attrs['_tags'] = {attr.tag: attr for name, attr in attributes.items()}
         return super().__new__(cls, type_name, bases, attrs)
 
     @staticmethod
@@ -26,7 +26,7 @@ class LottieObjectMeta(type):
         own_annotations = attrs.get('__annotations__', {})
         for name, attr in own_attributes.items():
             annotation = own_annotations.get(name, Any)
-            own_attributes[name] = attr.clone(type=annotation)
+            own_attributes[name] = attr.clone(name=name, type=annotation)
         # lottie attributes from base classes
         attributes = {}
         for base in bases:
@@ -63,3 +63,19 @@ class LottieObject(metaclass=LottieObjectMeta):
     def attributes(self):
         return self._attributes
 
+    @property
+    def tags(self):
+        return self._tags
+
+    def __setattr__(self, key, value):
+        if key in self._attributes:
+            self._set_lottie_attr(key, value)
+        else:
+            super().__setattr__(key, value)
+
+    def _set_lottie_attr(self, key, value):
+        # TODO: add type validation
+        super().__setattr__(key, value)
+
+    def _load_attribute(self, name, value):
+        setattr(self, name, value)

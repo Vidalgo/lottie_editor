@@ -2,9 +2,10 @@ from typing import Any
 
 
 class LottieAttribute:
-    _eq_attrs = ['tag', 'type']
+    _eq_attrs = ['name', 'tag', 'type']
 
-    def __init__(self, tag: str = None, type: Any = None, description: str = ''):
+    def __init__(self, name: str = None, tag: str = None, type: Any = None, description: str = ''):
+        self.name = name
         self.tag = tag
         self.type = type
         self.description = description

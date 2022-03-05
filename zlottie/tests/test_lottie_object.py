@@ -42,9 +42,9 @@ class TestLottieObject(TestCase):
     def test_object_without_init_attributes_created(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(tag='a1', type=str),
-            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
-            'attr3': LottieAttribute(tag='a3', type=List[str])
+            'attr1': LottieAttribute(name='attr1', tag='a1', type=str),
+            'attr2': LottieAttribute(name='attr2', tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(name='attr3', tag='a3', type=List[str])
         }
         # act
         uut = DummyLottieObjectWithoutInit()
@@ -57,9 +57,9 @@ class TestLottieObject(TestCase):
     def test_object_without_init_autoinit(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(tag='a1', type=str),
-            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
-            'attr3': LottieAttribute(tag='a3', type=List[str])
+            'attr1': LottieAttribute(name='attr1', tag='a1', type=str),
+            'attr2': LottieAttribute(name='attr2', tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(name='attr3', tag='a3', type=List[str])
         }
         # act
         uut = DummyLottieObjectWithoutInit(attr1='hello', attr2=2)
@@ -86,10 +86,10 @@ class TestLottieObject(TestCase):
     def test_derived_object_attributes_created(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(tag='a1', type=str),
-            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
-            'attr3': LottieAttribute(tag='x3', type=int),
-            'attr4': LottieAttribute(tag='a4', type=float)
+            'attr1': LottieAttribute(name='attr1', tag='a1', type=str),
+            'attr2': LottieAttribute(name='attr2', tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(name='attr3', tag='x3', type=int),
+            'attr4': LottieAttribute(name='attr4', tag='a4', type=float)
         }
         # act
         uut = DerivedDummyLottieObjectWithoutInit()
@@ -103,12 +103,13 @@ class TestLottieObject(TestCase):
     def test_derived_twice_object_attributes_created(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(tag='a1', type=str),
-            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
-            'attr3': LottieAttribute(tag='x3', type=int),
-            'attr4': LottieAttribute(tag='a4', type=float),
-            'attr5': LottieAttribute(tag='a5', type=bool)
+            'attr1': LottieAttribute(name='attr1', tag='a1', type=str),
+            'attr2': LottieAttribute(name='attr2', tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(name='attr3', tag='x3', type=int),
+            'attr4': LottieAttribute(name='attr4', tag='a4', type=float),
+            'attr5': LottieAttribute(name='attr5', tag='a5', type=bool)
         }
+        expected_tags = {a.tag: a for a in expected_attributes.values()}
         # act
         uut = DerivedTwiceDummyLottieObjectWithoutInit(attr1='hello', attr3=1, attr5=True)
         # assert
@@ -118,15 +119,16 @@ class TestLottieObject(TestCase):
         self.assertIsNone(uut.attr4)
         self.assertEqual(uut.attr5, True)
         self.assertEqual(uut.attributes, expected_attributes)
+        self.assertEqual(uut.tags, expected_tags)
 
     def test_derived_multiple_object_attributes_created(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(tag='a1', type=int),   # taken from DummyLottieObject2, according to MRO
-            'attr2': LottieAttribute(tag='a2', type=Optional[int]),
-            'attr3': LottieAttribute(tag='a3', type=List[str]),
-            'attr6': LottieAttribute(tag='a6', type=bool),
-            'attr7': LottieAttribute(tag='a7', type=str)
+            'attr1': LottieAttribute(name='attr1', tag='a1', type=int),   # taken from DummyLottieObject2, according to MRO
+            'attr2': LottieAttribute(name='attr2', tag='a2', type=Optional[int]),
+            'attr3': LottieAttribute(name='attr3', tag='a3', type=List[str]),
+            'attr6': LottieAttribute(name='attr6', tag='a6', type=bool),
+            'attr7': LottieAttribute(name='attr7', tag='a7', type=str)
         }
         # act
         uut = DummyLottieObjectMultipleInheritance(attr1='hello', attr2=2, attr3=3, attr6=True, attr7='world')
