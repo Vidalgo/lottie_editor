@@ -15,6 +15,8 @@ class LottieObjectMeta(type):
 
 
 class LottieObject(metaclass=LottieObjectMeta):
+    _attributes: List[LottieAttribute] = []
+
     def __init__(self):
         pass
 

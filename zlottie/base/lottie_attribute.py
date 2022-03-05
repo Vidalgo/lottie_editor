@@ -15,3 +15,6 @@ class LottieAttribute:
         attrs.update(kwargs)
         obj = cls(**attrs)
         return obj
+
+    def __repr__(self):
+        return f'<LottieAttribute ("{self.tag}")>'
