@@ -1,6 +1,5 @@
 from unittest import TestCase
 from zlottie.objects import Metadata
-from dataclasses import dataclass
 
 
 class TestMetadata(TestCase):
