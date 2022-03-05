@@ -9,11 +9,10 @@ class LottieAttribute:
         self.type = type
         self.description = description
 
-    @classmethod
-    def copy(cls, source: LottieAttribute, **kwargs):
-        attrs = vars(source)
+    def clone(self, **kwargs):
+        attrs = vars(self)
         attrs.update(kwargs)
-        obj = cls(**attrs)
+        obj = type(self)(**attrs)
         return obj
 
     def __repr__(self):
