@@ -10,6 +10,7 @@ class LottieObjectMeta(type):
         attrs.update({k: None for k in attributes.keys()})
         attrs.setdefault('__init__', LottieObjectMeta._autoinit)
         attrs['_attributes'] = attributes
+        attrs['_tags'] = {attr.tag: name for name, attr in attributes.items()}
         return super().__new__(cls, type_name, bases, attrs)
 
     @staticmethod
@@ -46,8 +47,10 @@ class LottieObjectMeta(type):
 
 class LottieObject(metaclass=LottieObjectMeta):
     _attributes: Dict[str, LottieAttribute] = {}
+    _tags: Dict[str, str] = {}
 
-    def load(self, source):
+    @classmethod
+    def load(cls, source):
         pass
 
     def to_dict(self):
@@ -59,3 +62,4 @@ class LottieObject(metaclass=LottieObjectMeta):
     @property
     def attributes(self):
         return self._attributes
+
