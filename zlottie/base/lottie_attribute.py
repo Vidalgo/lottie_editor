@@ -64,12 +64,6 @@ class LottieAttribute:
         obj = type(self)(**params)
         return obj
 
-    def __repr__(self):
-        return f"<LottieAttribute ('{self._tag}')>"
-
-    def __eq__(self, other):
-        return all(getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs)
-
     @staticmethod
     def _is_annotation_optional(annotation: Any) -> bool:
         return annotation is not None and get_origin(annotation) is Union and type(None) in get_args(annotation)
@@ -87,3 +81,9 @@ class LottieAttribute:
         if LottieAttribute._is_annotation_list(annotation):
             annotation = get_args(annotation)[0]
         return annotation
+
+    def __repr__(self):
+        return f"<LottieAttribute ('{self._tag}')>"
+
+    def __eq__(self, other):
+        return all(getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs)

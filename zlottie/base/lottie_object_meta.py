@@ -10,7 +10,7 @@ class LottieObjectMeta(type):
         attrs.update({k: None for k in attributes.keys()})
         attrs.setdefault('__init__', LottieObjectMeta._autoinit)
         attrs['_attributes'] = attributes
-        attrs['_tags'] = {attr.tag: attr for name, attr in attributes.items()}
+        attrs['_attributes_by_tag'] = {attr.tag: attr for name, attr in attributes.items()}
         return super().__new__(cls, type_name, bases, attrs)
 
     @staticmethod
