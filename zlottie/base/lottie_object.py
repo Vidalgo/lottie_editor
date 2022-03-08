@@ -12,11 +12,9 @@ class LottieObject(metaclass=LottieObjectMeta):
         for key, value in source.items():
             attribute = self._tags[key]
             if attribute.is_list:
-                pass
-            if isinstance(attribute.type, LottieObject):
-                obj = attribute.type()
-                obj.load(value)
-                value = obj
+                value = [self._load_single_attribute(s) for s in value]
+            else:
+                value = self._load_single_attribute(value)
             setattr(self, key, value)
 
     def to_dict(self):

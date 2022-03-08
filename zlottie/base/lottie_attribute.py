@@ -26,12 +26,9 @@ class LottieAttribute:
         self._tag = tag
         self._annotation = annotation
         self._description = description
-        # calculated attrs
-        self._is_optional = get_origin(annotation) is Union and type(None) in get_args(annotation)
-        self._type = get_args(annotation)[0] if self._is_optional else annotation
-        self._is_list = issubclass(get_origin(self._type), List)
-        if self._is_list:
-            self._type = get_args(self._type)[0]
+        self._is_optional = self._is_annotation_optional(annotation)
+        self._is_list = self._is_annotation_list(annotation)
+        self._type = self._extract_annotation_type(annotation)
 
     @property
     def name(self):
@@ -72,3 +69,21 @@ class LottieAttribute:
 
     def __eq__(self, other):
         return all(getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs)
+
+    @staticmethod
+    def _is_annotation_optional(annotation: Any) -> bool:
+        return annotation is not None and get_origin(annotation) is Union and type(None) in get_args(annotation)
+
+    @staticmethod
+    def _is_annotation_list(annotation: Any) -> bool:
+        if LottieAttribute._is_annotation_optional(annotation):
+            annotation = get_args(annotation)[0]
+        return annotation is list or (get_origin(annotation) is not None and issubclass(get_origin(annotation), List))
+
+    @staticmethod
+    def _extract_annotation_type(annotation: Any) -> type:
+        if LottieAttribute._is_annotation_optional(annotation):
+            annotation = get_args(annotation)[0]
+        if LottieAttribute._is_annotation_list(annotation):
+            annotation = get_args(annotation)[0]
+        return annotation
