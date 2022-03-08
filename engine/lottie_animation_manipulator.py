@@ -62,7 +62,7 @@ if __name__ == '__main__':
     la2.load("D:\\lottie_files_path\\coin.json")
 
     lottie_operations = [
-        ScalingTransformOperation(element_id='$6fy{Q{{=Noh', value=[50,80]),
+        ScalingTransformOperation(element_id='$6fy{Q{{=Noh', value=[50, 80]),
         RotationTransformOperation(element_id='$6fy{Q{{=Noh', value=45),
         MergeOperation(animations=[la2.lottie])
     ]

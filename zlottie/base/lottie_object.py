@@ -5,11 +5,19 @@ from typing import Dict
 
 class LottieObject(metaclass=LottieObjectMeta):
     _attributes: Dict[str, LottieAttribute] = {}
-    _tags: Dict[str, str] = {}
+    _tags: Dict[str, LottieAttribute] = {}
+    __strict: bool = False
 
-    @classmethod
-    def load(cls, source):
-        pass
+    def load(self, source: Dict):
+        for key, value in source.items():
+            attribute = self._tags[key]
+            if attribute.is_list:
+                pass
+            if isinstance(attribute.type, LottieObject):
+                obj = attribute.type()
+                obj.load(value)
+                value = obj
+            setattr(self, key, value)
 
     def to_dict(self):
         return {}
@@ -31,9 +39,21 @@ class LottieObject(metaclass=LottieObjectMeta):
         else:
             super().__setattr__(key, value)
 
+    @staticmethod
+    def _load_single_attribute(attribute, source):
+        cls = attribute.type
+        if isinstance(attribute.type, LottieObject):
+            value = cls()
+            value.load(source)
+            return value
+        else:
+            return cls(source)
+
+
     def _set_lottie_attr(self, key, value):
         # TODO: add type validation
         super().__setattr__(key, value)
 
     def _load_attribute(self, name, value):
         setattr(self, name, value)
+

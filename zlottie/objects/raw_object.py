@@ -9,8 +9,8 @@ class RawObject(LottieObject):
     def __init__(self, value: Dict = {}):
         self._value: Dict = value
 
-    def load(cls, source):
-        return RawObject(value=source)
+    def load(self, source: Dict):
+        self._value = source
 
     def to_dict(self):
         return self._value

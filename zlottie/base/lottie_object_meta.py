@@ -26,7 +26,7 @@ class LottieObjectMeta(type):
         own_annotations = attrs.get('__annotations__', {})
         for name, attr in own_attributes.items():
             annotation = own_annotations.get(name, Any)
-            own_attributes[name] = attr.clone(name=name, type=annotation)
+            own_attributes[name] = attr.clone(name=name, annotation=annotation)
         # lottie attributes from base classes
         attributes = {}
         for base in bases:
