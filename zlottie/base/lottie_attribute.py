@@ -1,4 +1,4 @@
-from typing import Any, Union, get_args, get_origin
+from typing import Any, Union, List, get_args, get_origin
 
 
 class LottieAttribute:
@@ -28,8 +28,10 @@ class LottieAttribute:
         self._description = description
         # calculated attrs
         self._is_optional = get_origin(annotation) is Union and type(None) in get_args(annotation)
-        self._type = get_args(annotation)[0] if self._is_optional else type
-        self._is_list = get_origin(self._type) is list
+        self._type = get_args(annotation)[0] if self._is_optional else annotation
+        self._is_list = issubclass(get_origin(self._type), List)
+        if self._is_list:
+            self._type = get_args(self._type)[0]
 
     @property
     def name(self):
@@ -38,6 +40,10 @@ class LottieAttribute:
     @property
     def tag(self):
         return self._tag
+
+    @property
+    def annotation(self):
+        return self._annotation
 
     @property
     def type(self):
