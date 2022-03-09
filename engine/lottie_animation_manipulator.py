@@ -35,7 +35,6 @@ class Lottie_animation_manipulator:
     def apply_operations_on_elements(self) -> None:
         for operation in self._lottie_operations:
             self._apply_single_operation(operation)
-        pass
 
     @property
     def lottie(self):
@@ -52,7 +51,6 @@ class Lottie_animation_manipulator:
             elif operation.type == OperationType.Scaling:
                 new_value = [c * n/100.0 for c, n in zip(current_value['k'], operation.value)]
             setattr(lottie_element.transform, operation.type, new_value)
-            pass
         elif isinstance(operation, MergeOperation):
             element_id = self._lottie.lottie['ln']
             lottie_element = self._lottie.vidalgo_lottie_elements[element_id]
@@ -66,7 +64,12 @@ class Lottie_animation_manipulator:
 
 if __name__ == '__main__':
     la1 = Lottie_animation()
-    la1.load("D:\\lottie_files_path\\zlottie_coin.json")
+    la1.load("D:\\lottie_files_path\\coin.json")
+    la1.name = "zlottie_coin"
+    la1.add_lottie_id()
+    la1.store()
+    pass
+
 
     lottie_operations = [
         PositionTransformOperation(element_id='zl8UHqH9mf5i2y', value=[10, 20])

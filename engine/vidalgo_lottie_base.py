@@ -57,6 +57,9 @@ class Vidalgo_lottie_base:
         if self.vidalgo_id is None:
             raise TypeError("Error: layer doesn't have a vidalgo id")
 
+    def add_lottie_id(self):
+        Vidalgo_lottie_base._add_ids_to_elements(self._lottie_obj)
+
     @property
     def lottie_base(self):
         return self._lottie_obj
@@ -125,11 +128,11 @@ class Vidalgo_lottie_base:
     def _add_ids_to_elements(lottie_obj: dict):
         if VIDALGO_ID not in lottie_obj:
             lottie_obj[VIDALGO_ID] = Vidalgo_lottie_base.uuid()
-
         for key in lottie_obj:
             if type(lottie_obj[key]) is dict:
                 Vidalgo_lottie_base._add_ids_to_elements(lottie_obj[key])
             elif type(lottie_obj[key]) is list:
-                [Vidalgo_lottie_base._add_ids_to_elements(element) for element in lottie_obj[key]]
+                [Vidalgo_lottie_base._add_ids_to_elements(element) for element in lottie_obj[key]
+                 if type(element) is dict]
 
 
