@@ -65,17 +65,3 @@ class LottieObject(metaclass=LottieObjectMeta):
             return value.value
         else:
             return value
-
-    # def __setattr__(self, key, value):
-    #     if key in self._attributes:
-    #         self._set_lottie_attr(key, value)
-    #     else:
-    #         super().__setattr__(key, value)
-    #
-    # def _set_lottie_attr(self, key, value):
-    #     # TODO: add type validation
-    #     super().__setattr__(key, value)
-    #
-    # def _load_attribute(self, name, value):
-    #     setattr(self, name, value)
-    #

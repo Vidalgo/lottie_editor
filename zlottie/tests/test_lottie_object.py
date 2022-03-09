@@ -8,7 +8,7 @@ class TestLottieObject(TestCase):
     # noinspection PyArgumentList
     def setUp(self) -> None:
         self.dummy_animation_instance = DummyAnimation(
-            attr1='1',
+            attr1=DummyEnum.E1,
             attr2=DummyLottieObjectWithoutInit(attr1='2', attr2=22, attr3=['231', '232']),
             attr3=[
                 DerivedDummyLottieObjectWithoutInit(attr1='311', attr2=321, attr3=3311, attr4=1.0),
@@ -16,7 +16,7 @@ class TestLottieObject(TestCase):
             ])
 
         self.dummy_animation_raw = {
-            "a1": "1",
+            "a1": 1,
             "a2": {"a1": "2", "a2": 22, "a3": ["231", "232"]},
             "a3": [
                 {"a1": "311", "a2": 321, "x3": 3311, "a4": 1.0},
@@ -130,15 +130,6 @@ class TestLottieObject(TestCase):
                 # the tag 'a1' is already paired with DummyLottieObjectWithoutInit.attr1
                 attr100: str = LottieAttribute(tag='a1')
 
-    def test_to_dict(self):
-        # arrange
-        uut = self.dummy_animation_instance
-        expected = self.dummy_animation_raw
-        # act
-        actual = uut.to_dict()
-        # assert
-        self.assertDictEqual(expected, actual)
-
     def test_load(self):
         # arrange
         expected = self.dummy_animation_raw
@@ -147,4 +138,21 @@ class TestLottieObject(TestCase):
         uut.load(raw=self.dummy_animation_raw)
         # assert
         actual = uut.to_dict()
+        self.assertDictEqual(expected, actual)
+
+    def test_from_dict(self):
+        # arrange
+        uut = self.dummy_animation_instance
+        expected = self.dummy_animation_raw
+        # act
+        actual = uut.to_dict()
+        # assert
+        self.assertDictEqual(expected, actual)
+
+    def test_to_dict(self):
+        # arrange
+        expected = self.dummy_animation_raw
+        # act
+        actual = DummyAnimation.from_dict(raw=self.dummy_animation_raw).to_dict()
+        # assert
         self.assertDictEqual(expected, actual)

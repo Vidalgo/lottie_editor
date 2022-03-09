@@ -1,5 +1,11 @@
 from zlottie.base import LottieObject, LottieAttribute
 from typing import List, Optional
+from enum import Enum
+
+
+class DummyEnum(Enum):
+    E1 = 1
+    E2 = 2
 
 
 class DummyLottieObjectWithoutInit(LottieObject):
@@ -38,6 +44,6 @@ class DummyLottieObjectMultipleInheritance(DummyLottieObjectWithoutInit, DummyLo
 
 
 class DummyAnimation(LottieObject):
-    attr1: Optional[str] = LottieAttribute(tag='a1')
+    attr1: Optional[DummyEnum] = LottieAttribute(tag='a1')
     attr2: DummyLottieObjectWithoutInit = LottieAttribute(tag='a2')
     attr3: Optional[List[DerivedDummyLottieObjectWithoutInit]] = LottieAttribute(tag='a3')
