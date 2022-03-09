@@ -20,7 +20,7 @@ def post_calculate(params: RequestParameters) -> Response:
     animation.load(params.animation)
     engine = Lottie_animation_manipulator(lottie_animation=animation, all_lottie_operations=params.operations)
     engine.apply_operations_on_elements()
-    return Response(engine.lottie)
+    return Response(animation=engine.lottie.lottie_base)
 
 
 if __name__ == "__main__":
