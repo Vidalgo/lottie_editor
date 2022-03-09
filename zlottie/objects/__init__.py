@@ -1,5 +1,6 @@
 from .raw_object import RawObject
-from .metadata import Metadata
+from .layer import Layer
 from .composition import Composition
 from .visual_object import VisualObject
+from .metadata import Metadata
 from .animation import Animation

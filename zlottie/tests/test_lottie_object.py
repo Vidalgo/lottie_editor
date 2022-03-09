@@ -5,7 +5,6 @@ from typing import List, Optional
 
 
 class TestLottieObject(TestCase):
-    # noinspection PyArgumentList
     def setUp(self) -> None:
         self.dummy_animation_instance = DummyAnimation(
             attr1=DummyEnum.E1,
