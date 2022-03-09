@@ -5,7 +5,7 @@ from engine.animated_property import Animated_property
 
 class Precomp_layer(Layer):
     def __init__(self, layer_id: int = 0, layer_name: str = 'unknown', ddd_layer: int = 0, layer_parent=None,
-                 layer_transform=None, reference_id=None, width: float = 512, height: float = 512):
+                 layer_transform=None, reference_id=None, width: float = 512, height: float = 512, ):
         Layer.__init__(self, layer_id, layer_name, ddd_layer, layer_parent, layer_transform, reference_id)
         self.type = Lottie_layer_type.Precomp
         self._time_remapping = None

@@ -23,7 +23,7 @@ def lottie_animation_generate():
 def lottie_coin_animation_load_and_regenerate():
     la = Lottie_animation()
     la.load("D:\\lottie_files_path\\coin.json")
-    la.name = "zlottie_coin.json"
+    la.name = "zlottie_coin"
     la.store()
     pass
 
@@ -75,7 +75,7 @@ def combine_animations_0():
     la2 = Lottie_animation()
     la2.load("D:\\lottie_files_path\\coin.json")
     la1 += la2
-    la1.name = "coin-plus-coin-vidalgo"
+    la1.name = "zlottie_coin_plus_coin"
     la1.store()
 
 
@@ -307,6 +307,7 @@ if __name__ == '__main__':
     #combine_animations_0()
     #lottie_animation_generate()
     lottie_coin_animation_load_and_regenerate()
+    combine_animations_0()
     # lottie_animation_generate()
     # lottie_animation_load_and_regenerate()
     # lottie_animation_1_load()

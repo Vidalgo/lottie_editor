@@ -1,15 +1,15 @@
 {
   "layers": [
     {
-      "ln": "Ox@CVs'%3:t'",
+      "ln": "zl8UHqH9mf5i2y",
       "ind": 0,
-      "nm": "coin_main_layer_'>/#",
+      "nm": "coin_main_layer_zluczI",
       "ddd": 0,
       "parent": null,
       "st": 0,
       "ip": 0,
       "op": 180,
-      "refId": "coin_main_precomp_[rNW",
+      "refId": "coin_main_precomp_zlTPWc",
       "ks": {
         "a": {
           "k": [
@@ -56,11 +56,11 @@
       "ty": 0,
       "w": 512,
       "h": 512,
-      "cl": "Zlottie"
+      "cl": "zlottie"
     }
   ],
   "v": "5.5.2",
-  "nm": "zlottie_coin.json",
+  "nm": "zlottie_coin",
   "fr": 60,
   "ip": 0,
   "op": 180,
@@ -69,8 +69,8 @@
   "ddd": 0,
   "assets": [
     {
-      "ln": "#T1}0zii!nCk",
-      "id": "coin_main_precomp_[rNW",
+      "ln": "zlVuc3BFDulz8Z",
+      "id": "coin_main_precomp_zlTPWc",
       "nm": "coin_main_precomp",
       "fr": 60,
       "layers": [
@@ -1478,12 +1478,12 @@
               ]
             }
           ],
-          "ln": "9yA&({Vi`8[u"
+          "ln": "zlhWU6PDS2T8I6"
         }
       ]
     }
   ],
-  "ln": "ZfPx>6j#4@<]",
+  "ln": "zlLH4m8SQAQyTO",
   "meta": {
     "a": "avirab",
     "g": "vidalgo",

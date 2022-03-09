@@ -5,10 +5,10 @@ from pathlib import Path
 
 from engine.lottie_search_and_replace import load_json, store_json
 
-
 VIDALGO_ID = 'ln'
+ZLOTTIE_OBJECT_ID = 'zlottie'
 ID_SUFFIX = '_'
-SYMBOLS = (string.ascii_letters + string.digits + string.punctuation).replace('_', '')
+SYMBOLS = (string.ascii_letters + string.digits)
 
 PROJECT_ROOT = Path(__file__).parents[1]
 PATH = PROJECT_ROOT.joinpath('output')
@@ -32,7 +32,7 @@ class Vidalgo_lottie_base:
 
     @staticmethod
     def uuid(length: int = 12):
-        return ''.join(random.choice(SYMBOLS) for i in range(length))
+        return 'zl' + ''.join(random.choice(SYMBOLS) for i in range(length))
 
     def generate_random_id(self, length: int = 12):
         self._lottie_obj[VIDALGO_ID] = self.uuid(length)
@@ -78,6 +78,16 @@ class Vidalgo_lottie_base:
     @vidalgo_id.setter
     def vidalgo_id(self, vidalgo_id):
         self._lottie_obj[VIDALGO_ID] = vidalgo_id
+
+    @property
+    def zlottie_id(self):
+        if 'cl' in self._lottie_obj:
+            return self._lottie_obj['cl']
+        else:
+            return None
+
+    def set_zlottie_id(self):
+        self._lottie_obj['cl'] = ZLOTTIE_OBJECT_ID
 
     @property
     def lottie_element_id(self):
