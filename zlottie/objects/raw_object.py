@@ -1,8 +1,6 @@
 from zlottie.base import LottieObject
-from zlottie.base.lottie_object_meta import LottieObjectMeta
 from typing import Dict
 from copy import deepcopy
-from collections import UserDict
 
 
 class RawObject(LottieObject):
@@ -72,4 +70,3 @@ class RawObject(LottieObject):
 
     def update(self, E=None, **F):
         self._raw.update(E, **F)
-       

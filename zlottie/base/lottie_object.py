@@ -1,6 +1,6 @@
 from zlottie.base import LottieAttribute
 from zlottie.base.lottie_object_meta import LottieObjectMeta
-from typing import Any, Dict, ForwardRef
+from typing import Any, Dict, ForwardRef, Type
 from enum import Enum
 
 LottieObject = ForwardRef('LottieObject')
@@ -34,6 +34,10 @@ class LottieObject(metaclass=LottieObjectMeta):
         obj.load(raw=raw)
         return obj
 
+    @classmethod
+    def get_load_class(cls, raw: Dict) -> Type[LottieObject]:
+        return cls
+
     def clone(self):
         pass
 
@@ -49,6 +53,7 @@ class LottieObject(metaclass=LottieObjectMeta):
     def _load_attribute(attribute: LottieAttribute, raw: Any):
         cls = attribute.type
         if issubclass(cls, LottieObject):
+            cls = cls.get_load_class(raw=raw)
             value = cls()
             value.load(raw)
             return value
