@@ -17,7 +17,7 @@ def store_json(file_name, data):
     # with open(file_name, 'w', encoding='utf-8') as outfile:
     #    json.dump(data, outfile, ensure_ascii=False, indent=4)
     with open(file_name, 'w') as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=2)
 
 
 def update_intersected_ids(list_obj_1: list, list_obj_2: list, suffix: str = ID_SUFFIX):

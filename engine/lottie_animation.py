@@ -58,6 +58,7 @@ class Lottie_animation(Vidalgo_lottie_base):
         self._main_layer.out_point = self.out_point
         self.layers.append(self._main_layer)
         self.lottie_base['layers'] = [self._main_layer.layer]
+        self.main_layer.lottie_base['cl'] = "Zlottie"
 
     def _create_vidalgo_lottie_main_precomposition(self, name: str, frame_rate: int):
         self._main_precomposition = Precomposition(name, name, frame_rate)
@@ -244,9 +245,8 @@ class Lottie_animation(Vidalgo_lottie_base):
 
     def store(self, file_name=None):
         if file_name is None:
-            if not path.isdir(PATH):
-                makedirs(PATH)
-            file_name = "{0}{1}.json".format(PATH, self.name)
+            file_name = f"{self.name}.json"
+        file_name = str(PATH.joinpath(file_name)) #"{0}{1}.json".format(PATH, self.name)
         self.metadata = Metadata()
         store_json(file_name, self.lottie_base)
 

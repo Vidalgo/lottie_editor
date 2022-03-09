@@ -1,0 +1,88 @@
+{
+  "ln": "{Pl^HjbY(+T'",
+  "v": "5.5.2",
+  "nm": "animation_stub",
+  "w": 500,
+  "h": 500,
+  "fr": 30,
+  "ip": 0,
+  "op": 30,
+  "ddd": 0,
+  "assets": [
+    {
+      "ln": "wAba0JMucVt!",
+      "id": "animation_stub_main_precomposition_)pQ{",
+      "nm": "animation_stub_main_precomposition",
+      "fr": 30,
+      "layers": []
+    }
+  ],
+  "layers": [
+    {
+      "ln": "!e/);LU@kkSq",
+      "ind": 0,
+      "nm": "animation_stub_main_layer_nlo*",
+      "ddd": 0,
+      "parent": null,
+      "st": 0,
+      "ip": 0,
+      "op": 30,
+      "refId": "animation_stub_main_precomposition_)pQ{",
+      "ks": {
+        "a": {
+          "k": [
+            0,
+            0,
+            0
+          ],
+          "ix": 1,
+          "a": 0
+        },
+        "p": {
+          "k": [
+            0,
+            0,
+            0
+          ],
+          "ix": 2,
+          "a": 0
+        },
+        "s": {
+          "k": [
+            100,
+            100
+          ],
+          "ix": 6,
+          "a": 0
+        },
+        "r": {
+          "k": 0,
+          "ix": 10,
+          "a": 0
+        },
+        "o": {
+          "k": 100,
+          "ix": 3,
+          "a": 0
+        },
+        "px": null,
+        "py": null,
+        "pz": null,
+        "sk": null,
+        "sa": null
+      },
+      "ty": 0,
+      "w": 500,
+      "h": 500,
+      "cl": "Zlottie"
+    }
+  ],
+  "meta": {
+    "a": "avirab",
+    "g": "vidalgo",
+    "d": "this animations was analyzed and adjusted by vidalgo",
+    "k": [
+      "vidalgo"
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 import string
 import random
 import copy
+from pathlib import Path
 
 from engine.lottie_search_and_replace import load_json, store_json
 
@@ -8,7 +9,9 @@ from engine.lottie_search_and_replace import load_json, store_json
 VIDALGO_ID = 'ln'
 ID_SUFFIX = '_'
 SYMBOLS = (string.ascii_letters + string.digits + string.punctuation).replace('_', '')
-PATH = r"C:/dev/vidalgo/code/lottie_editor/lottie_files_path/"
+
+PROJECT_ROOT = Path(__file__).parents[1]
+PATH = PROJECT_ROOT.joinpath('output')
 
 
 class Vidalgo_lottie_base:
