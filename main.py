@@ -1,12 +1,12 @@
 # import lottie_transforms as lt
-from lottie_animation import Lottie_animation
+from engine.lottie_animation import Lottie_animation
 # from image import Image
-from image_asset import Image_asset
-from image_layer import Image_layer
-from transform import Transform
-from font import Font
-from text_layer import Text_layer
-from text_animator_data import Text_animator_data
+from engine.image_asset import Image_asset
+from engine.image_layer import Image_layer
+from engine.transform import Transform
+from engine.font import Font
+from engine.text_layer import Text_layer
+from engine.text_animator_data import Text_animator_data
 from PIL import Image
 
 import base64
@@ -294,7 +294,8 @@ if __name__ == '__main__':
     lp.transform_using_top_parent_null_layer(6, delta_position=[-56, 247], delta_rotation=-47, delta_scale=[57, 63])
     lp.store_lottie('test-4-transformed.json')'''
 
-    lottie_animation_generate()
+    #lottie_animation_generate_with_1_text()
+    #lottie_animation_generate()
     #lottie_animation_load_and_regenerate()
     #combine_animations_0()
     # lottie_animation_generate()
@@ -303,7 +304,7 @@ if __name__ == '__main__':
     # lottie_animation_1_load()
     # lottie_animation_2_load()
     # lottie_animation_3_load()
-    # combine_animations_1()
+    combine_animations_1()
     # combine_animations_2()
     # combine_animations_2_1()
     # combine_vidalgo_animations_2_2()
