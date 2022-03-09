@@ -35,3 +35,9 @@ class DummyLottieObject2(LottieObject):
 
 class DummyLottieObjectMultipleInheritance(DummyLottieObjectWithoutInit, DummyLottieObject2):
     attr7: str = LottieAttribute(tag='a7')
+
+
+class DummyAnimation(LottieObject):
+    attr1: Optional[str] = LottieAttribute(tag='a1')
+    attr2: DummyLottieObjectWithoutInit = LottieAttribute(tag='a2')
+    attr3: Optional[List[DerivedDummyLottieObjectWithoutInit]] = LottieAttribute(tag='a3')
