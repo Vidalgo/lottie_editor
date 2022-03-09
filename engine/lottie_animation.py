@@ -189,9 +189,12 @@ class Lottie_animation(Vidalgo_lottie_base):
         return self
 
     def load(self, animation_file_name, refactor_fonts_and_chars=False):
-        def _load_metadata(metadata: dict):
-            new_metadata = Metadata()
-            new_metadata.load(metadata)
+        def _load_metadata(lottie_obj: dict):
+            if 'meta' in lottie_obj:
+                new_metadata = Metadata()
+                new_metadata.load(lottie_obj['meta'])
+            else:
+                new_metadata = None
             return new_metadata
 
         def _load_font(font: dict):
@@ -227,7 +230,6 @@ class Lottie_animation(Vidalgo_lottie_base):
         self._precomposition = []
         self._layers = []
         self._main_layers_index = 0
-        refactor_animation = False if self.vidalgo_lottie else True
         self._fonts = [] if 'fonts' not in self.lottie_base or 'list' not in self.lottie_base['fonts'] else\
             [_load_font(font) for font in self.lottie_base['fonts']['list']]
         self._chars = [] if 'chars' not in self.lottie_base else \
@@ -235,8 +237,8 @@ class Lottie_animation(Vidalgo_lottie_base):
         self._layers = [_load_layer(layer, self.lottie_base) for layer in self.lottie_base['layers']]
         _load_asset()
         # self._markers = self.main
-        self._metadata = _load_metadata(self.lottie_base['meta']) if 'meta' in self.lottie_base else None
-        if refactor_animation:
+        self._metadata = _load_metadata(self.lottie_base)
+        if not self.vidalgo_lottie:
             self._refactor_references(refactor_fonts_and_chars)
             self._create_vidalgo_lottie_main_precomposition('{0}_main_precomp'.format(self.name), self.frame_rate)
             self.main_precomposition.layers = self.layers

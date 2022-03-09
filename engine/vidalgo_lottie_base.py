@@ -2,6 +2,7 @@ import string
 import random
 import copy
 from pathlib import Path
+from typing import Union
 
 from engine.lottie_search_and_replace import load_json, store_json
 
@@ -119,4 +120,16 @@ class Vidalgo_lottie_base:
     @staticmethod
     def remove_uuid(lottie_element_uuid: str):
         return lottie_element_uuid.rsplit('_', 1)[0] if lottie_element_uuid is not None else None
+
+    @staticmethod
+    def _add_ids_to_elements(lottie_obj: dict):
+        if VIDALGO_ID not in lottie_obj:
+            lottie_obj[VIDALGO_ID] = Vidalgo_lottie_base.uuid()
+
+        for key in lottie_obj:
+            if type(lottie_obj[key]) is dict:
+                Vidalgo_lottie_base._add_ids_to_elements(lottie_obj[key])
+            elif type(lottie_obj[key]) is list:
+                [Vidalgo_lottie_base._add_ids_to_elements(element) for element in lottie_obj[key]]
+
 
