@@ -5,6 +5,24 @@ from typing import List, Optional
 
 
 class TestLottieObject(TestCase):
+    # noinspection PyArgumentList
+    def setUp(self) -> None:
+        self.dummy_animation_instance = DummyAnimation(
+            attr1='1',
+            attr2=DummyLottieObjectWithoutInit(attr1='2', attr2=22, attr3=['231', '232']),
+            attr3=[
+                DerivedDummyLottieObjectWithoutInit(attr1='311', attr2=321, attr3=3311, attr4=1.0),
+                DerivedDummyLottieObjectWithoutInit(attr1='312', attr2=322, attr3=3321, attr4=2.0)
+            ])
+
+        self.dummy_animation_raw = {
+            "a1": "1",
+            "a2": {"a1": "2", "a2": 22, "a3": ["231", "232"]},
+            "a3": [
+                {"a1": "311", "a2": 321, "x3": 3311, "a4": 1.0},
+                {"a1": "312", "a2": 322, "x3": 3321, "a4": 2.0}
+            ]}
+
     def test_object_without_init_attributes_created(self):
         # arrange
         expected_attributes = {
@@ -90,7 +108,7 @@ class TestLottieObject(TestCase):
     def test_derived_multiple_object_attributes_created(self):
         # arrange
         expected_attributes = {
-            'attr1': LottieAttribute(name='attr1', tag='a1', annotation=int),   # taken from DummyLottieObject2, according to MRO
+            'attr1': LottieAttribute(name='attr1', tag='a1', annotation=int),  # taken from DummyLottieObject2, according to MRO
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='a3', annotation=List[str]),
             'attr6': LottieAttribute(name='attr6', tag='a6', annotation=bool),
@@ -112,3 +130,21 @@ class TestLottieObject(TestCase):
                 # the tag 'a1' is already paired with DummyLottieObjectWithoutInit.attr1
                 attr100: str = LottieAttribute(tag='a1')
 
+    def test_to_dict(self):
+        # arrange
+        uut = self.dummy_animation_instance
+        expected = self.dummy_animation_raw
+        # act
+        actual = uut.to_dict()
+        # assert
+        self.assertDictEqual(expected, actual)
+
+    def test_load(self):
+        # arrange
+        expected = self.dummy_animation_raw
+        # act
+        uut = DummyAnimation()
+        uut.load(raw=self.dummy_animation_raw)
+        # assert
+        actual = uut.to_dict()
+        self.assertDictEqual(expected, actual)

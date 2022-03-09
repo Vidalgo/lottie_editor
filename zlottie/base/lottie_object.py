@@ -46,9 +46,9 @@ class LottieObject(metaclass=LottieObjectMeta):
         return list(self._attributes_by_tag.keys())
 
     @staticmethod
-    def _load_attribute(attribute: LottieAttribute, raw: Dict):
+    def _load_attribute(attribute: LottieAttribute, raw: Any):
         cls = attribute.type
-        if isinstance(cls, LottieObject):
+        if issubclass(cls, LottieObject):
             value = cls()
             value.load(raw)
             return value
