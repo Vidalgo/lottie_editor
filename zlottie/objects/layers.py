@@ -1,10 +1,11 @@
 from zlottie.base import LottieAttribute
 from zlottie.objects import VisualObject, RawObject
+from zlottie.transforms import Transform
 from zlottie.base.enums import BlendMode, LayerType, MatteMode
 from typing import Optional, List, Dict, Type
 
 # TODO: implement the following
-Transform = RawObject
+#Transform = RawObject
 Mask = RawObject
 Effect = RawObject
 AudioSettings = RawObject

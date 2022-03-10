@@ -83,7 +83,7 @@ class LottieAttribute:
         return annotation
 
     def __repr__(self):
-        return f"<LottieAttribute tag='{self._tag}' annotation={self._annotation})>"
+        return f"<LottieAttribute name='{self._name}' tag='{self._tag}' annotation={self._annotation})>"
 
     def __eq__(self, other):
         return all(getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs)

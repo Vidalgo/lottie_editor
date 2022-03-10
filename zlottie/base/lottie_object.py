@@ -22,8 +22,10 @@ class LottieObject(metaclass=LottieObjectMeta):
 
     def load(self, raw: Dict) -> None:
         for tag, value in raw.items():
-            print(f'{self.__class__} {tag}')
             attribute = self._attributes_by_tag[tag]
+            print(f'{self.__class__} {attribute}')
+            if tag == 'r':
+                print('sdf')
             if attribute.is_list:
                 value = [self._load_attribute(attribute=attribute, raw=r) for r in value]
             else:
