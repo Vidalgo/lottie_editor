@@ -11,6 +11,15 @@ class LottieObject(metaclass=LottieObjectMeta):
     _attributes_by_tag: Dict[str, LottieAttribute] = {}
     __strict: bool = False
 
+    def __init__(self, raw: Dict = None, **kwargs):
+        if raw is not None:
+            self.load(raw)
+        else:
+            if bad_kwarg := next((attr for attr in kwargs.keys() if attr not in self._attributes), None):
+                raise TypeError(f"__init__() got an unexpected keyword argument '{bad_kwarg}'")
+            self.__dict__.update(kwargs)
+
+
     def load(self, raw: Dict) -> None:
         for tag, value in raw.items():
             print(f'{self.__class__} {tag}')
