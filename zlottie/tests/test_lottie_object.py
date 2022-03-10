@@ -155,3 +155,12 @@ class TestLottieObject(TestCase):
         actual = DummyAnimation.from_dict(raw=self.dummy_animation_raw).to_dict()
         # assert
         self.assertDictEqual(expected, actual)
+
+    def test_init_from_raw(self):
+        # arrange
+        expected = self.dummy_animation_raw
+        # act
+        uut = DummyAnimation(raw=self.dummy_animation_raw)
+        # assert
+        actual = uut.to_dict()
+        self.assertDictEqual(expected, actual)
