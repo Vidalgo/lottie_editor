@@ -63,22 +63,22 @@ class Lottie_animation_manipulator:
 
 
 if __name__ == '__main__':
-    la1 = Lottie_animation()
-    la1.load("D:\\lottie_files_path\\coin.json")
-    la1.name = "zlottie_coin"
+    '''la1 = Lottie_animation()
+    la1.load("D:\\lottie_files_path\\60875-confuse-person.json")
+    la1.name = "zlottie_60875-confuse-person"
     la1.add_lottie_id()
-    la1.store()
-    pass
-
+    la1.store()'''
 
     lottie_operations = [
-        PositionTransformOperation(element_id='zl8UHqH9mf5i2y', value=[10, 20])
-        #ScalingTransformOperation(element_id='$6fy{Q{{=Noh', value=[50, 80]),
-        #RotationTransformOperation(element_id='$6fy{Q{{=Noh', value=45),
+        PositionTransformOperation(element_id='zlQxBpiOiYPVet', value=[0, 0]),
+        ScalingTransformOperation(element_id='zlQxBpiOiYPVet', value=[25, 125]),
+        RotationTransformOperation(element_id='zlQxBpiOiYPVet', value=45),
         #MergeOperation(animations=[la2.lottie])
     ]
 
-    lottie_manipulator = Lottie_animation_manipulator(la1, lottie_operations)
+    la = Lottie_animation()
+    la.load("D:\\lottie_files_path\\zlottie_60875-confuse-person.json")
+    lottie_manipulator = Lottie_animation_manipulator(la, lottie_operations)
     lottie_manipulator.apply_operations_on_elements()
-    lottie_manipulator.lottie.name = "zlottie_coin_manipulated"
+    lottie_manipulator.lottie.name = "zlottie_60875-confuse-person"
     lottie_manipulator.lottie.store()

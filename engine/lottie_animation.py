@@ -59,6 +59,8 @@ class Lottie_animation(Vidalgo_lottie_base):
         self.layers.append(self._main_layer)
         self.lottie_base['layers'] = [self._main_layer.layer]
         self.main_layer.set_zlottie_id()
+        self.main_layer.transform.anchor = [width / 2, height / 2]
+        self.main_layer.transform.position = [width / 2, height / 2]
 
     def _create_vidalgo_lottie_main_precomposition(self, name: str, frame_rate: int):
         self._main_precomposition = Precomposition(name, name, frame_rate)

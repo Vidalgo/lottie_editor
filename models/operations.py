@@ -40,7 +40,7 @@ class RotationTransformOperation(TransformOperation):
 
 class ScalingTransformOperation(TransformOperation):
     type: Literal[OperationType.Scaling] = OperationType.Scaling
-    value: conlist(conint(ge=0, le=100), min_items=2, max_items=2) = Field(..., description='(x,y) scaling percent')
+    value: conlist(conint(ge=0), min_items=2, max_items=2) = Field(..., description='(x,y) scaling percent')
 
 
 class OpacityTransformOperation(TransformOperation):

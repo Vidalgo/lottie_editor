@@ -1,30 +1,28 @@
 {
   "layers": [
     {
-      "ln": "zlQPuEKmxgLX1j",
+      "ln": "zlIZJD1bffAcAG",
       "ind": 0,
-      "nm": "coin_main_layer_zlPcR8",
+      "nm": "coin_main_layer_zl9dWy",
       "ddd": 0,
       "parent": null,
       "st": 0,
       "ip": 0,
       "op": 180,
-      "refId": "coin_main_precomp_zl2njo",
+      "refId": "coin_main_precomp_zlJhY6",
       "ks": {
         "a": {
           "k": [
-            0,
-            0,
-            0
+            256.0,
+            256.0
           ],
           "ix": 1,
           "a": 0
         },
         "p": {
           "k": [
-            0,
-            0,
-            0
+            256.0,
+            256.0
           ],
           "ix": 2,
           "a": 0
@@ -59,29 +57,28 @@
       "cl": "zlottie"
     },
     {
-      "ln": "zlortDHT1h8yDP",
+      "ln": "zlgOYqroMyRXtx",
       "ind": 1,
-      "nm": "coin_main_layer_zlzwl3",
+      "nm": "coin_main_layer_zlMdtF",
       "ddd": 0,
       "parent": null,
       "st": 0,
       "ip": 0,
       "op": 180,
-      "refId": "coin_main_precomp_zlcvUS",
+      "refId": "coin_main_precomp_zlNH28",
       "ks": {
         "a": {
           "k": [
-            0,
-            0,
-            0
+            256.0,
+            256.0
           ],
           "ix": 1,
           "a": 0
         },
         "p": {
           "k": [
-            72.7648500074564,
-            -67.1762228240791
+            138.71866094550376,
+            -64.11481342300061
           ],
           "ix": 2,
           "a": 0
@@ -126,8 +123,8 @@
   "ddd": 0,
   "assets": [
     {
-      "ln": "zlof0Xi3z3NQDN",
-      "id": "coin_main_precomp_zl2njo",
+      "ln": "zl0ZhVP34XovcT",
+      "id": "coin_main_precomp_zlJhY6",
       "nm": "coin_main_precomp",
       "fr": 60,
       "layers": [
@@ -1535,13 +1532,13 @@
               ]
             }
           ],
-          "ln": "zlY2TfLNcniJO8"
+          "ln": "zlAChFxWu7g5dA"
         }
       ]
     },
     {
-      "ln": "zl4qdLjJaX5oQ6",
-      "id": "coin_main_precomp_zlcvUS",
+      "ln": "zlPI07CmZUW0R0",
+      "id": "coin_main_precomp_zlNH28",
       "nm": "coin_main_precomp",
       "fr": 60,
       "layers": [
@@ -2949,12 +2946,12 @@
               ]
             }
           ],
-          "ln": "zl1d1SXXxM8qne"
+          "ln": "zlqaV9GIcZ33Nt"
         }
       ]
     }
   ],
-  "ln": "zl8reFJ6fTl62Z",
+  "ln": "zlrOklWxDrcGQ0",
   "fonts": {
     "list": []
   },
