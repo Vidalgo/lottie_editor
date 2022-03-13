@@ -20,14 +20,17 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
 
     def load(self, raw: Dict) -> None:
         for tag, value in raw.items():
+            if tag == 'k':
+                print('asdf')
             attribute = self._attributes_by_tag[tag]
-            if attribute.is_list:
-                value = [self._load_attribute(attribute=attribute, raw=r) for r in value]
-            else:
-                value = self._load_attribute(attribute=attribute, raw=value)
-            setattr(self, attribute.name, value)
+            if attribute.autoload:
+                if attribute.is_list:
+                    value = [self._load_attribute(attribute=attribute, raw=r) for r in value]
+                else:
+                    value = self._load_attribute(attribute=attribute, raw=value)
+                setattr(self, attribute.name, value)
 
-    def to_dict(self) -> Dict:
+    def to_raw(self) -> Dict:
         result = {}
         for name, attribute in self._attributes.items():
             value = self._value_to_dict(value=getattr(self, name))
@@ -55,7 +58,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         if isinstance(value, list) and len(value) > 0:
             return [LottieObject._value_to_dict(v) for v in value]
         elif isinstance(value, LottieBase):
-            return value.to_dict()
+            return value.to_raw()
         elif isinstance(value, Enum):
             return value.value
         else:

@@ -1,20 +1,20 @@
-from typing import Dict, ForwardRef, Type
+from typing import Dict, ForwardRef, Type, Any
 
 LottieBase = ForwardRef('LottieBase')
 
 
 class LottieBase:
-    def load(self, raw: Dict) -> None:
+    def load(self, raw: Any) -> None:
         raise NotImplementedError('Should be implemented in derived class')
 
-    def to_dict(self) -> Dict:
+    def to_raw(self) -> Any:
         raise NotImplementedError('Should be implemented in derived class')
 
     def clone(self):
         raise NotImplementedError('TODO')
 
     @classmethod
-    def from_dict(cls, raw: Dict) -> LottieBase:
+    def from_raw(cls, raw: Any) -> LottieBase:
         obj = cls()
         obj.load(raw=raw)
         return obj

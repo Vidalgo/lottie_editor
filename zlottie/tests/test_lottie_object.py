@@ -136,7 +136,7 @@ class TestLottieObject(TestCase):
         uut = DummyAnimation()
         uut.load(raw=self.dummy_animation_raw)
         # assert
-        actual = uut.to_dict()
+        actual = uut.to_raw()
         self.assertDictEqual(expected, actual)
 
     def test_from_dict(self):
@@ -144,7 +144,7 @@ class TestLottieObject(TestCase):
         uut = self.dummy_animation_instance
         expected = self.dummy_animation_raw
         # act
-        actual = uut.to_dict()
+        actual = uut.to_raw()
         # assert
         self.assertDictEqual(expected, actual)
 
@@ -152,7 +152,7 @@ class TestLottieObject(TestCase):
         # arrange
         expected = self.dummy_animation_raw
         # act
-        actual = DummyAnimation.from_dict(raw=self.dummy_animation_raw).to_dict()
+        actual = DummyAnimation.from_raw(raw=self.dummy_animation_raw).to_raw()
         # assert
         self.assertDictEqual(expected, actual)
 
@@ -162,5 +162,5 @@ class TestLottieObject(TestCase):
         # act
         uut = DummyAnimation(raw=self.dummy_animation_raw)
         # assert
-        actual = uut.to_dict()
+        actual = uut.to_raw()
         self.assertDictEqual(expected, actual)

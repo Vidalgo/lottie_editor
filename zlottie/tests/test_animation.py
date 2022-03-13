@@ -16,12 +16,16 @@ class TestAnimation(TestCase):
         uut = Animation()
         uut.load(raw=self.raw)
 
+    def test_init(self):
+        # test that load() does not raise
+        uut = Animation(self.raw)
+
     def test_to_dict(self):
         # arrange
         uut = Animation()
         uut.load(raw=self.raw)
         # act
-        actual = uut.to_dict()
+        actual = uut.to_raw()
         # assert
         self.assertDictEqual(self.raw, actual)
 
