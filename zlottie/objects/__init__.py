@@ -1,6 +1,6 @@
 from .raw_object import RawObject
 from .visual_object import VisualObject
-#from .layer import Layer
+from .transform import Transform
 from .layers import Layer, ShapeLayer, PrecompositionLayer, NullLayer, TextLayer, ImageLayer, SolidColorLayer, AudioLayer
 from .metadata import Metadata
 from .composition import Composition

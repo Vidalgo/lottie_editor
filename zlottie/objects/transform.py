@@ -1,6 +1,6 @@
 from zlottie.base import LottieObject, LottieAttribute
 from zlottie.objects import RawObject
-from zlottie.properties import Value, MultiDimensional
+from zlottie.types import Value, MultiDimensional
 from typing import Optional
 
 
