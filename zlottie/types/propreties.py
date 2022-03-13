@@ -16,10 +16,6 @@ class AnimatedProperty(LottieObject):
     property_index: Optional[int] = LottieAttribute(tag='ix', description='Property Index')
     expression: Optional[str] = LottieAttribute(tag='x', description='Expression')
 
-    @property
-    def keyframes(self) -> List[Keyframe]:
-        return self._value.keyframes
-
     def load(self, raw: Dict) -> None:
         super().load(raw=raw)
         if self.is_animated:
