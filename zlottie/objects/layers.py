@@ -94,3 +94,4 @@ Layer.register_layer_class(LayerType.Image, ImageLayer)
 Layer.register_layer_class(LayerType.SolidColor, SolidColorLayer)
 Layer.register_layer_class(LayerType.Audio, AudioLayer)
 
+__all__ = ['Layer', 'ShapeLayer', 'PrecompositionLayer', 'NullLayer', 'TextLayer', 'ImageLayer', 'SolidColorLayer', 'AudioLayer']
