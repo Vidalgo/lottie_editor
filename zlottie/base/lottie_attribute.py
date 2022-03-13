@@ -2,7 +2,7 @@ from typing import Any, Union, List, get_args, get_origin
 
 
 class LottieAttribute:
-    _clone_attrs = ['_name', '_tag', '_annotation', '_description', '_autoload']
+    _caluclated_attrs = ['_type', '_is_optional', '_is_list']
     _eq_attrs = ['_name', '_tag', '_annotation']
 
     def __init__(self, **kwargs):
@@ -27,6 +27,7 @@ class LottieAttribute:
         self._annotation = kwargs.get('annotation')
         self._description = kwargs.get('description')
         self._autoload = kwargs.get('autoload', True)
+        self._default = kwargs.get('default')
         self._is_optional = self._is_annotation_optional(self._annotation)
         self._is_list = self._is_annotation_list(self._annotation)
         self._type = self._extract_annotation_type(self._annotation)
@@ -56,6 +57,10 @@ class LottieAttribute:
         return self._autoload
 
     @property
+    def default(self):
+        return self._default
+
+    @property
     def is_optional(self):
         return self._is_optional
 
@@ -64,7 +69,7 @@ class LottieAttribute:
         return self._is_list
 
     def clone(self, **kwargs):
-        params = {k[1:]: v for k, v in vars(self).items() if k in self._clone_attrs}
+        params = {k[1:]: v for k, v in vars(self).items() if k not in self._caluclated_attrs}
         params.update(kwargs)
         obj = type(self)(**params)
         return obj

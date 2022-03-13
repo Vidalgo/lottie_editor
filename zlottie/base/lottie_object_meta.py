@@ -7,7 +7,7 @@ LottieObject = ForwardRef('LottieObject')
 class LottieObjectMeta(type):
     def __new__(cls, type_name, bases, attrs):
         attributes = LottieObjectMeta._prepare_lottie_attributes(cls, type_name, bases, attrs)
-        attrs.update({k: None for k in attributes.keys()})
+        attrs.update({k: v.default for k, v in attributes.items()})
         attrs['_attributes'] = attributes
         attrs['_attributes_by_tag'] = {attr.tag: attr for name, attr in attributes.items()}
         return super().__new__(cls, type_name, bases, attrs)

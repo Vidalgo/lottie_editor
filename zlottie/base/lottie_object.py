@@ -20,7 +20,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
 
     def load(self, raw: Dict) -> None:
         for tag, value in raw.items():
-            if tag == 'k':
+            if tag not in self._attributes_by_tag:
                 print('asdf')
             attribute = self._attributes_by_tag[tag]
             if attribute.autoload:

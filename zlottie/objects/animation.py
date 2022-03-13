@@ -1,5 +1,5 @@
 from zlottie.base import LottieAttribute
-from zlottie.objects import Composition, VisualObject, Metadata, RawObject
+from zlottie.objects import Composition, VisualObject, Metadata, RawObject, Asset
 from typing import Optional, List
 
 
@@ -11,8 +11,8 @@ class Animation(VisualObject, Composition):
     out_point: float = LottieAttribute(tag='op', description='"Out Point", which frame the animation stops/loops at, which makes this the duration in frames when `ip` is 0')
     width: int = LottieAttribute(tag='w', description='Width of the animation')
     height: int = LottieAttribute(tag='h', description='Height of the animation')
-    three_dimensional: Optional[int] = LottieAttribute(tag='ddd', description='Is animation 3D (always 0)')
-    assets: Optional[List[RawObject]] = LottieAttribute(tag='assets', description='List of assets')
+    three_dimensional: Optional[int] = LottieAttribute(tag='ddd', default=0, description='Is animation 3D (always 0)')
+    assets: Optional[List[Asset]] = LottieAttribute(tag='assets', description='List of assets')
     fonts: Optional[List[RawObject]] = LottieAttribute(tag='fonts', description='Fonts')
     chars: Optional[List[RawObject]] = LottieAttribute(tag='chars', description='Data defining text characters as lottie shapes')
     metadata: Optional[Metadata] = LottieAttribute(tag='meta', description='Document metadata')
