@@ -39,8 +39,12 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         return result
 
     @property
-    def attributes(self):
+    def descriptor(self):
         return self._attributes
+
+    @property
+    def attributes(self):
+        return {name: getattr(self, name) for name in self._attributes.keys()}
 
     @property
     def tags(self):

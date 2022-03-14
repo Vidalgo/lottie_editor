@@ -24,10 +24,15 @@ class TestLottieObject(TestCase):
 
     def test_object_without_init_attributes_created(self):
         # arrange
-        expected_attributes = {
+        expected_descriptor = {
             'attr1': LottieAttribute(name='attr1', tag='a1', annotation=str),
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='a3', annotation=List[str])
+        }
+        expected_attributes = {
+            'attr1': None,
+            'attr2': None,
+            'attr3': None
         }
         # act
         uut = DummyLottieObjectWithoutInit()
@@ -35,14 +40,20 @@ class TestLottieObject(TestCase):
         self.assertIsNone(uut.attr1)
         self.assertIsNone(uut.attr2)
         self.assertIsNone(uut.attr3)
+        self.assertEqual(uut.descriptor, expected_descriptor)
         self.assertEqual(uut.attributes, expected_attributes)
 
     def test_object_without_init_autoinit(self):
         # arrange
-        expected_attributes = {
+        expected_descriptor = {
             'attr1': LottieAttribute(name='attr1', tag='a1', annotation=str),
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='a3', annotation=List[str])
+        }
+        expected_attributes = {
+            'attr1': 'hello',
+            'attr2': 2,
+            'attr3': None
         }
         # act
         uut = DummyLottieObjectWithoutInit(attr1='hello', attr2=2)
@@ -50,6 +61,7 @@ class TestLottieObject(TestCase):
         self.assertEqual(uut.attr1, 'hello')
         self.assertEqual(uut.attr2, 2)
         self.assertIsNone(uut.attr3)
+        self.assertEqual(uut.descriptor, expected_descriptor)
         self.assertEqual(uut.attributes, expected_attributes)
 
     def test_object_without_init_autoinit_raises(self):
@@ -68,7 +80,7 @@ class TestLottieObject(TestCase):
 
     def test_derived_object_attributes_created(self):
         # arrange
-        expected_attributes = {
+        expected_descriptor = {
             'attr1': LottieAttribute(name='attr1', tag='a1', annotation=str),
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='x3', annotation=int),
@@ -81,11 +93,11 @@ class TestLottieObject(TestCase):
         self.assertIsNone(uut.attr2)
         self.assertIsNone(uut.attr3)
         self.assertIsNone(uut.attr4)
-        self.assertEqual(uut.attributes, expected_attributes)
+        self.assertEqual(uut.descriptor, expected_descriptor)
 
     def test_derived_twice_object_attributes_created(self):
         # arrange
-        expected_attributes = {
+        expected_descriptor = {
             'attr1': LottieAttribute(name='attr1', tag='a1', annotation=str),
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='x3', annotation=int),
@@ -101,17 +113,24 @@ class TestLottieObject(TestCase):
         self.assertEqual(uut.attr3, 1)
         self.assertIsNone(uut.attr4)
         self.assertEqual(uut.attr5, True)
-        self.assertEqual(uut.attributes, expected_attributes)
+        self.assertEqual(uut.descriptor, expected_descriptor)
         self.assertEqual(uut.tags, expected_tags)
 
     def test_derived_multiple_object_attributes_created(self):
         # arrange
-        expected_attributes = {
+        expected_descriptor = {
             'attr1': LottieAttribute(name='attr1', tag='a1', annotation=int),  # taken from DummyLottieObject2, according to MRO
             'attr2': LottieAttribute(name='attr2', tag='a2', annotation=Optional[int]),
             'attr3': LottieAttribute(name='attr3', tag='a3', annotation=List[str]),
             'attr6': LottieAttribute(name='attr6', tag='a6', annotation=bool),
             'attr7': LottieAttribute(name='attr7', tag='a7', annotation=str)
+        }
+        expected_attributes = {
+            'attr1': 'hello',
+            'attr2': 2,
+            'attr3': 3,
+            'attr6': True,
+            'attr7': 'world'
         }
         # act
         uut = DummyLottieObjectMultipleInheritance(attr1='hello', attr2=2, attr3=3, attr6=True, attr7='world')
@@ -121,6 +140,7 @@ class TestLottieObject(TestCase):
         self.assertEqual(uut.attr3, 3)
         self.assertEqual(uut.attr6, True)
         self.assertEqual(uut.attr7, 'world')
+        self.assertEqual(uut.descriptor, expected_descriptor)
         self.assertEqual(uut.attributes, expected_attributes)
 
     def test_duplicate_tags_raise(self):
