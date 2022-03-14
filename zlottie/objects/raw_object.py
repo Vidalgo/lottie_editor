@@ -20,7 +20,7 @@ class RawObject(LottieObject):
         value = deepcopy(self._raw)
         return self.load(value)
 
-    # # MutableMapping API
+    # MutableMapping API
     def __getitem__(self, key):
         return self._raw.__getitem__(key)
 
