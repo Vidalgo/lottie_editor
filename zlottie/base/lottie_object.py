@@ -11,17 +11,16 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
     __strict: bool = False
 
     def __init__(self, raw: Dict = None, **kwargs):
+        self._tag: str = kwargs.pop('tag', '')
         if raw is not None:
             self.load(raw)
         else:
-            if bad_kwarg := next((attr for attr in kwargs.keys() if attr not in self._attributes), None):
-                raise TypeError(f"__init__() got an unexpected keyword argument '{bad_kwarg}'")
-            self.__dict__.update(kwargs)
+            self._init_from_kwargs(**kwargs)
 
     def load(self, raw: Dict) -> None:
         for tag, value in raw.items():
-            if tag not in self._attributes_by_tag:
-                print('asdf')
+            # if tag == 'a':
+            #     print(tag)
             attribute = self._attributes_by_tag[tag]
             if attribute.autoload:
                 if attribute.is_list:
@@ -37,6 +36,10 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
             if value is not None:
                 result[attribute.tag] = value
         return result
+
+    @property
+    def tag(self):
+        return self._tag
 
     @property
     def descriptor(self):
@@ -55,7 +58,9 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         cls = attribute.type
         if issubclass(cls, LottieBase):
             cls = cls.get_load_class(raw=raw)
-        return cls(raw)
+            return cls(raw, tag=attribute.tag)
+        else:
+            return cls(raw)
 
     @staticmethod
     def _value_to_dict(value: Any) -> Dict:
@@ -67,3 +72,11 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
             return value.value
         else:
             return value
+
+    def _init_from_kwargs(self, **kwargs):
+        if bad_kwarg := next((attr for attr in kwargs.keys() if attr not in self._attributes), None):
+            raise TypeError(f"__init__() got an unexpected keyword argument '{bad_kwarg}'")
+        self.__dict__.update(kwargs)
+
+    def __repr__(self):
+        return f"<{type(self)} tag='{self._tag}'>"

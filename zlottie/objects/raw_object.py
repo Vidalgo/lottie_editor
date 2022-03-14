@@ -6,9 +6,9 @@ from copy import deepcopy
 class RawObject(LottieObject):
     """raw object (i.e unparsed dictionary)"""
 
-    def __init__(self, raw: Dict = {}):
+    def __init__(self, raw: Dict = {}, **kwargs):
+        super().__init__(**kwargs)
         self._raw: Dict = raw
-        dict()
 
     def load(self, source: Dict):
         self._raw = source
