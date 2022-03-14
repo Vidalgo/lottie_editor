@@ -25,7 +25,7 @@ class TestAnimation(TestCase):
         uut = Animation()
         uut.load(raw=self.raw)
         # act
-        actual = uut.to_raw()
+        actual = uut.dump()
         # assert
         self.assertDictEqual(self.raw, actual)
 

@@ -47,6 +47,6 @@ class TestMetadata(TestCase):
         # arrange
         uut = Metadata.from_raw(raw=self.raw)
         # act
-        raw = uut.to_raw()
+        raw = uut.dump()
         # assert
         self.assertDictEqual(self.raw, raw)

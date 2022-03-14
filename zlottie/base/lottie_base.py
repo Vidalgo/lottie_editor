@@ -7,7 +7,7 @@ class LottieBase:
     def load(self, raw: Any) -> None:
         raise NotImplementedError('Should be implemented in derived class')
 
-    def to_raw(self) -> Any:
+    def dump(self) -> Any:
         raise NotImplementedError('Should be implemented in derived class')
 
     def clone(self):

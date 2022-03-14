@@ -13,7 +13,7 @@ class RawObject(LottieObject):
     def load(self, source: Dict):
         self._raw = source
 
-    def to_raw(self):
+    def dump(self):
         return self._raw
 
     def clone(self):
