@@ -1,0 +1,76 @@
+import unittest
+from pathlib import Path
+
+from engine.lottie_animation import Lottie_animation
+from engine.lottie_creator import Lottie_creator
+
+PATH = Path(__file__).parents[1].joinpath('tests')
+INPUT_PATH = PATH.joinpath('inputs')
+OUTPUT_PATH = PATH.joinpath('outputs')
+
+
+class Test_lottie_creator(unittest.TestCase):
+    @staticmethod
+    def _create_zlottie(name: str) -> None:
+        lottie_animation = Lottie_animation()
+        input_file_name = str(INPUT_PATH.joinpath(f'{name}.json'))
+        lottie_animation.load(input_file_name)
+        lottie_animation.name = f'zlottie_{name}'
+        output_file_name = str(INPUT_PATH.joinpath(f'{lottie_animation.name}.json'))
+        lottie_animation.store(output_file_name)
+
+    @staticmethod
+    def _load_zlottie(name: str) -> Lottie_animation:
+        lottie_animation = Lottie_animation()
+        input_file_name = str(INPUT_PATH.joinpath(f'zlottie_{name}.json'))
+        lottie_animation.load(input_file_name)
+        return lottie_animation
+
+    @staticmethod
+    def _load_and_create_same_file(name: str, ids: list[str]) -> Lottie_creator:
+        # Test_lottie_creator._create_zlottie(name)
+        zlottie = Test_lottie_creator._load_zlottie(name)
+        lc = Lottie_creator(zlottie, ids)
+        lc.create("zlottie_{0}_clone".format(name))
+        return lc
+
+    def test_create_coin_from_coin(self):
+        name = "coin"
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7'])
+        self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
+
+    def test_people_with_mobile_phones(self):
+        name = "84679-people-waiting-in-line-blue"
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7'])
+        self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
+
+    def test_create_zlottie(self):
+        name = "59850-blink-182-ios-android-animation"
+        Test_lottie_creator._create_zlottie(name)
+
+    def test_add_zloties_to_one_composition(self):
+        name = "zlottie_coin.json"
+        name = str(INPUT_PATH.joinpath(f'{name}'))
+        la1 = Lottie_animation()
+        la1.load(name)
+        name = "zlottie_49031-guitar-music.json"
+        name = str(INPUT_PATH.joinpath(f'{name}'))
+        la2 = Lottie_animation()
+        la2.load(name)
+        name = "zlottie_39871-knife.json"
+        name = str(INPUT_PATH.joinpath(f'{name}'))
+        la3 = Lottie_animation()
+        la3.load(name)
+        name = "zlottie_19680-bell-ringing.json"
+        name = str(INPUT_PATH.joinpath(f'{name}'))
+        la4 = Lottie_animation()
+        la4.load(name)
+        la1 += la2
+        la1 += la3
+        la1 += la4
+        la1.name = "zlottie_complex"
+        output_file_name = str(INPUT_PATH.joinpath(f'{la1.name}.json'))
+        la1.store(output_file_name)
+
+if __name__ == '__main__':
+    unittest.main()

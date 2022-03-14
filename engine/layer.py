@@ -1,3 +1,4 @@
+from __future__ import annotations
 import enum
 
 from engine.vidalgo_lottie_base import Vidalgo_lottie_base
@@ -85,8 +86,9 @@ class Layer(Vidalgo_lottie_base):
             self._transform.load(layer['ks'])
         self.analyze()
 
-    def copy(self, layer: dict):
+    def copy(self, layer: Layer):
         super(Layer, self).copy(layer)
+        layer.id = layer.id
         self.analyze()
 
     @property

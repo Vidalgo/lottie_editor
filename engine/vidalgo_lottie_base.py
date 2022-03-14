@@ -1,10 +1,11 @@
+from __future__ import annotations
 import string
 import random
 import copy
 from pathlib import Path
-from typing import Union
 
-from engine.lottie_search_and_replace import load_json, store_json
+
+from engine.lottie_search_and_replace import load_json
 
 VIDALGO_ID = 'ln'
 ZLOTTIE_OBJECT_ID = 'zlottie'
@@ -47,8 +48,9 @@ class Vidalgo_lottie_base:
             self.generate_random_id()
         Vidalgo_lottie_base.vidalgo_lottie_elements[self.vidalgo_id] = self
 
-    def copy(self, animation: dict):
-        self._lottie_obj = copy.deepcopy(animation)
+    def copy(self, base_object: Vidalgo_lottie_base):
+        self._lottie_obj = copy.deepcopy(base_object)
+        self._lottie_obj.generate_random_id()
         self.analyze()
 
     def analyze(self):
@@ -57,8 +59,8 @@ class Vidalgo_lottie_base:
         if self.vidalgo_id is None:
             raise TypeError("Error: layer doesn't have a vidalgo id")
 
-    def add_lottie_id(self):
-        Vidalgo_lottie_base._add_ids_to_elements(self._lottie_obj)
+    def add_lottie_id(self, refactor_ids=False):
+        Vidalgo_lottie_base._add_ids_to_elements(self._lottie_obj, refactor_ids)
 
     @property
     def lottie_base(self):
@@ -125,14 +127,12 @@ class Vidalgo_lottie_base:
         return lottie_element_uuid.rsplit('_', 1)[0] if lottie_element_uuid is not None else None
 
     @staticmethod
-    def _add_ids_to_elements(lottie_obj: dict):
-        if VIDALGO_ID not in lottie_obj:
+    def _add_ids_to_elements(lottie_obj: dict, refactor_ids=False):
+        if VIDALGO_ID not in lottie_obj or refactor_ids:
             lottie_obj[VIDALGO_ID] = Vidalgo_lottie_base.uuid()
         for key in lottie_obj:
             if type(lottie_obj[key]) is dict:
-                Vidalgo_lottie_base._add_ids_to_elements(lottie_obj[key])
+                Vidalgo_lottie_base._add_ids_to_elements(lottie_obj[key], refactor_ids)
             elif type(lottie_obj[key]) is list:
-                [Vidalgo_lottie_base._add_ids_to_elements(element) for element in lottie_obj[key]
+                [Vidalgo_lottie_base._add_ids_to_elements(element, refactor_ids) for element in lottie_obj[key]
                  if type(element) is dict]
-
-

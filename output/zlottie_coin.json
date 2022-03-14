@@ -1,15 +1,15 @@
 {
   "layers": [
     {
-      "ln": "zlXD0lnvSunRCA",
+      "ln": "zli5E60h73DQGs",
       "ind": 0,
-      "nm": "coin_main_layer_zlN2CJ",
+      "nm": "coin_main_layer_zlOYoF",
       "ddd": 0,
       "parent": null,
       "st": 0,
       "ip": 0,
       "op": 180,
-      "refId": "coin_main_precomp_zlh7ra",
+      "refId": "coin_main_precomp_zlDA9x",
       "ks": {
         "a": {
           "k": [
@@ -67,8 +67,8 @@
   "ddd": 0,
   "assets": [
     {
-      "ln": "zl60Moo5ERneHO",
-      "id": "coin_main_precomp_zlh7ra",
+      "ln": "zlKKVOyCtPHvK8",
+      "id": "coin_main_precomp_zlDA9x",
       "nm": "coin_main_precomp",
       "fr": 60,
       "layers": [
@@ -1476,12 +1476,12 @@
               ]
             }
           ],
-          "ln": "zlHbKLRyiTgLid"
+          "ln": "zlJL6MFKQoqkIM"
         }
       ]
     }
   ],
-  "ln": "zlYtWhumdMIvkP",
+  "ln": "zl7x3Pcs36az0R",
   "meta": {
     "a": "avirab",
     "g": "vidalgo",

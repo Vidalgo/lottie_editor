@@ -1,3 +1,4 @@
+from __future__ import annotations
 from engine.vidalgo_lottie_base import Vidalgo_lottie_base
 from engine.layer import Layer, Lottie_layer_type, find_layer, add_layer, delete_layer, replace_layer
 from engine.text_layer import Text_layer
@@ -24,8 +25,9 @@ class Precomposition(Vidalgo_lottie_base):
         self.analyze()
         self._layers = [] if 'layers' not in precomp else [_load_layer(layer) for layer in self.lottie_base['layers']]
 
-    def copy(self, animation: dict):
-        super(Precomposition, self).copy(animation)
+    def copy(self, precomposition: Precomposition):
+        super(Precomposition, self).copy(precomposition)
+        precomposition.id = precomposition.id
         self.analyze()
 
     def analyze(self):

@@ -168,10 +168,13 @@ class Lottie_animation(Vidalgo_lottie_base):
     def __add__(self, animation: Lottie_animation):
         def _adjust_animation_main_layers():
             for layer_id, layer in enumerate(animation.layers):
-                transform_pos = [(random.random() - .5) * self.width, (random.random() - .5) * self.height]
                 layer.id = layer_id + self.main_layers_index
-                layer.transform.position = transform_pos
             self.layers += animation.layers
+            for layer_id, layer in enumerate(self.layers):
+                transform_pos = [self.width / 2, self.height / 2]
+                layer.transform.anchor = transform_pos
+                layer.transform.position = transform_pos
+
         # markers : no check needed
         # motion blur : use destination but issue a warning if source motion blur exists
         self.in_point = min(self.in_point, animation.in_point)
@@ -250,11 +253,12 @@ class Lottie_animation(Vidalgo_lottie_base):
     def store(self, file_name=None):
         if file_name is None:
             file_name = f"{self.name}.json"
-        file_name = str(PATH.joinpath(file_name)) #"{0}{1}.json".format(PATH, self.name)
+            file_name = str(PATH.joinpath(file_name))
         self.metadata = Metadata()
+        self.add_lottie_id()
         store_json(file_name, self.lottie_base)
 
-    def copy(self, animation: dict):
+    def copy(self, animation: Lottie_animation):
         super(Lottie_animation, self).copy(animation)
         self.analyze()
 
@@ -577,7 +581,7 @@ class Lottie_animation(Vidalgo_lottie_base):
 
     def find_precomposition(self, precomb_id):
         for precomb in self.precomposition:
-            if precomb_id == self.remove_uuid(precomb.id):
+            if precomb_id == precomb.id:
                 return precomb
         return None
 
