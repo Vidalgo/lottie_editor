@@ -79,4 +79,4 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return f"<{type(self)} tag='{self._tag}'>"
+        return f"<{self.__class__.__name__} tag='{self._tag}'>"
