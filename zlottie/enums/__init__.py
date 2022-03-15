@@ -67,3 +67,46 @@ class ShapeType(Enum):
 class ShapeDirection(Enum):
     Normal = 1      # Usually clockwise
     Reversed = 3    # Usually counter clockwise
+
+
+class StarType(Enum):
+    Star = 1
+    Polygon = 2
+
+
+class FillRule(Enum):
+    NonZero = 1
+    EvenOdd = 2
+
+
+class LineJoin(Enum):
+    Miter = 1
+    Round = 2
+    Bevel = 3
+
+
+class LineCap(Enum):
+    Butt = 1
+    Round = 2
+    Square = 3
+
+
+class StrokeDashType(Enum):
+    Dash = 'd'
+    Gap = 'g'
+    Offset = 'o'
+
+
+class GradientType(Enum):
+    Linear = 1
+    Radial = 2
+
+
+class Composite(Enum):
+    Above = 1
+    Below = 2
+
+
+class TrimMultipleShapes(Enum):
+    Individually = 1
+    Simultaneously = 2

@@ -18,3 +18,8 @@ class Transform(LottieObject):
     skew: Optional[Value] = LottieAttribute(tag='sk', description='Skew amount as an angle in degrees')
     skew_axis: Optional[Value] = LottieAttribute(tag='sa', description='Direction along which skew is applied, in degrees (`0` skews along the X axis, `90` along the Y axis)')
     opacity: Optional[Value] = LottieAttribute(tag='o', description='Opacity')
+
+
+class RepeaterTransform(Transform):
+    start_opacity: Optional[Value] = LottieAttribute(tag='so', description='Start Opacity')
+    end_opacity: Optional[Value] = LottieAttribute(tag='eo', description='End Opacity')
