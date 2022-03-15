@@ -4,34 +4,9 @@ from zlottie.objects import VisualObject, RawObject, Transform, RepeaterTransfor
 from zlottie.types import Value, ColorValue, MultiDimensional, AnimatedProperty
 from typing import Optional, List, Dict, Type, Any
 
-
 # TODO: implement
 Position = RawObject
 ShapeProperty = AnimatedProperty
-
-
-# Helper classes
-class GradientColors(LottieObject):
-    colors: MultiDimensional = LottieAttribute(tag='k', description='Colors')
-    count: int = LottieAttribute(tag='p', description='Number of colors in `k`')
-
-
-class Gradient(LottieObject):
-    start_point: MultiDimensional = LottieAttribute(tag='s', description='Start Point')
-    end_point: MultiDimensional = LottieAttribute(tag='e', description='End Point')
-    gradient_type: Optional[GradientType] = LottieAttribute(tag='t', default=GradientType.Linear, description='Gradient Type')
-    highlight_length: Optional[Value] = LottieAttribute(tag='h', description='Highlight Length')
-    highlight_angle: Optional[Value] = LottieAttribute(tag='a', description='Highlight Angle')
-    colors: GradientColors = LottieAttribute(tag='g', description='Colors')
-
-
-class BaseStroke(LottieObject):
-    line_cap: Optional[LineCap] = LottieAttribute(tag='lc', default=LineCap.Round, description='Line Cap')
-    line_join: Optional[LineJoin] = LottieAttribute(tag='lj', default=LineJoin.Round, description='Line Join')
-    miter_limit: Optional[float] = LottieAttribute(tag='ml', default=0.0, description='Miter Limit')
-    opacity: Value = LottieAttribute(tag='o', description='Opacity')
-    width: Value = LottieAttribute(tag='w', description='Width')
-    dashes: Optional[List[StrokeDashType]] = LottieAttribute(tag='d', description='Dashes')
 
 
 # Base classes (see zlottie.enums.ShapeType)
@@ -50,8 +25,8 @@ class ShapeElement(VisualObject):
 
     @classmethod
     def get_load_class(cls, raw: Any) -> Type['Layer']:
-        layer_type = LayerType(raw['ty'])
-        return ShapeElement.__classes_by_type.get(layer_type, RawObject)
+        type_ = ShapeType(raw['ty'])
+        return ShapeElement.__classes_by_type.get(type_, RawObject)
 
 
 # Shape
@@ -91,6 +66,29 @@ class Fill(ShapeElement):
 
 
 # Style
+class GradientColors(LottieObject):
+    colors: MultiDimensional = LottieAttribute(tag='k', description='Colors')
+    count: int = LottieAttribute(tag='p', description='Number of colors in `k`')
+
+
+class Gradient(LottieObject):
+    start_point: MultiDimensional = LottieAttribute(tag='s', description='Start Point')
+    end_point: MultiDimensional = LottieAttribute(tag='e', description='End Point')
+    gradient_type: Optional[GradientType] = LottieAttribute(tag='t', default=GradientType.Linear, description='Gradient Type')
+    highlight_length: Optional[Value] = LottieAttribute(tag='h', description='Highlight Length')
+    highlight_angle: Optional[Value] = LottieAttribute(tag='a', description='Highlight Angle')
+    colors: GradientColors = LottieAttribute(tag='g', description='Colors')
+
+
+class BaseStroke(LottieObject):
+    line_cap: Optional[LineCap] = LottieAttribute(tag='lc', default=LineCap.Round, description='Line Cap')
+    line_join: Optional[LineJoin] = LottieAttribute(tag='lj', default=LineJoin.Round, description='Line Join')
+    miter_limit: Optional[float] = LottieAttribute(tag='ml', default=0.0, description='Miter Limit')
+    opacity: Value = LottieAttribute(tag='o', description='Opacity')
+    width: Value = LottieAttribute(tag='w', description='Width')
+    dashes: Optional[List[StrokeDashType]] = LottieAttribute(tag='d', description='Dashes')
+
+
 class Stroke(ShapeElement, BaseStroke):
     color: MultiDimensional = LottieAttribute(tag='c', description='Color')
 
@@ -107,7 +105,7 @@ class GradientStroke(ShapeElement, BaseStroke, Gradient):
 # Group
 class Group(ShapeElement):
     number_of_properties: Optional[float] = LottieAttribute(tag='np', description='Number Of Properties')
-    shapes: Optional[List[Shape]] = LottieAttribute(tag='it', description='Shapes')
+    shapes: Optional[List[ShapeElement]] = LottieAttribute(tag='it', description='Shapes')
 
 
 class TransformShape(ShapeElement, Transform):
@@ -181,3 +179,8 @@ ShapeElement.register_shape_class(ShapeType.Merge, Merge)
 ShapeElement.register_shape_class(ShapeType.Twist, Twist)
 ShapeElement.register_shape_class(ShapeType.OffsetPath, OffsetPath)
 ShapeElement.register_shape_class(ShapeType.ZigZag, ZigZag)
+
+__all__ = [
+    'ShapeElement', 'Shape', 'Rectangle', 'Ellipse', 'PolyStar', 'Path', 'Fill', 'GradientColors', 'Gradient',
+    'BaseStroke', 'Stroke', 'GradientFill', 'GradientStroke', 'Group', 'TransformShape', 'Modifier', 'Repeater',
+    'Trim', 'RoundedCorners', 'PuckerBloat', 'Merge', 'Twist', 'OffsetPath', 'ZigZag']

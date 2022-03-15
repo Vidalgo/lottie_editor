@@ -1,5 +1,5 @@
 from zlottie.base import LottieAttribute
-from zlottie.objects import VisualObject, RawObject, Transform
+from zlottie.objects import VisualObject, RawObject, Transform, ShapeElement
 from zlottie.enums import BlendMode, LayerType, MatteMode
 from typing import Optional, List, Dict, Type, Any
 
@@ -9,7 +9,6 @@ Mask = RawObject
 Effect = RawObject
 AudioSettings = RawObject
 Value = RawObject
-ShapeList = RawObject
 TextAnimatorData = RawObject
 
 
@@ -36,8 +35,8 @@ class Layer(VisualObject):
 
     @classmethod
     def get_load_class(cls, raw: Any) -> Type['Layer']:
-        layer_type = LayerType(raw['ty'])
-        return Layer.__classes_by_type.get(layer_type, RawObject)
+        type_ = LayerType(raw['ty'])
+        return Layer.__classes_by_type.get(type_, RawObject)
 
 
 class VisualLayer(Layer):
@@ -52,7 +51,7 @@ class VisualLayer(Layer):
 
 
 class ShapeLayer(VisualLayer):
-    shapes: ShapeList = LottieAttribute(tag='shapes', description='Shapes')
+    shapes: List[ShapeElement] = LottieAttribute(tag='shapes', description='Shapes')
 
 
 class PrecompositionLayer(VisualLayer):

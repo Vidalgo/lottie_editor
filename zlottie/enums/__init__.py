@@ -68,6 +68,10 @@ class ShapeDirection(Enum):
     Normal = 1      # Usually clockwise
     Reversed = 3    # Usually counter clockwise
 
+    @classmethod
+    def _missing_(cls, value):
+        return ShapeDirection.Normal
+
 
 class StarType(Enum):
     Star = 1
