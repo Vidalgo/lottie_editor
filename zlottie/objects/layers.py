@@ -1,6 +1,6 @@
 from zlottie.base import LottieAttribute
 from zlottie.objects import VisualObject, RawObject, Transform
-from zlottie.base.enums import BlendMode, LayerType, MatteMode
+from zlottie.enums import BlendMode, LayerType, MatteMode
 from typing import Optional, List, Dict, Type, Any
 
 # TODO: implement the following

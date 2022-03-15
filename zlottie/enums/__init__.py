@@ -41,3 +41,29 @@ class MatteMode(Enum):
     InvertedAlpha = 2
     Luma = 3
     InvertedLuma = 4
+
+
+class ShapeType(Enum):
+    Rectangle = 'rc'
+    Ellipse = 'el'
+    PolyStar = 'sr'
+    Path = 'sh'
+    Fill = 'fl'
+    Stroke = 'st'
+    GradientFill = 'gf'
+    GradientStroke = 'gs'
+    Group = 'gr'
+    Transform = 'tr'
+    Repeater = 'rp'
+    Trim = 'tm'
+    RoundedCorners = 'rd'
+    PuckerBloat = 'pb'
+    Merge = 'mm'
+    Twist = 'tw'
+    OffsetPath = 'op'
+    ZigZag = 'zz'
+
+
+class ShapeDirection(Enum):
+    Normal = 1      # Usually clockwise
+    Reversed = 3    # Usually counter clockwise

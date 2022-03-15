@@ -7,7 +7,10 @@ class_template = "class {0}({1}):\n"
 
 # e.g.: "    author: Optional[str] = LottieAttribute(tag='a', description='Author')"
 attr_template = "    {0}: {1} = LottieAttribute(tag='{2}', description='{3}')\n"
+attr_with_default_template = "    {0}: {1} = LottieAttribute(tag='{2}', default={3}, description='{4}')\n"
+
 optional_attr_template = "    {0}: Optional[{1}] = LottieAttribute(tag='{2}', description='{3}')\n"
+optional_attr_with_default_template = "    {0}: Optional[{1}] = LottieAttribute(tag='{2}', default={3}, description='{4}')\n"
 
 
 def _extract_own_fields(model):
@@ -29,9 +32,14 @@ def _format_attributes(fields):
             type_ = field.type_.__name__
         except AttributeError:
             type_ = field.type_
+        default = field.default
         description = field.field_info.description or field.field_info.title
-        template = attr_template if field.required else optional_attr_template
-        line = template.format(name, type_, tag, description)
+        if default is not None:
+            template = attr_with_default_template if field.required else optional_attr_with_default_template
+            line = template.format(name, type_, tag, default, description)
+        else:
+            template = attr_template if field.required else optional_attr_template
+            line = template.format(name, type_, tag, description)
         lines.append(line)
     return lines
 

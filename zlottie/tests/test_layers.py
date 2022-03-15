@@ -1,10 +1,8 @@
 from unittest import TestCase
 from zlottie.base import LottieObject, LottieAttribute
+from zlottie.enums import LayerType
 from zlottie.objects.layers import *
 from typing import List
-from zlottie.base.enums import LayerType
-from pathlib import Path
-import json
 
 
 class StubLottieObject(LottieObject):
