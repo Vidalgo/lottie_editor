@@ -28,6 +28,7 @@ class LottieAttribute:
         self._description = kwargs.get('description')
         self._autoload = kwargs.get('autoload', True)
         self._default = kwargs.get('default')
+        self._always_dump = kwargs.get('always_dump', False)
         self._is_optional = self._is_annotation_optional(self._annotation)
         self._is_list = self._is_annotation_list(self._annotation)
         self._type = self._extract_annotation_type(self._annotation)
@@ -59,6 +60,10 @@ class LottieAttribute:
     @property
     def default(self):
         return self._default
+
+    @property
+    def always_dump(self):
+        return self._always_dump
 
     @property
     def is_optional(self):

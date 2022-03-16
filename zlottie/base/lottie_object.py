@@ -33,7 +33,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         result = {}
         for name, attribute in self._attributes.items():
             value = self._value_to_raw(value=getattr(self, name))
-            if value != attribute.default:
+            if value != attribute.default or attribute.always_dump:
                 result[attribute.tag] = value
         return result
 
