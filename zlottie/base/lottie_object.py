@@ -32,8 +32,8 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
     def dump(self) -> Dict:
         result = {}
         for name, attribute in self._attributes.items():
-            value = self._value_to_dict(value=getattr(self, name))
-            if value is not None:
+            value = self._value_to_raw(value=getattr(self, name))
+            if value != attribute.default:
                 result[attribute.tag] = value
         return result
 
@@ -63,13 +63,15 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
             return cls(raw)
 
     @staticmethod
-    def _value_to_dict(value: Any) -> Dict:
-        if isinstance(value, list) and len(value) > 0:
-            return [LottieObject._value_to_dict(v) for v in value]
+    def _value_to_raw(value: Any) -> Dict:
+        if isinstance(value, list) and value:
+            return [LottieObject._value_to_raw(v) for v in value]
         elif isinstance(value, LottieBase):
             return value.dump()
         elif isinstance(value, Enum):
             return value.value
+        elif isinstance(value, bool):
+            return int(value)
         else:
             return value
 
