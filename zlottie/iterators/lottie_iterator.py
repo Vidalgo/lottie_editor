@@ -62,10 +62,10 @@ class LottieIterator(Iterator):
         """
         filters = []
         filters.append(lambda c: isinstance(c, LottieObject))
-        if classes := kwargs.get('include_classes'):
-            filters.append(lambda c: type(c) in classes)
-        if classes := kwargs.get('exclude_classes'):
-            filters.append(lambda c: type(c) not in classes)
+        if include_classes := kwargs.get('include_classes'):
+            filters.append(lambda c: type(c) in include_classes)
+        if exclude_classes := kwargs.get('exclude_classes'):
+            filters.append(lambda c: type(c) not in exclude_classes)
         return lambda c: all(f(c) for f in filters)
 
     @staticmethod
