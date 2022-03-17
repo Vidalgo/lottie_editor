@@ -6,10 +6,15 @@ LottieBase = ForwardRef('LottieBase')
 class LottieBase:
     def __init__(self, **kwargs):
         self._tag: str = kwargs.pop('tag', '')
+        self._path: str = kwargs.pop('path', 'root')
 
     @property
     def tag(self):
         return self._tag
+
+    @property
+    def path(self):
+        return self._path
 
     def load(self, raw: Any) -> None:
         raise NotImplementedError('Should be implemented in derived class')

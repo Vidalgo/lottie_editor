@@ -15,7 +15,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
     __strict: bool = False
 
     def __init__(self, raw: Dict = None, **kwargs):
-        # self._tag: str = kwargs.pop('tag', '')
+        super().__init__(**kwargs)
         self._extra: RawLottieObject = RawLottieObject()
         if raw is not None:
             self.load(raw)
@@ -30,12 +30,14 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
             attribute = self._attributes_by_tag[tag]
             if attribute.autoload:
                 if attribute.is_list:
-                    value = [self._load_attribute(attribute=attribute, raw=r) for r in raw[tag]]
+                    value = [self._load_attribute(attribute=attribute, raw=r, path=self.path, index=idx) for idx, r in enumerate(raw[tag])]
                 else:
-                    value = self._load_attribute(attribute=attribute, raw=raw[tag])
+                    value = self._load_attribute(attribute=attribute, path=self.path, raw=raw[tag])
                 attributes_values[attribute.name] = value
         self.__dict__.update(attributes_values)
         self._extra = RawLottieObject(raw=extra_tags_values)
+        if extra_tags_values:
+            logger.warning(f'found extra properties in {self.path}: {set(extra_tags_values.keys())}')
 
     def dump(self) -> Dict:
         result = {}
@@ -63,11 +65,13 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         return self._extra
 
     @staticmethod
-    def _load_attribute(attribute: LottieAttribute, raw: Any):
+    def _load_attribute(attribute: LottieAttribute, raw: Any, path: str, index: int = None):
         cls = attribute.type
         if issubclass(cls, LottieBase):
             cls = cls.get_load_class(raw=raw)
-            return cls(raw, tag=attribute.tag)
+            tag = attribute.tag if index is None else f"{attribute.tag}[{index}]"
+            path = f"{path}['{attribute.tag}']" if index is None else f"{path}['{attribute.tag}'][{index}]"
+            return cls(raw, tag=tag, path=path)
         else:
             return cls(raw)
 

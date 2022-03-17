@@ -36,18 +36,18 @@ class BasicShape(ShapeBase):
     direction: Optional[ShapeDirection] = LottieAttribute(tag='d', default=ShapeDirection.Normal, description='Direction the shape is drawn as, mostly relevant when using trim path')
 
 
-class Rectangle(BasicShape):
+class RectangleShape(BasicShape):
     position: Position = LottieAttribute(tag='p', description='Center of the rectangle')
     size: MultiDimensional = LottieAttribute(tag='s', description='Size')
     roundness: Value = LottieAttribute(tag='r', description='Rounded')
 
 
-class Ellipse(BasicShape):
+class EllipseShape(BasicShape):
     position: Position = LottieAttribute(tag='p', description='Position')
     size: MultiDimensional = LottieAttribute(tag='s', description='Size')
 
 
-class PolyStar(BasicShape):
+class StarShape(BasicShape):
     star_type: Optional[StarType] = LottieAttribute(tag='sy', default=StarType.Star, description='Star type, `1` for Star, `2` for Polygon')
     position: Position = LottieAttribute(tag='p', description='Position')
     outer_radius: Value = LottieAttribute(tag='or', description='Outer Radius')
@@ -59,7 +59,7 @@ class PolyStar(BasicShape):
     inner_roundness: Optional[Value] = LottieAttribute(tag='is', description='Outer Roundness as a percentage')
 
 
-class Path(BasicShape):
+class PathShape(BasicShape):
     vertices: ShapeProperty = LottieAttribute(tag='ks', description='Path vertices')
     item_index: Optional[int] = LottieAttribute(tag='ind', description='Item index')
     shape_index: Optional[int] = LottieAttribute(tag='ix', description='Shape Index')
@@ -198,10 +198,10 @@ class ZigZagShape(ShapeBase):
 
 
 # register classes
-ShapeBase.register_shape_class(ShapeType.Rectangle, Rectangle)
-ShapeBase.register_shape_class(ShapeType.Ellipse, Ellipse)
-ShapeBase.register_shape_class(ShapeType.PolyStar, PolyStar)
-ShapeBase.register_shape_class(ShapeType.Path, Path)
+ShapeBase.register_shape_class(ShapeType.Rectangle, RectangleShape)
+ShapeBase.register_shape_class(ShapeType.Ellipse, EllipseShape)
+ShapeBase.register_shape_class(ShapeType.PolyStar, StarShape)
+ShapeBase.register_shape_class(ShapeType.Path, PathShape)
 ShapeBase.register_shape_class(ShapeType.Fill, FillShape)
 ShapeBase.register_shape_class(ShapeType.Stroke, StrokeShape)
 ShapeBase.register_shape_class(ShapeType.GradientFill, GradientFillShape)
@@ -219,6 +219,6 @@ ShapeBase.register_shape_class(ShapeType.ZigZag, ZigZagShape)
 
 
 __all__ = [
-    'ShapeBase', 'BasicShape', 'Rectangle', 'Ellipse', 'PolyStar', 'Path', 'FillShape', 'GradientColors', 'Gradient',
+    'ShapeBase', 'BasicShape', 'RectangleShape', 'EllipseShape', 'StarShape', 'PathShape', 'FillShape', 'GradientColors', 'Gradient',
     'StrokeShape', 'GradientFillShape', 'GradientStrokeShape', 'GroupShape', 'TransformShape', 'ModifierShape', 'RepeaterShape',
     'TrimShape', 'RoundedCornersShape', 'PuckerBloatShape', 'MergeShape', 'TwistShape', 'OffsetPathShape', 'ZigZagShape']
