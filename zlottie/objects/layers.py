@@ -15,7 +15,7 @@ TextAnimatorData = RawObject
 class Layer(VisualObject):
     __classes_by_type: Dict[LayerType, Type] = {}
 
-    three_dimensional: Optional[bool] = LottieAttribute(tag='ddd', default=0, description='Whether the layer is threedimensional')
+    is_3d: Optional[bool] = LottieAttribute(tag='ddd', default=0, description='Whether the layer is threedimensional')
     hidden: Optional[bool] = LottieAttribute(tag='hd', description='Whether the layer is hidden')
     type: LayerType = LottieAttribute(tag='ty', description='Layer Type')
     index: Optional[int] = LottieAttribute(tag='ind', description='Index')
@@ -25,7 +25,7 @@ class Layer(VisualObject):
     out_point: int = LottieAttribute(tag='op', description='Frame when the layers becomes invisible')
     start_time: float = LottieAttribute(tag='st', description='Start Time')
     blend_mode: Optional[BlendMode] = LottieAttribute(tag='bm', default=0, description='Blend Mode')
-    css_class: Optional[str] = LottieAttribute(tag='cl', description='CSS class used by the SVG renderer')
+    class_name: Optional[str] = LottieAttribute(tag='cl', description='CSS class used by the SVG renderer')
     id: Optional[str] = LottieAttribute(tag='ln', description='`id` attribute used by the SVG renderer')
 
     @staticmethod
