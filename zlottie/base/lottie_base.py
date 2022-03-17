@@ -29,3 +29,6 @@ class LottieBase:
     @classmethod
     def get_load_class(cls, raw: Dict) -> Type[LottieBase]:
         return cls
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} tag='{self._tag}'>"

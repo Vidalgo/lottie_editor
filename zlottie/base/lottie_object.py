@@ -43,11 +43,8 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
             value = self._value_to_raw(value=getattr(self, name))
             if value != attribute.default or attribute.always_dump:
                 result[attribute.tag] = value
+        result.update(self._extra)
         return result
-
-    # @property
-    # def tag(self):
-    #     return self._tag
 
     @property
     def descriptor(self):
@@ -60,6 +57,10 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
     @property
     def tags(self):
         return set(self._attributes_by_tag.keys())
+
+    @property
+    def extra(self):
+        return self._extra
 
     @staticmethod
     def _load_attribute(attribute: LottieAttribute, raw: Any):
@@ -87,6 +88,3 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
         if bad_kwarg := next((attr for attr in kwargs.keys() if attr not in self._attributes), None):
             raise TypeError(f"__init__() got an unexpected keyword argument '{bad_kwarg}'")
         self.__dict__.update(kwargs)
-
-    def __repr__(self):
-        return f"<{self.__class__.__name__} tag='{self._tag}'>"
