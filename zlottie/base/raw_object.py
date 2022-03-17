@@ -1,9 +1,9 @@
-from zlottie.base import LottieObject
+from zlottie.base import LottieBase
 from typing import Dict
 from copy import deepcopy
 
 
-class RawObject(LottieObject):
+class RawObject(LottieBase):
     """raw object (i.e unparsed dictionary)"""
 
     def __init__(self, raw: Dict = {}, **kwargs):

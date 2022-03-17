@@ -1,5 +1,5 @@
-from zlottie.base import LottieAttribute
-from zlottie.objects import Composition, VisualObject, Metadata, RawObject, Asset
+from zlottie.base import RawObject, LottieAttribute
+from zlottie.objects import Composition, VisualObject, Metadata, Asset
 from typing import Optional, List
 
 

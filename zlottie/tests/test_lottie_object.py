@@ -104,7 +104,7 @@ class TestLottieObject(TestCase):
             'attr4': LottieAttribute(name='attr4', tag='a4', annotation=float),
             'attr5': LottieAttribute(name='attr5', tag='a5', annotation=bool)
         }
-        expected_tags = ['a1', 'a2', 'x3', 'a4', 'a5']
+        expected_tags = {'a1', 'a2', 'x3', 'a4', 'a5'}
         # act
         uut = DerivedTwiceDummyLottieObjectWithoutInit(attr1='hello', attr3=1, attr5=True)
         # assert

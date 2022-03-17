@@ -1,6 +1,10 @@
-from zlottie.base import LottieBase, LottieObjectMeta, LottieAttribute
+from zlottie.base import LottieBase, LottieObjectMeta, LottieAttribute, RawObject
 from typing import Any, Dict, ForwardRef, Type
 from enum import Enum
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 LottieObject = ForwardRef('LottieObject')
 
@@ -11,23 +15,27 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
     __strict: bool = False
 
     def __init__(self, raw: Dict = None, **kwargs):
-        self._tag: str = kwargs.pop('tag', '')
+        # self._tag: str = kwargs.pop('tag', '')
+        self._extra: RawObject = RawObject()
         if raw is not None:
             self.load(raw)
         else:
             self._init_from_kwargs(**kwargs)
 
     def load(self, raw: Dict) -> None:
-        for tag, value in raw.items():
-            # if tag == 'it':
-            #     print(tag)
+        known_tags_values = {tag: raw[tag] for tag in (raw.keys() & self.tags)}     # set intersection
+        extra_tags_values = {tag: raw[tag] for tag in (raw.keys() - self.tags)}     # set difference
+        attributes_values = {}
+        for tag, value in known_tags_values.items():
             attribute = self._attributes_by_tag[tag]
             if attribute.autoload:
                 if attribute.is_list:
-                    value = [self._load_attribute(attribute=attribute, raw=r) for r in value]
+                    value = [self._load_attribute(attribute=attribute, raw=r) for r in raw[tag]]
                 else:
-                    value = self._load_attribute(attribute=attribute, raw=value)
-                setattr(self, attribute.name, value)
+                    value = self._load_attribute(attribute=attribute, raw=raw[tag])
+                attributes_values[attribute.name] = value
+        self.__dict__.update(attributes_values)
+        self._extra = RawObject(raw=extra_tags_values)
 
     def dump(self) -> Dict:
         result = {}
@@ -37,9 +45,9 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
                 result[attribute.tag] = value
         return result
 
-    @property
-    def tag(self):
-        return self._tag
+    # @property
+    # def tag(self):
+    #     return self._tag
 
     @property
     def descriptor(self):
@@ -51,7 +59,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
 
     @property
     def tags(self):
-        return list(self._attributes_by_tag.keys())
+        return set(self._attributes_by_tag.keys())
 
     @staticmethod
     def _load_attribute(attribute: LottieAttribute, raw: Any):

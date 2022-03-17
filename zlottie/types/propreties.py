@@ -1,5 +1,4 @@
-from zlottie.base import LottieBase, LottieObject, LottieAttribute
-from zlottie.objects import RawObject
+from zlottie.base import RawObject, LottieObject, LottieAttribute
 from zlottie.types import Vector
 from typing import Optional, Union, Dict, Any, List
 from numbers import Number

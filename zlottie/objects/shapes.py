@@ -1,6 +1,6 @@
-from zlottie.base import LottieObject, LottieAttribute
+from zlottie.base import RawObject, LottieObject, LottieAttribute
 from zlottie.enums import *
-from zlottie.objects import VisualObject, RawObject, Transform, RepeaterTransform
+from zlottie.objects import VisualObject, Transform, RepeaterTransform
 from zlottie.types import Value, ColorValue, MultiDimensional, AnimatedProperty
 from typing import Optional, List, Dict, Type, Any
 

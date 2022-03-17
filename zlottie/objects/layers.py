@@ -1,5 +1,5 @@
-from zlottie.base import LottieAttribute
-from zlottie.objects import VisualObject, RawObject, Transform, ShapeElement
+from zlottie.base import RawObject, LottieAttribute
+from zlottie.objects import VisualObject, Transform, ShapeElement
 from zlottie.enums import BlendMode, LayerType, MatteMode
 from typing import Optional, List, Dict, Type, Any
 
