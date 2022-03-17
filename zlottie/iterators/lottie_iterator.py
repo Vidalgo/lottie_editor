@@ -15,11 +15,12 @@ class LottieIterator(Iterator):
         Args:
             root (LottieObject): root node
             include_self (bool): (optional) should iterator return the root object. default: False
+            filter (LottieObjectFilter): (optional) a predicate function which accepts a LottieObject and returns True / False to include / exclude the object
             include_classes (List[Type[LottieObject]]): (optional) a list of classes to include. default: include all lottie classes
             exclude_classes (List[Type[LottieObject]]): (optional) a list of classes to exclude. default: empty list
 
         Notes:
-            only set include_classes or exclude_classes, but not both
+            At most one filter parameter can be set
         """
         filter = self._create_filter(**kwargs)
         children = [root] if include_self else self._get_children(root)
@@ -54,14 +55,19 @@ class LottieIterator(Iterator):
         """Creates a lottie object filter function
 
         Args:
+            filter (LottieObjectFilter): (optional) a predicate function which accepts a LottieObject and returns True / False to include / exclude the object
             include_classes (List[Type[LottieObject]]): (optional) a list of classes to include. default: include all lottie classes
             exclude_classes (List[Type[LottieObject]]): (optional) a list of classes to exclude. default: empty list
 
         Returns:
             A filter function which accepts a lottie object, and returns True/False
         """
+        if sum(bool(kwargs.get(f)) for f in ('filter', 'include_classes', 'exclude_classes')) > 1:
+            raise ValueError('Multiple filters provided - at most one filter parameter can be set')
         filters = []
         filters.append(lambda c: isinstance(c, LottieObject))
+        if filter_ := kwargs.get('filter'):
+            filters.append(filter_)
         if include_classes := kwargs.get('include_classes'):
             filters.append(lambda c: type(c) in include_classes)
         if exclude_classes := kwargs.get('exclude_classes'):
