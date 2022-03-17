@@ -1,8 +1,3 @@
-import shortuuid
+from .uuids import create_uuid
+from .zlottify import add_ids
 
-
-def create_uuid(length: int = None) -> str:
-    if length:
-        return shortuuid.random(length=length)
-    else:
-        return shortuuid.uuid()
