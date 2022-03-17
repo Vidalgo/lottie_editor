@@ -1,4 +1,4 @@
-from zlottie.base import LottieBase, LottieObjectMeta, LottieAttribute, RawObject
+from zlottie.base import LottieBase, LottieObjectMeta, LottieAttribute, RawLottieObject
 from typing import Any, Dict, ForwardRef, Type
 from enum import Enum
 
@@ -16,7 +16,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
 
     def __init__(self, raw: Dict = None, **kwargs):
         # self._tag: str = kwargs.pop('tag', '')
-        self._extra: RawObject = RawObject()
+        self._extra: RawLottieObject = RawLottieObject()
         if raw is not None:
             self.load(raw)
         else:
@@ -35,7 +35,7 @@ class LottieObject(LottieBase, metaclass=LottieObjectMeta):
                     value = self._load_attribute(attribute=attribute, raw=raw[tag])
                 attributes_values[attribute.name] = value
         self.__dict__.update(attributes_values)
-        self._extra = RawObject(raw=extra_tags_values)
+        self._extra = RawLottieObject(raw=extra_tags_values)
 
     def dump(self) -> Dict:
         result = {}

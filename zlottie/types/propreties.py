@@ -1,11 +1,11 @@
-from zlottie.base import RawObject, LottieObject, LottieAttribute
+from zlottie.base import RawLottieObject, LottieObject, LottieAttribute
 from zlottie.types import Vector
 from typing import Optional, Union, Dict, Any, List
 from numbers import Number
 
 
 # TODO: implement Keyframe
-Keyframe = RawObject
+Keyframe = RawLottieObject
 ValueType = Union[Number, Vector, List[Keyframe]]
 
 

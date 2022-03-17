@@ -1,11 +1,11 @@
-from zlottie.base import RawObject, LottieObject, LottieAttribute
+from zlottie.base import RawLottieObject, LottieObject, LottieAttribute
 from zlottie.enums import *
 from zlottie.objects import VisualObject, Transform, RepeaterTransform
 from zlottie.types import Value, ColorValue, MultiDimensional, AnimatedProperty
 from typing import Optional, List, Dict, Type, Any
 
 # TODO: implement
-Position = RawObject
+Position = RawLottieObject
 ShapeProperty = AnimatedProperty
 
 
@@ -26,7 +26,7 @@ class ShapeElement(VisualObject):
     @classmethod
     def get_load_class(cls, raw: Any) -> Type['Layer']:
         type_ = ShapeType(raw['ty'])
-        return ShapeElement.__classes_by_type.get(type_, RawObject)
+        return ShapeElement.__classes_by_type.get(type_, RawLottieObject)
 
 
 # Shape

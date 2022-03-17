@@ -3,7 +3,7 @@ from typing import Dict
 from copy import deepcopy
 
 
-class RawObject(LottieBase):
+class RawLottieObject(LottieBase):
     """raw object (i.e unparsed dictionary)"""
 
     def __init__(self, raw: Dict = {}, **kwargs):

@@ -1,15 +1,15 @@
-from zlottie.base import RawObject, LottieAttribute
+from zlottie.base import RawLottieObject, LottieAttribute
 from zlottie.objects import VisualObject, Transform, ShapeElement
 from zlottie.enums import BlendMode, LayerType, MatteMode
 from typing import Optional, List, Dict, Type, Any
 
 # TODO: implement the following
-#Transform = RawObject
-Mask = RawObject
-Effect = RawObject
-AudioSettings = RawObject
-Value = RawObject
-TextAnimatorData = RawObject
+#Transform = RawLottieObject
+Mask = RawLottieObject
+Effect = RawLottieObject
+AudioSettings = RawLottieObject
+Value = RawLottieObject
+TextAnimatorData = RawLottieObject
 
 
 class Layer(VisualObject):
@@ -36,7 +36,7 @@ class Layer(VisualObject):
     @classmethod
     def get_load_class(cls, raw: Any) -> Type['Layer']:
         type_ = LayerType(raw['ty'])
-        return Layer.__classes_by_type.get(type_, RawObject)
+        return Layer.__classes_by_type.get(type_, RawLottieObject)
 
 
 class VisualLayer(Layer):

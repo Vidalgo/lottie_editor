@@ -1,12 +1,12 @@
-from zlottie.base import RawObject, LottieObject, LottieAttribute
+from zlottie.base import RawLottieObject, LottieObject, LottieAttribute
 from zlottie.types import Value#, MultiDimensional
 from typing import Optional
 
 
 # TODO: implement placeholders
-Position = RawObject
-#Value = RawObject
-MultiDimensional = RawObject
+Position = RawLottieObject
+#Value = RawLottieObject
+MultiDimensional = RawLottieObject
 
 
 class Transform(LottieObject):
