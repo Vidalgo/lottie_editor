@@ -34,19 +34,44 @@ class Test_lottie_creator(unittest.TestCase):
         lc.create("zlottie_{0}_clone".format(name))
         return lc
 
+    @staticmethod
+    def _load_and_hide_layers_same_file(name: str, ids: list[str]) -> Lottie_creator:
+        # Test_lottie_creator._create_zlottie(name)
+        zlottie = Test_lottie_creator._load_zlottie(name)
+        lc = Lottie_creator(zlottie, ids)
+        lc.hide("zlottie_{0}_clone".format(name))
+        return lc
+
     def test_create_coin_from_coin(self):
-        name = "coin"
-        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7'])
-        self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
+        name = "39871-knife"
+        Test_lottie_creator._create_zlottie(name)
+        #lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7'])
 
     def test_people_with_mobile_phones(self):
         name = "84679-people-waiting-in-line-blue"
-        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7'])
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlWyAPtsxiyYyk'])
+        self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
+
+    def test_complex_zlottie(self):
+        name = "complex"
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7', 'zlVbzYFKVtVlKS'])
         self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
 
     def test_create_zlottie(self):
-        name = "59850-blink-182-ios-android-animation"
+        name = "classic-music"
         Test_lottie_creator._create_zlottie(name)
+        #lc = Test_lottie_creator._load_and_create_same_file(name, ['zlRbJd5zEYsFyX'])
+
+    def test_recalc_animation_size(self):
+        name = "zlottie_complex"
+        Test_lottie_creator._create_zlottie(name)
+        fname = str(INPUT_PATH.joinpath(f'zlottie_{name}.json'))
+        la = Lottie_animation()
+        la.load(fname)
+        la.recalc_animation_size()
+        la.name = 'zlottie_' + name + '_recalc_size'
+        output_file_name = str(OUTPUT_PATH.joinpath(f'{la.name}.json'))
+        la.store(output_file_name)
 
     def test_add_zloties_to_one_composition(self):
         name = "zlottie_coin.json"
@@ -69,8 +94,19 @@ class Test_lottie_creator(unittest.TestCase):
         la1 += la3
         la1 += la4
         la1.name = "zlottie_complex"
-        output_file_name = str(INPUT_PATH.joinpath(f'{la1.name}.json'))
+        output_file_name = str(OUTPUT_PATH.joinpath(f'{la1.name}.json'))
         la1.store(output_file_name)
+
+    def test_hide_redundant_layers_lottie_1(self):
+        name = "jazz night"
+        #Test_lottie_creator._create_zlottie(name)
+        lc = Test_lottie_creator._load_and_hide_layers_same_file(name, ['zlD7ROE5kale8a', 'zlbAG4NOhBCyFb', 'zlq0QYPKSHhgco'])
+
+    def test_create_redundant_layers_lottie_1(self):
+        name = "jazz night"
+        #Test_lottie_creator._create_zlottie(name)
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlD7ROE5kale8a'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,6 +16,10 @@ from engine.precomp_layer import Precomp_layer
 from engine.text_layer import Text_layer, refactor_font_name
 
 
+ANIMATION_WIDTH = 1920
+ANIMATION_HEIGHT = 1080
+
+
 class Lottie_animation(Vidalgo_lottie_base):
     def __init__(self, lottie_name: str = 'unknown', in_point: int = 0, out_point: int = 30, frame_rate: int = 30,
                  ddd_layers: int = 0, width: float = 500, height: float = 500, version: str = "5.5.2"):
@@ -35,9 +39,51 @@ class Lottie_animation(Vidalgo_lottie_base):
         self._create_vidalgo_lottie_template(lottie_name, in_point, out_point, frame_rate, ddd_layers, width, height,
                                              version)
 
+    def recalc_animation_size(self):
+        [min_x, min_y] = [9999, 9999]
+        [max_x, max_y] = [-9999, -9999]
+        for layer in self.layers:
+            [min_x, min_y] = [min(layer.transform.position['k'][0] - layer.width/2, min_x),
+                              min(layer.transform.position['k'][1] - layer.height/2, min_y)]
+            [max_x, max_y] = [max(layer.transform.position['k'][0] + layer.width / 2, max_x),
+                              max(layer.transform.position['k'][1] + layer.height / 2, max_y)]
+        new_width = max_x - min_x
+        new_height = max_y - min_y
+        width_ratio = new_width / self.width
+        height_ratio = new_height / self.height
+
+        for layer in self.layers:
+            layer.transform.position = [layer.transform.position['k'][0] * width_ratio,
+                                        layer.transform.position['k'][1] * height_ratio]
+        self.width = new_width
+        self.height = new_height
+
+    def set_zlottie_layers(self, main_precomp_no_parents_layer=False,
+                           main_precomp_layers=True,
+                           main_precomp_child_layer=False,
+                           all_pre_comp_layers=True,
+                           all_no_parents_layer=False,
+                           all_layers=False):
+        def set_zlottie(precomp: Precomposition, layer: Layer):
+            if precomp == self.main_precomposition:
+                if main_precomp_no_parents_layer and layer.parent is None:
+                    layer.set_zlottie_id()
+                if main_precomp_layers and layer.type == Lottie_layer_type.Precomp.value:
+                    layer.set_zlottie_id()
+                if main_precomp_child_layer and layer.parent:
+                    layer.set_zlottie_id()
+            else:
+                if all_no_parents_layer and layer.parent is None:
+                    layer.set_zlottie_id()
+                if all_pre_comp_layers and layer.type == Lottie_layer_type.Precomp.value:
+                    layer.set_zlottie_id()
+                if all_layers and layer.parent:
+                    layer.set_zlottie_id()
+        [set_zlottie(precomp, layer) for precomp in self.precomposition for layer in precomp.layers]
+
     def _create_vidalgo_lottie_template(self, lottie_name: str = 'vidalgo_lottie', in_point: int = 0, out_point: int = 30,
-                                        frame_rate: int = 30, ddd_layers: int = 0, width: float = 500,
-                                        height: float = 500, version: str = "5.5.2"):
+                                        frame_rate: int = 30, ddd_layers: int = 0, width: float = ANIMATION_WIDTH,
+                                        height: float = ANIMATION_HEIGHT, version: str = "5.5.2"):
         self.version = version
         self.name = lottie_name
         self.width = width
@@ -59,12 +105,13 @@ class Lottie_animation(Vidalgo_lottie_base):
         self.layers.append(self._main_layer)
         self.lottie_base['layers'] = [self._main_layer.layer]
         self.main_layer.set_zlottie_id()
+        [self.width, self.height] = [ANIMATION_WIDTH, ANIMATION_HEIGHT]
         self.main_layer.transform.anchor = [width / 2, height / 2]
-        self.main_layer.transform.position = [width / 2, height / 2]
+        self.main_layer.transform.position = [ANIMATION_WIDTH / 2, ANIMATION_HEIGHT / 2]
 
     def _create_vidalgo_lottie_main_precomposition(self, name: str, frame_rate: int):
         self._main_precomposition = Precomposition(name, name, frame_rate)
-        self.add_precomposition(self.main_precomposition, add_uuid_and_refactor=False)
+        self.add_precomposition(self.main_precomposition)
 
     def _refactor_ids(self):
         self._main_layers_index = 0
@@ -170,10 +217,9 @@ class Lottie_animation(Vidalgo_lottie_base):
             for layer_id, layer in enumerate(animation.layers):
                 layer.id = layer_id + self.main_layers_index
             self.layers += animation.layers
-            for layer_id, layer in enumerate(self.layers):
-                transform_pos = [self.width / 2, self.height / 2]
-                layer.transform.anchor = transform_pos
-                layer.transform.position = transform_pos
+            '''for layer_id, layer in enumerate(self.layers):
+                layer.transform.anchor = [animation.width / 2, animation.height / 2]
+                layer.transform.position = [ANIMATION_WIDTH / 2, ANIMATION_HEIGHT / 2]'''
 
         # markers : no check needed
         # motion blur : use destination but issue a warning if source motion blur exists
@@ -181,8 +227,8 @@ class Lottie_animation(Vidalgo_lottie_base):
         self.out_point = max(self.out_point, animation.out_point)
         # self.width += animation.width
         # self.height += animation.height
-        self.width = max(self.width, animation.width)
-        self.height = max(self.height, animation.height)
+        self.width = ANIMATION_WIDTH
+        self.height = ANIMATION_HEIGHT
         self.ddd_layers = max(self.ddd_layers, animation.ddd_layers)
         self.assets += animation.assets
         self.fonts += animation.fonts
@@ -247,6 +293,7 @@ class Lottie_animation(Vidalgo_lottie_base):
             self._refactor_references(refactor_fonts_and_chars)
             self._create_vidalgo_lottie_main_precomposition('{0}_main_precomp'.format(self.name), self.frame_rate)
             self.main_precomposition.layers = self.layers
+            self.set_zlottie_layers()
             self.layers = []
             self._create_vidalgo_lottie_main_layer('{0}_main_layer'.format(self.name), self.width, self.height)
 

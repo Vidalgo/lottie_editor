@@ -106,7 +106,7 @@ class Precomposition(Vidalgo_lottie_base):
     def delete_layer(self, layer_id: int, layer_name: str = None):
         layer_index = delete_layer(self.layers, layer_id, layer_name)
         if layer_index is not None:
-            self.lottie_base['layers'].remove(self.layers[layer_index].layer)
+            self.lottie_base['layers'].pop(layer_index)
 
     def replace_layer(self, new_layer: Layer, layer_id=None, layer_name: str = None):
         layer_index = replace_layer(self.layers, new_layer, layer_id, layer_name)
