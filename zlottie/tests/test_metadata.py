@@ -35,7 +35,7 @@ class TestMetadata(TestCase):
 
     def test_from_dict(self):
         # act
-        uut = Metadata.from_dict(raw=self.raw)
+        uut = Metadata.from_raw(raw=self.raw)
         # assert
         self.assertEqual('author', uut.author)
         self.assertEqual(['keyword_1', 'keyword_2'], uut.keywords)
@@ -45,8 +45,8 @@ class TestMetadata(TestCase):
 
     def test_to_dict(self):
         # arrange
-        uut = Metadata.from_dict(raw=self.raw)
+        uut = Metadata.from_raw(raw=self.raw)
         # act
-        raw = uut.to_dict()
+        raw = uut.dump()
         # assert
         self.assertDictEqual(self.raw, raw)

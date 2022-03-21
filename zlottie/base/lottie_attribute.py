@@ -2,10 +2,10 @@ from typing import Any, Union, List, get_args, get_origin
 
 
 class LottieAttribute:
-    _clone_attrs = ['_name', '_tag', '_annotation', '_description']
+    _caluclated_attrs = ['_type', '_is_optional', '_is_list']
     _eq_attrs = ['_name', '_tag', '_annotation']
 
-    def __init__(self, name: str = None, tag: str = None, annotation: Any = None, description: str = ''):
+    def __init__(self, **kwargs):
         """
         Initializes a new LottieAttribute object.
         All parameters are optional, but should not be modified after instantiation.
@@ -22,13 +22,16 @@ class LottieAttribute:
 
         """
         # given attrs
-        self._name = name
-        self._tag = tag
-        self._annotation = annotation
-        self._description = description
-        self._is_optional = self._is_annotation_optional(annotation)
-        self._is_list = self._is_annotation_list(annotation)
-        self._type = self._extract_annotation_type(annotation)
+        self._name = kwargs.get('name')
+        self._tag = kwargs.get('tag')
+        self._annotation = kwargs.get('annotation')
+        self._description = kwargs.get('description')
+        self._autoload = kwargs.get('autoload', True)
+        self._default = kwargs.get('default')
+        self._always_dump = kwargs.get('always_dump', False)
+        self._is_optional = self._is_annotation_optional(self._annotation)
+        self._is_list = self._is_annotation_list(self._annotation)
+        self._type = self._extract_annotation_type(self._annotation)
 
     @property
     def name(self):
@@ -51,6 +54,18 @@ class LottieAttribute:
         return self._description
 
     @property
+    def autoload(self):
+        return self._autoload
+
+    @property
+    def default(self):
+        return self._default
+
+    @property
+    def always_dump(self):
+        return self._always_dump
+
+    @property
     def is_optional(self):
         return self._is_optional
 
@@ -59,19 +74,25 @@ class LottieAttribute:
         return self._is_list
 
     def clone(self, **kwargs):
-        params = {k[1:]: v for k, v in vars(self).items() if k in self._clone_attrs}
+        params = {k[1:]: v for k, v in vars(self).items() if k not in self._caluclated_attrs}
         params.update(kwargs)
         obj = type(self)(**params)
         return obj
 
     @staticmethod
+    def _is_annotation_union(annotation: Any) -> bool:
+        return annotation is not None and get_origin(annotation) is Union
+
+    @staticmethod
     def _is_annotation_optional(annotation: Any) -> bool:
-        return annotation is not None and get_origin(annotation) is Union and type(None) in get_args(annotation)
+        return LottieAttribute._is_annotation_union(annotation) and type(None) in get_args(annotation)
 
     @staticmethod
     def _is_annotation_list(annotation: Any) -> bool:
         if LottieAttribute._is_annotation_optional(annotation):
             annotation = get_args(annotation)[0]
+        if LottieAttribute._is_annotation_union(annotation):
+            return False
         return annotation is list or (get_origin(annotation) is not None and issubclass(get_origin(annotation), List))
 
     @staticmethod
@@ -80,10 +101,12 @@ class LottieAttribute:
             annotation = get_args(annotation)[0]
         if LottieAttribute._is_annotation_list(annotation):
             annotation = get_args(annotation)[0]
+        if LottieAttribute._is_annotation_union(annotation):
+            annotation = get_args(annotation)
         return annotation
 
     def __repr__(self):
-        return f"<LottieAttribute ('{self._tag}')>"
+        return f"<LottieAttribute name='{self._name}' tag='{self._tag}' annotation={self._annotation})>"
 
     def __eq__(self, other):
         return all(getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs)

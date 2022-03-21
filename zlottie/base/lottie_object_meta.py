@@ -7,17 +7,10 @@ LottieObject = ForwardRef('LottieObject')
 class LottieObjectMeta(type):
     def __new__(cls, type_name, bases, attrs):
         attributes = LottieObjectMeta._prepare_lottie_attributes(cls, type_name, bases, attrs)
-        attrs.update({k: None for k in attributes.keys()})
-        attrs.setdefault('__init__', LottieObjectMeta._autoinit)
+        attrs.update({k: v.default for k, v in attributes.items()})
         attrs['_attributes'] = attributes
         attrs['_attributes_by_tag'] = {attr.tag: attr for name, attr in attributes.items()}
         return super().__new__(cls, type_name, bases, attrs)
-
-    @staticmethod
-    def _autoinit(obj: LottieObject, **kwargs):
-        if bad_attr := next((attr for attr in kwargs.keys() if attr not in obj._attributes), None):
-            raise TypeError(f"_autoinit() got an unexpected keyword argument '{bad_attr}'")
-        vars(obj).update(kwargs)
 
     @staticmethod
     def _prepare_lottie_attributes(cls, type_name, bases, attrs):
