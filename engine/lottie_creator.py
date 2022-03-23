@@ -14,6 +14,39 @@ OUTPUT_PATH = PATH.joinpath('outputs')
 MAIN_LAYERS = "zlottie_layers"
 
 
+class Update_colors:
+    class Color:
+        def __init__(self, recolor=None):
+            self._color = recolor
+
+        def update(self, lottie_obj):
+            if self._color is None or len(self._color) != 4:
+                return
+            try:
+                if 'c' in lottie_obj and type(lottie_obj['c']) is dict and 'k' in lottie_obj['c'] and lottie_obj['c']['a'] == 0:
+                    lottie_obj['c']['k'] = self._color
+            except:
+                print(lottie_obj)
+                pass
+
+
+    def __init__(self, uuids: list[str], hide=False, opacity=100, recolor=None):
+        self._uuids = uuids
+        self._hide = hide
+        self._opacity = opacity
+        self._color = recolor
+
+    def update(self, lottie_obj):
+        if 'ln' in lottie_obj and lottie_obj['ln'] in self._uuids:
+            if lottie_obj is not None:
+                lottie_obj['hd'] = self._hide
+                if 'o' in lottie_obj and 'k' in lottie_obj['o'] and lottie_obj['o']['a'] == 0:
+                    lottie_obj['o']['k'] = self._opacity
+                if 'ks' in lottie_obj and 'o' in lottie_obj['ks'] and 'k' in lottie_obj['ks']['o'] and lottie_obj['ks']['o']['a'] == 0:
+                    lottie_obj['ks']['o']['k'] = self._opacity
+                Vidalgo_lottie_base.update_elements(lottie_obj, Update_colors.Color(self._color))
+
+
 class Lottie_creator:
     def __init__(self, lottie_obj: Lottie_animation, source_lottie_objects_uuids: list[str]):
         self._lottie_obj = lottie_obj
@@ -42,6 +75,14 @@ class Lottie_creator:
     @property
     def derived_lottie(self):
         return self._new_lottie_obj
+
+    def mark_elements(self, name: str, hide=False, opacity=100, recolor=None):
+        self._lottie_obj.name = name
+        update_colors = Update_colors(self._source_lottie_objects_uuids, hide, opacity, recolor)
+        Vidalgo_lottie_base.update_elements(self._lottie_obj.lottie_base, update_colors)
+        output_file_name = str(OUTPUT_PATH.joinpath(f'{self._lottie_obj.name}.json'))
+        self._lottie_obj.add_lottie_id(refactor_ids=False)
+        self._lottie_obj.store(output_file_name)
 
     def hide(self, name: str):
         self._find_source_layers_compositions()

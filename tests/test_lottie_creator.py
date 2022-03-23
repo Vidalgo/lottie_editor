@@ -53,14 +53,31 @@ class Test_lottie_creator(unittest.TestCase):
         self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
 
     def test_complex_zlottie(self):
-        name = "complex"
+        name = "coin"
         lc = Test_lottie_creator._load_and_create_same_file(name, ['zlbUh5UTuZBVT7', 'zlVbzYFKVtVlKS'])
         self.assertEqual(lc.original_lottie.lottie_base, lc.derived_lottie.lottie_base)  # add assertion here
 
     def test_create_zlottie(self):
-        name = "classic-music"
+        name = "84679-people-waiting-in-line-blue"
         Test_lottie_creator._create_zlottie(name)
         #lc = Test_lottie_creator._load_and_create_same_file(name, ['zlRbJd5zEYsFyX'])
+
+    def test_create_zlottie_class(self):
+        name = "84679-people-waiting-in-line-blue"
+        fname = str(INPUT_PATH.joinpath(f'zlottie_{name}.json'))
+        la = Lottie_animation()
+        la.load(fname)
+        la.set_zlottie_layers(all=True)
+        la.name = 'zlottie_' + name + '_view_class'
+        output_file_name = str(OUTPUT_PATH.joinpath(f'{la.name}.json'))
+        la.store(output_file_name)
+
+    def test_mark_elements(self):
+        name = "84679-people-waiting-in-line-blue"
+        zlottie = Test_lottie_creator._load_zlottie(name)
+        name += "_hide"
+        lc = Lottie_creator(zlottie, ['zl3gSO31qLCeaE', 'zlfFmSJKvzOxf6'])
+        lc.mark_elements(name, opacity=25, recolor=[139, 0, 0, 1])
 
     def test_recalc_animation_size(self):
         name = "zlottie_complex"
@@ -98,14 +115,14 @@ class Test_lottie_creator(unittest.TestCase):
         la1.store(output_file_name)
 
     def test_hide_redundant_layers_lottie_1(self):
-        name = "jazz night"
+        name = "74839-car-isometric-3d-animation-navigation-car-red-car-in-nature-car-on-the-road"
         #Test_lottie_creator._create_zlottie(name)
-        lc = Test_lottie_creator._load_and_hide_layers_same_file(name, ['zlD7ROE5kale8a', 'zlbAG4NOhBCyFb', 'zlq0QYPKSHhgco'])
+        lc = Test_lottie_creator._load_and_hide_layers_same_file(name, ['zlRlMWmOaMAe8F'])
 
     def test_create_redundant_layers_lottie_1(self):
-        name = "jazz night"
+        name = "74839-car-isometric-3d-animation-navigation-car-red-car-in-nature-car-on-the-road"
         #Test_lottie_creator._create_zlottie(name)
-        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlD7ROE5kale8a'])
+        lc = Test_lottie_creator._load_and_create_same_file(name, ['zlJeHDUB7DZFDS', 'zlW2FLzJ65wo5e'])
 
 
 if __name__ == '__main__':

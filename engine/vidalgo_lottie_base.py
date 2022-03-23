@@ -136,3 +136,31 @@ class Vidalgo_lottie_base:
             elif type(lottie_obj[key]) is list:
                 [Vidalgo_lottie_base._add_ids_to_elements(element, refactor_ids) for element in lottie_obj[key]
                  if type(element) is dict]
+
+    @staticmethod
+    def add_class_property_to_elements(lottie_obj: dict, class_property={'cl': ZLOTTIE_OBJECT_ID}):
+        if class_property is None:
+            return
+        class_key = list(class_property.keys())[0]
+        if class_key not in lottie_obj:
+            lottie_obj[class_key] = class_property[class_key]
+        lottie_obj['cl'] = ZLOTTIE_OBJECT_ID
+        for key in lottie_obj:
+            if type(lottie_obj[key]) is dict:
+                Vidalgo_lottie_base.add_class_property_to_elements(lottie_obj[key], class_property)
+            elif type(lottie_obj[key]) is list:
+                [Vidalgo_lottie_base.add_class_property_to_elements(element, class_property) for element in lottie_obj[key]
+                 if type(element) is dict]
+
+    @staticmethod
+    def update_elements(lottie_obj: dict, update_class=None):
+        if update_class is None:
+            return
+        update_class.update(lottie_obj)
+        for key in lottie_obj:
+            if type(lottie_obj[key]) is dict:
+                Vidalgo_lottie_base.update_elements(lottie_obj[key], update_class)
+            elif type(lottie_obj[key]) is list:
+                [Vidalgo_lottie_base.update_elements(element, update_class) for element in
+                 lottie_obj[key]
+                 if type(element) is dict]

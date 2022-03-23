@@ -58,12 +58,13 @@ class Lottie_animation(Vidalgo_lottie_base):
         self.width = new_width
         self.height = new_height
 
-    def set_zlottie_layers(self, main_precomp_no_parents_layer=False,
+    def set_zlottie_layers(self, main_precomp_no_parents_layer=True,
                            main_precomp_layers=True,
-                           main_precomp_child_layer=False,
+                           main_precomp_child_layer=True,
                            all_pre_comp_layers=True,
                            all_no_parents_layer=False,
-                           all_layers=False):
+                           all_layers=False,
+                           all=False):
         def set_zlottie(precomp: Precomposition, layer: Layer):
             if precomp == self.main_precomposition:
                 if main_precomp_no_parents_layer and layer.parent is None:
@@ -80,6 +81,8 @@ class Lottie_animation(Vidalgo_lottie_base):
                 if all_layers and layer.parent:
                     layer.set_zlottie_id()
         [set_zlottie(precomp, layer) for precomp in self.precomposition for layer in precomp.layers]
+        if all:
+            Vidalgo_lottie_base.add_class_property_to_elements(self.lottie_base)
 
     def _create_vidalgo_lottie_template(self, lottie_name: str = 'vidalgo_lottie', in_point: int = 0, out_point: int = 30,
                                         frame_rate: int = 30, ddd_layers: int = 0, width: float = ANIMATION_WIDTH,
